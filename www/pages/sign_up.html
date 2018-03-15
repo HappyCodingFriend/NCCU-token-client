@@ -1,0 +1,192 @@
+<template>
+    <section class="page" id="sign_up">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">註冊</div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <form class="list" id="sign_up_form">
+                <ul>
+                    <li class="item-content item-input item-input-with-info">
+                        <div class="item-inner">
+                            <div class="item-title item-label">姓名</div>
+                            <div class="item-input-wrap">
+                                <input type="text" name="name" placeholder="你的姓名" required validate>
+                                <span class="input-clear-button"></span>
+                                <div class="item-input-info">Default "required" validation</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input item-input-with-info">
+                        <div class="item-inner">
+                            <div class="item-title item-label">學號</div>
+                            <div class="item-input-wrap">
+                                <input type="text" name="student_ID" placeholder="" required validate>
+                                <span class="input-clear-button"></span>
+                                <div class="item-input-info">Default "required" validation</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input item-input-with-info">
+                        <div class="item-inner">
+                            <div class="item-title item-label">E-mail</div>
+                            <div class="item-input-wrap">
+                                <input type="email" name="email" placeholder="E-mail" required validate>
+                                <span class="input-clear-button"></span>
+                                <div class="item-input-info">Default "required" validation</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input item-input-with-info">
+                        <div class="item-inner">
+                            <div class="item-title item-label">設定密碼</div>
+                            <div class="item-input-wrap">
+                                <input type="password" name="password" placeholder="">
+                                <span class="input-clear-button"></span>
+                                <div class="item-input-info">Default "required" validation</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input item-input-with-info">
+                        <div class="item-inner">
+                            <div class="item-title item-label">確認密碼</div>
+                            <div class="item-input-wrap">
+                                <input type="password" name="re_password" placeholder="">
+                                <span class="input-clear-button"></span>
+                                <div class="item-input-info">Default "required" validation</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input item-input-with-info">
+                        <div class="item-inner">
+                            <div class="item-title item-label">交易密碼</div>
+                            <div class="item-input-wrap">
+                                <input type="password" name="tx_password" placeholder="">
+                                <span class="input-clear-button"></span>
+                                <div class="item-input-info">Default "required" validation</div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+            <div class="block block-strong">
+                <p>
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        <i class="icon-checkbox"></i>
+                    </label>
+                    同意
+                    <a href="#" class="popup-open" data-popup=".license-popup">
+                        <u>許可協議條款</u>
+                    </a>與
+                    <a href="#" class="popup-open" data-popup=".privacy-popup">
+                        <u>個人情報保護政策</u>
+                    </a>
+                </p>
+            </div>
+            <div class="block">
+                <div class="row">
+                    <button class="col button button-fill" @click="sign_up">註冊</button>
+                    <button class="col button button-fill">取消</button>
+                </div>
+            </div>
+            <!--許可協議條款-->
+            <div class="popup license-popup">
+                <div class="page">
+                    <div class="navbar">
+                        <div class="navbar-inner">
+                            <div class="title">許可協議條款</div>
+                            <div class="right">
+                                <a href="#" class="link popup-close">關閉</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <div class="block">
+                            <p class="">Here comes popup. You can put here anything, even independent view with its own navigation. Also
+                                not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is
+                                fullscreen.
+                            </p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu
+                                bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas
+                                in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim.
+                                Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam
+                                elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu
+                                massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum
+                                pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>
+                            <p>Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem
+                                semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus
+                                libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis,
+                                leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet
+                                nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque
+                                tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet,
+                                gravida adipiscing libero.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--個人情報保護政策-->
+            <div class="popup privacy-popup">
+                <div class="page">
+                    <div class="navbar">
+                        <div class="navbar-inner">
+                            <div class="title">個人情報保護政策</div>
+                            <div class="right">
+                                <a href="#" class="link popup-close">關閉</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <div class="block">
+                            <p class="">Here comes popup. You can put here anything, even independent view with its own navigation. Also
+                                not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is
+                                fullscreen.
+                            </p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu
+                                bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas
+                                in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim.
+                                Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam
+                                elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu
+                                massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum
+                                pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>
+                            <p>Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem
+                                semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus
+                                libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis,
+                                leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet
+                                nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque
+                                tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet,
+                                gravida adipiscing libero.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    return {
+        data: () => {
+        },
+        methods: {
+            sign_up: () => {
+                console.log(app.form.convertToData('#sign_up_form'))
+            },
+        },
+        on: {
+            pageInit: function () {
+            },
+            pageBeforeOut: function () {
+            },
+            pageBeforeRemove: function () {
+            },
+        },
+    }
+</script>

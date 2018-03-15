@@ -1,0 +1,140 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">明細</div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <div class="block-title">2018年 2月</div>
+            <div class="list">
+                <ul>
+                    <li>
+                        <a href="#" class="item-link item-content popup-open"data-popup=".detail-popup">
+                            <div class="item-media">
+                                28日
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">
+                                    <div class="item-header">王小明</div>
+                                    教務點數
+                                </div>
+                                <div class="item-after">
+                                    <span class="badge color-green">+20</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="item-link item-content popup-open" data-popup=".detail-popup">
+                            <div class="item-media">
+                                28日
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">
+                                    <div class="item-header">王小美</div>
+                                    宿舍點數
+                                </div>
+                                <div class="item-after">
+                                    <span class="badge color-red">-10</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--明細內容-->
+        <div class="popup detail-popup">
+            <div class="page">
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <div class="title">明細內容</div>
+                        <div class="right">
+                            <a href="#" class="link popup-close">關閉</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-content">
+                    <div class="list">
+                        <ul>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">交易日期</div>
+                                        <div class="item-after">2018年2月28日 20:00</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">轉出帳戶</div>
+                                        <div class="item-after">王小明/10159001</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">轉入帳戶</div>
+                                        <div class="item-after">王小明/10159002</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">交易類別</div>
+                                        <div class="item-after">轉帳</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">點數種類</div>
+                                        <div class="item-after">教務點數</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">交易金額</div>
+                                        <div class="item-after">+20</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title">交易狀態</div>
+                                        <div class="item-after">成功</div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    return {
+        methods: {},
+        on: {
+            pageInit: function () {},
+            pageBeforeOut: function () {},
+            pageBeforeRemove: function () {},
+        },
+    }
+</script>

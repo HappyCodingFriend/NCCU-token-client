@@ -1,0 +1,71 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">我的帳戶</div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <div class="block-title">我的點數</div>
+            <div class="list">
+                <ul>
+                    {{#each data_point}}
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">{{this[0]}}</div>
+                                <div class="item-after">
+                                    <span class="badge">{{this[1]}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="block-title">系統</div>
+            <div class="list simple-list">
+                <ul>
+                    <li @click="inf">帳戶資訊</li>
+                    <li @click="sign_out">登出</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    return {
+        data: () => {
+            return {
+                data_point: [
+                    ['宿舍點數', '100點'],
+                    ['合作社點數', '100點'],
+                    ['教務點數', '10點'],
+                ]
+            }
+        },
+        methods: {
+            inf: () => {
+                console.log('inf')
+            },
+            sign_out: () => {
+                console.log('sign_out')
+            },
+        },
+        on: {
+            pageInit: function () {
+            },
+            pageBeforeOut: function () {
+            },
+            pageBeforeRemove: function () {
+            },
+        },
+    }
+</script>

@@ -1,0 +1,86 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">好友</div>
+                <div class="right">
+                    <a href="#" class="link popover-open" data-popover=".popover-menu">
+                        <i class="icon f7-icons ios-only">add</i>
+                        <i class="icon material-icons md-only">add</i>
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <div class="list media-list">
+                <ul>
+                    {{#each device_inf}}
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media">
+                                <img class="head" src={{this[2]}}>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">{{this[0]}}</div>
+                                    <div class="item-after">大學生</div>
+                                </div>
+                                <div class="item-subtitle">{{this[1]}}</div>
+                                <div class="item-text">資訊科學系</div>
+                            </div>
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        <div class="popover popover-menu">
+            <div class="popover-angle"></div>
+            <div class="popover-inner">
+                <div class="list">
+                    <ul>
+                        <li>
+                            <a href="/dialog/" class="list-button item-link popover-close">掃描QR code</a>
+                        </li>
+                        <li>
+                            <a href="/tabs/" class="list-button item-link popover-close">以帳號新增</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    return {
+        data: function () {
+            return {
+                device_inf: [
+                    ['陳同學', 103703087, 'img/man1.jpg'],
+                    ['彭同學', 103703099, 'img/man2.jpg'],
+                    ['陳同學', 103703087, 'img/man1.jpg'],
+                    ['彭同學', 103703099, 'img/man2.jpg'],
+                    ['陳同學', 103703087, 'img/man1.jpg'],
+                    ['彭同學', 103703099, 'img/man2.jpg'],
+                ]
+            }
+        },
+        methods: {
+        },
+        on: {
+            pageInit: function () {
+            },
+            pageBeforeOut: function () {
+            },
+            pageBeforeRemove: function () {
+            },
+        },
+    }
+</script>

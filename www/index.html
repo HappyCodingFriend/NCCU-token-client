@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
+	<meta name="format-detection" content="telephone=no">
+	<meta name="msapplication-tap-highlight" content="no">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+	<link rel="stylesheet" type="text/css" href="css/framework7/framework7.css">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<title>政大點數</title>
+</head>
+
+<body>
+	<div id="app">
+		<div class="page">
+			<!-- 左側邊攔 -->
+			<div class="statusbar"></div>
+			<div class="panel panel-left panel-cover">
+				<div class="page">
+					<div class="page-content">
+						<div class="block-title">Main View Navigation</div>
+						<div class="list links-list">
+							<ul>
+								<li>
+									<a href="/transaction/" class="panel-close">收付</a>
+								</li>
+								<li>
+									<a href="/friend/" class="panel-close">好友</a>
+								</li>
+								<li>
+									<a href="/detail/" class="panel-close">明細</a>
+								</li>
+								<li>
+									<a href="/exchange_rate/" class="panel-close">匯率</a>
+								</li>
+								<li>
+									<a href="/personal/" class="panel-close">我的帳戶</a>
+								</li>
+								<li>
+									<a href="/setting/" class="panel-close">設定</a>
+								</li>
+								<br>
+								<li>
+									<a href="/sign_in/" class="panel-close">登入</a>
+								</li>
+								<li>
+									<a href="/sign_up/" class="panel-close">註冊</a>
+								</li>
+								<li>
+									<a href="/receipt/" class="panel-close">收款</a>
+								</li>
+								<li>
+									<a href="/payment/" class="panel-close">付款</a>
+								</li>
+								<li>
+									<a href="/key/" class="panel-close">私鑰管理</a>
+								</li>
+								<li>
+									<a href="/color_themes/" class="panel-close">色彩主題</a>
+								</li>
+								<li>
+									<a href="/system/" class="panel-close">系統測試</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 主攔頁 -->
+			<div class="view view-main view-init ios-edges" data-url="/">
+				<div class="page">
+					<!-- header -->
+					<header class="navbar">
+						<div class="navbar-inner">
+							<div class="left">
+								<a href="#" class="link icon-only panel-open" data-panel="left">
+									<i class="icon f7-icons ios-only">home</i>
+									<i class="icon material-icons md-only">home</i>
+								</a>
+							</div>
+							<div class="title sliding">政大點數</div>
+						</div>
+					</header>
+					<div class="toolbar tabbar tabbar-labels">
+						<div class="toolbar-inner">
+							<a href="/exchange/" class="tab-link tab-link-active">
+								<i class="icon icon-fill f7-icons ios-only">email_fill</i>
+								<i class="icon material-icons md-only">cached</i>
+								<span class="tabbar-label">交換</span>
+							</a>
+							<a href="/payment/" class="tab-link">
+								<i class="icon f7-icons ios-only">today</i>
+								<i class="icon material-icons md-only">center_focus_weak</i>
+								<span class="tabbar-label">轉帳</span>
+							</a>
+							<a href="/receipt/" class="tab-link">
+								<i class="icon f7-icons ios-only">cloud</i>
+								<i class="icon material-icons md-only">monetization_on</i>
+								<span class="tabbar-label">收款</span>
+							</a>
+						</div>
+					</div>
+					<!-- content -->
+					<div class="page-content">
+						<div class="block">
+							<div class="row">
+								<div class="col-50">
+									<a href="/friend/" class="square_block">
+										<i class="f7-icons big ios-only">people</i>
+										<i class="material-icons big md-only">people</i>
+										<span class="tabbar-label">好友</span>
+									</a>
+								</div>
+								<div class="col-50">
+									<a href="/detail/" class="square_block">
+										<i class="f7-icons big ios-only">library_books</i>
+										<i class="material-icons big md-only">library_books</i>
+										<span class="tabbar-label">明細</span>
+									</a>
+								</div>
+								<div class="col-50">
+									<a href="/exchange_rate/" class="square_block">
+										<i class="f7-icons big ios-only">settings</i>
+										<i class="material-icons big md-only">swap_vertical_circle</i>
+										<span class="tabbar-label">匯率</span>
+									</a>
+								</div>
+								<div class="col-50">
+									<a href="/personal/" class="square_block">
+										<i class="f7-icons big ios-only">settings</i>
+										<i class="material-icons big md-only">adb</i>
+										<span class="tabbar-label">我的帳戶</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="cordova.js"></script>
+	<script type="text/javascript" src="js/framework7/framework7.min.js"></script>
+	<script type="text/javascript" src="js/routes.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+</body>
+
+</html>

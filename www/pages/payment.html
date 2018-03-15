@@ -1,0 +1,117 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">轉帳</div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <div class="list inline-labels no-hairlines-md">
+                <ul>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">點數種類</div>
+                            <div class="item-input-wrap">
+                                <select id="point" placeholder="Please choose...">
+                                    <option value="p1">學務處點數</option>
+                                    <option value="p2">教務處點數</option>
+                                    <option value="p3">宿舍點數</option>
+                                </select>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">轉出數量</div>
+                            <div class="item-input-wrap">
+                                <input type="text" id=number placeholder="轉出數量">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">轉入對象</div>
+                            <div class="item-input-wrap">
+                                <input type="text" id="target" placeholder="轉入對象">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="block">
+                <div class="row">
+                    <button class="col button button-fill">好友</button>
+                    <button class="col button button-fill" @click="QR_code">掃描QR code</button>
+                    <button class="col button button-fill">帳號</button>
+                </div>
+            </div>
+            <div class="block">
+                <div class="row">
+                    <button class="col button button-fill" @click="transfer">立即轉帳</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    return {
+        methods: {
+            QR_code: () => {
+                QRScanner.prepare((err, status) => {
+                    if (status == undefined) {
+                        console.log('denied')
+                    } else if (status.authorized) {
+                        console.log('authorized')
+                        QRScanner.show((status) => {
+                            $('#app').hide()
+                        })
+                        QRScanner.scan((err, contents) => {
+                            if (err) {
+                                console.error(err)
+                            }
+                            console.log('The QR Code contains: ' + contents)
+                            $('#app').show()
+                            read(contents)
+                        })
+                    } else if (status.denied) {
+                        console.log('denied')
+                    }
+                })
+
+                function read(text) {
+                    let data = JSON.parse(text)
+                    $('#point').children().each(function () {
+                        $(this).attr('selected', false)
+                        if ($(this).text() == data.point) {
+                            $(this).attr('selected', true)
+                        }
+                    })
+                    $('#number').val(data.number)
+                    $('#target').val(data.target)
+                }
+            },
+            transfer: () => {
+                app.dialog.password('請輸入您的交易密碼', '轉帳', function (password) {
+                    app.dialog.preloader('交易進行中...');
+                    setTimeout(function () {
+                        app.dialog.close()
+                    }, 3000)
+                })
+            }
+        },
+        on: {
+            pageInit: function () {},
+            pageBeforeOut: function () {},
+            pageBeforeRemove: function () {},
+        },
+    }
+</script>

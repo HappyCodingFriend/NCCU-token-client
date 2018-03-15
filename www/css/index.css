@@ -1,0 +1,43 @@
+h1 {
+    font-size: 4rem;
+    text-align: center;
+}
+
+.small {
+    font-size: 1rem
+}
+
+.medium {
+    font-size: 3rem
+}
+
+.big {
+    font-size: 5rem
+}
+
+img.head {
+    width: 16vw;
+    height: 16vw;
+    border-radius: 50%;
+}
+
+.square_block {
+    height: 40vw;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+}
+
+.round_block {
+    width: 40vw;
+    height: 40vw;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border-style: solid;
+    text-align: center;
+}

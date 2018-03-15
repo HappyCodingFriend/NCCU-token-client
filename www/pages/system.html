@@ -1,0 +1,120 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">系統</div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <div class="block-title">device</div>
+            <div class="list">
+                <ul>
+                    {{#each data_device}}
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">{{this[0]}}</div>
+                                <div class="item-after">{{this[1]}}</div>
+                            </div>
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+                <div class="block-title">qrscanner</div>
+                <div class="list">
+                    <ul id='list_qrscanner'>
+                        {{#each data_qrscanner}}
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">{{this[0]}}</div>
+                                    <div class="item-after">{{this[1]}}</div>
+                                </div>
+                            </div>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="block-title">亮度</div>
+                <div class="list simple-list">
+                    <ul>
+                        <li>
+                            <div class="item-cell width-auto flex-shrink-0">
+                                <i class="icon f7-icons ios-only">circle</i>
+                                <i class="icon material-icons md-only">brightness_low</i>
+                            </div>
+                            <div class="item-cell flex-shrink-3">
+                                <!-- range slider, enable labels -->
+                                <div class="range-slider range-slider-init color-orange" data-label="true">
+                                    <input type="range" min="0" max="100" step="1" value="50">
+                                </div>
+                            </div>
+                            <div class="item-cell width-auto flex-shrink-0">
+                                <i class="icon f7-icons ios-only">circle_half</i>
+                                <i class="icon material-icons md-only">brightness_high</i>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    </section>
+</template>
+
+<script>
+    return {
+        data: function () {
+            console.log('data')
+            return {
+                data_device: [
+                    ['cordova', device.cordova],
+                    ['model', device.model],
+                    ['platform', device.platform],
+                    ['uuid', device.uuid],
+                    ['version', device.version],
+                    ['manufacturer', device.manufacturer],
+                    ['isVirtual', device.isVirtual],
+                    ['serial', device.serial],
+                ],
+                data_qrscanner: [
+                    ['authorized', status.authorized],
+                    ['denied', status.denied],
+                    ['restricted', status.restricted],
+                    ['prepared', status.prepared],
+                    ['scanning', status.scanning],
+                    ['previewing', status.previewing],
+                    ['showing', status.showing],
+                    ['lightEnabled', status.lightEnabled],
+                    ['canOpenSettings', status.canOpenSettings],
+                    ['canEnableLight', status.canEnableLight],
+                    ['currentCamera', status.currentCamera],
+                ],
+            }
+        },
+        methods: {
+
+        },
+        on: {
+            pageMounted: () => {
+                console.log('pageMounted')
+            },
+            pageBeforein: () => {
+                console.log('pageBeforein')
+            },
+            pageInit: () => {
+                console.log('pageInit')
+            },
+            pageBeforeOut: () => {
+                console.log('pageBeforeOut')
+            },
+            pageBeforeRemove: () => {
+                console.log('pageBeforeRemove')
+            },
+        },
+    }
+</script>

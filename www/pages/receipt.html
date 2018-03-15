@@ -1,0 +1,60 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">收款</div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <div class="block-title"></div>
+            <div class="block block-strong">
+                <p>
+                    <label class="checkbox">
+                        <input type="checkbox" id="brightness">
+                        <i class="icon-checkbox"></i>
+                    </label>
+                    增強亮度
+                </p>
+                <img src="img/QR code.png" alt="Smiley face" height="100%" width="100%">
+                <button class="col button button-fill" @click="showAlert">通知</button>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    return {
+        methods: {
+            showAlert: () => {
+                navigator.notification.alert(
+                    'You are the winner!', // message
+                    alertDismissed, // callback
+                    'Game Over', // title
+                    'Done' // buttonName
+                )
+                function alertDismissed() {
+                    // do something
+                }
+            }
+        },
+        on: {
+            pageInit: function () {
+                $('#brightness').change(() => {
+                    if ($('#brightness').is(':checked')) {
+                        brightness.setBrightness(1.0)
+                    } else {
+                        brightness.setBrightness(-1.0)
+                    }
+                })
+            },
+            pageBeforeOut: function () {},
+            pageBeforeRemove: function () {},
+        },
+    }
+</script>
