@@ -63,20 +63,42 @@
                     }
                 })
 
-                let jwt = JSON.parse(atob(storage.getItem('jwt').split('.')[1]))
-
-                let text = JSON.stringify({
-                    ID: jwt.ID,
-                    name: jwt.name,
-                    address: jwt.address,
+                //讀取key file
+                window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
+                    dirEntry.getFile('key.json', { create: true, exclusive: false }, function (fileEntry) {
+                        readFile(fileEntry)
+                    })
                 })
 
-                let qrcode = new QRCode('qrcode', {
-                    text: text,
-                    colorDark: '#000000',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H
-                })
+                function readFile(fileEntry) {
+                    fileEntry.file(function (file) {
+                        let reader = new FileReader()
+                        reader.onloadend = keyOnLoadend
+                        reader.readAsText(file)
+                    }, (evt) => {
+                        alert(evt)
+                    })
+                }
+
+                function keyOnLoadend() {
+                    console.log(this.result)
+                    let key = JSON.parse(this.result)
+
+                    let jwt = JSON.parse(atob(storage.getItem('jwt').split('.')[1]))
+
+                    let text = JSON.stringify({
+                        ID: jwt.ID,
+                        name: jwt.name,
+                        address: key.address,
+                    })
+
+                    let qrcode = new QRCode('qrcode', {
+                        text: text,
+                        colorDark: '#000000',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.H
+                    })
+                }
             },
             pageBeforeOut: function () { },
             pageBeforeRemove: function () { },

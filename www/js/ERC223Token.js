@@ -1,4 +1,4 @@
-ERC223Token = {
+let ERC223Token = {
     "abi": [
         {
             "constant": true,

@@ -19,9 +19,9 @@
                             <div class="item-title item-label">點數種類</div>
                             <div class="item-input-wrap">
                                 <select id="point" placeholder="Please choose...">
-                                    <option value="p1">學務處點數</option>
-                                    <option value="p2">教務處點數</option>
-                                    <option value="p3">宿舍點數</option>
+                                    <option value="2CA6Dacbf2db0e04c8f7A73E27C385129A2b40cf">學務處點數</option>
+                                    <option value="2CA6Dacbf2db0e04c8f7A73E27C385129A2b40cf">教務處點數</option>
+                                    <option value="2CA6Dacbf2db0e04c8f7A73E27C385129A2b40cf">宿舍點數</option>
                                 </select>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
                         <div class="item-inner">
                             <div class="item-title item-label">轉入對象</div>
                             <div class="item-input-wrap">
-                                <input type="text" id="ID" placeholder="轉入對象">
+                                <input type="text" id="target" placeholder="轉入對象">
                                 <span class="input-clear-button"></span>
                             </div>
                         </div>
@@ -113,6 +113,7 @@
             },
             transfer: () => {
 
+                //讀取key file
                 window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
                     dirEntry.getFile('key.json', { create: true, exclusive: false }, function (fileEntry) {
                         readFile(fileEntry)
@@ -130,26 +131,47 @@
                 }
 
                 function keyOnLoadend() {
-                    console.log("Successful file read: " + this.result)
+                    console.log('keyOnLoadend')
+
+                    console.log(this.result)
                     let key = JSON.parse(this.result)
-                    let account = web3.eth.accounts.privateKeyToAccount('0x348ce564d427a3311b6536bbcff9390d69395b06ed6c486954e971d960fe8709')
-                    let ERC223TokenContract = new web3.eth.Contract(ERC223Token)
-                    let data = ERC223TokenContract.methods.transfer('0xcc688739b574d70597d3b5d577aac0ded7ab59ba', 100).encodeABI()
-                    app.dialog.password('請輸入您的交易密碼', '轉帳', function (password) {
+                    let account = web3.eth.accounts.privateKeyToAccount(key.privateKey)
+
+                    console.log(key.address)
+                    console.log(key.privateKey)
+
+                    let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
+                    let data = ERC223TokenContract.methods.transfer($('#address').val(), parseInt($('#number').val())).encodeABI()
+                    //app.dialog.password('請輸入您的交易密碼', '轉帳', function (password) {
+
+                    $.get('http://101.0.135.141:50000/nonce', {
+                        address: key.address
+                    }, function (nonce) {
+                        console.log('nonce', parseInt(nonce))
+
                         let tx = {
-                            nonce: '1',
+                            nonce: parseInt(nonce),
                             chainId: '0x11',
-                            to: '0x2CA6Dacbf2db0e04c8f7A73E27C385129A2b40cf',
+                            to: $('#point').val(),
                             data: data,
-                            value: '0',
                             gasPrice: '0x0',
-                            gas: '4000000',
+                            gas: 4000000,
                         }
-                        account.signTransaction(tx)
+
+                        let sign_tx = account.signTransaction(tx)
+
+                        $.post('http://101.0.135.141:50000/transaction', {
+                            sign_tx: sign_tx._rejectionHandler0.rawTransaction
+                        }, function (result) {
+                            console.log(result)
+                        })
+                        /*
                         app.dialog.preloader('交易進行中...')
                         setTimeout(function () {
                             app.dialog.close()
                         }, 3000)
+                        */
+                        //})
                     })
                 }
             }

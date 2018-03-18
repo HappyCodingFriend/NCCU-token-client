@@ -92,10 +92,32 @@
             },
             pageBeforein: () => {
                 console.log('pageBeforein')
-                $.get(`http://101.0.135.141:50000/query/balance/dormitory?address=99c930Dbd570edcc16E42a863D0D9D0e44C40b03`, function (result) {
-                    console.log(result)
-                    $('#dormitory').text(result)
+
+                //讀取key file
+                window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
+                    dirEntry.getFile('key.json', { create: true, exclusive: false }, function (fileEntry) {
+                        readFile(fileEntry)
+                    })
                 })
+
+                function readFile(fileEntry) {
+                    fileEntry.file(function (file) {
+                        let reader = new FileReader()
+                        reader.onloadend = keyOnLoadend
+                        reader.readAsText(file)
+                    }, (evt) => {
+                        alert(evt)
+                    })
+                }
+
+                function keyOnLoadend() {
+                    let key = JSON.parse(this.result)
+
+                    $.get(`http://101.0.135.141:50000/query/balance/dormitory?address=${key.address}`, function (result) {
+                        console.log(result)
+                        $('#dormitory').text(result)
+                    })
+                }
             },
             pageBeforeOut: () => {
                 console.log('pageBeforeOut')

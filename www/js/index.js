@@ -1,9 +1,11 @@
+let web3
 let storage
 let brightness
 
 document.addEventListener('deviceready', () => {
 	console.log('deviceready')
 
+	web3 = new Web3('http://localhost:8545')
 	storage = window.localStorage
 	brightness = cordova.plugins.brightness
 
