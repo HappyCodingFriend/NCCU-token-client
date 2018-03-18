@@ -41,3 +41,11 @@ img.head {
     border-style: solid;
     text-align: center;
 }
+
+#qrcode {
+    margin: 2rem auto;
+}
+
+#qrcode img {
+    margin: auto;
+}

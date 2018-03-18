@@ -8,7 +8,7 @@
                         <div class="item-inner">
                             <div class="item-title item-label">帳號(學號or員工代號)</div>
                             <div class="item-input-wrap">
-                                <input id="name" type="text" placeholder="Your name">
+                                <input id="ID" type="text" placeholder="Your student ID">
                                 <span class="input-clear-button"></span>
                             </div>
                         </div>
@@ -28,10 +28,10 @@
             <div class="block">
                 <p>
                     <label class="checkbox">
-                        <input type="checkbox" id="brightness">
+                        <input id="remember" type="checkbox" id="brightness">
                         <i class="icon-checkbox"></i>
                     </label>
-                    記住密碼
+                    記住帳號
                 </p>
                 <div class="row">
                     <a class="">註冊</a>
@@ -40,9 +40,8 @@
             </div>
             <div class="block">
                 <div class="row">
-                    <a href="/" class="col button button-fill">登入</a>
-                    <button class="col button button-fill" @click="fingerprint_encrypt">指紋加密</button>
-                    <button class="col button button-fill" @click="fingerprint_decrypt">指紋解密</button>
+                    <button class="col button button-fill" @click="sign_in">登入</button>
+                    <button class="col button button-fill" @click="fingerprint_decrypt">指紋登入</button>
                 </div>
             </div>
         </div>
@@ -54,87 +53,75 @@
         methods: {
             sign_in: () => {
                 console.log(app.form.convertToData('#sign_in_form'))
+                let ID = $('#ID').val()
+                let password = $('#password').val()
+                $.get(`http://101.0.135.141:50000/user?ID=${ID}&password=${password}`, function (result) {
+                    console.log(result)
+                    app.dialog.alert(result.inf, '政大錢包',() => {
+                        if (result.type) {
+                            storage.setItem('jwt', result.token)
+                            if ($('#remember').is(":checked")) {
+                                storage.setItem('ID', ID)
+                            }
+                            else {
+                                storage.removeItem('ID')
+                            }
+                            app.router.back()
+                        }
+                    })
+                })
             },
-            fingerprint_encrypt: () => {
-                console.log('fingerprint')
+            fingerprint_decrypt: () => {
                 FingerprintAuth.isAvailable(isAvailableSuccess, isAvailableError)
-
                 function isAvailableSuccess(result) {
-                    console.log("FingerprintAuth available: " + JSON.stringify(result))
-                    if (result.isAvailable) {
-                        var encryptConfig = {
+                    if (!storage.getItem('fingerprint_token')) {
+                        alert('未設定指紋登入')
+                    } else {
+                        var decryptConfig = {
                             clientId: app.id,
-                            username: $('input#name').val(),
-                            password: $('input#password').val(),
+                            username: 'nccu_token',
+                            token: storage.getItem('fingerprint_token'),
                         }
-                        FingerprintAuth.encrypt(encryptConfig, encryptSuccessCallback, encryptErrorCallback)
+                        FingerprintAuth.decrypt(decryptConfig, successCallback, errorCallback)
+                    }
 
-                        function encryptSuccessCallback(result) {
-                            console.log("successCallback(): " + JSON.stringify(result))
-                            if (result.withFingerprint) {
-                                console.log("Successfully encrypted credentials.")
-                                console.log("Encrypted credentials: " + result.token)
-                                storage.setItem(encryptConfig.username, result.token)
-                            } else if (result.withBackup) {
-                                console.log("Authenticated with backup password")
+                    function successCallback(result) {
+                        console.log("successCallback(): " + JSON.stringify(result))
+                        if (result.withFingerprint) {
+                            console.log("Successful biometric authentication.")
+                            if (result.password) {
+                                console.log("Successfully decrypted credential token.")
+                                console.log("password: " + result.password)
+                                $('input#password').val(result.password)
                             }
+                        } else if (result.withBackup) {
+                            console.log("Authenticated with backup password")
                         }
+                    }
 
-                        function encryptErrorCallback(error) {
-                            if (error === FingerprintAuth.ERRORS.FINGERPRINT_CANCELLED) {
-                                console.log("FingerprintAuth Dialog Cancelled!")
-                            } else {
-                                console.log("FingerprintAuth Error: " + error)
-                            }
+                    function errorCallback(error) {
+                        if (error === FingerprintAuth.ERRORS.FINGERPRINT_CANCELLED) {
+                            console.log("FingerprintAuth Dialog Cancelled!")
+                        } else {
+                            console.log("FingerprintAuth Error: " + error)
                         }
                     }
                 }
-
                 function isAvailableError(message) {
                     console.log("isAvailableError(): " + message)
                     alert(message)
                 }
             },
-            fingerprint_decrypt: () => {
-
-                if (!storage.getItem($('input#name').val())) {
-                    alert('此帳號未設定指紋登入')
-                } else {
-                    var decryptConfig = {
-                        clientId: app.id,
-                        username: $('input#name').val(),
-                        token: storage.getItem($('input#name').val()),
-                    }
-                    FingerprintAuth.decrypt(decryptConfig, successCallback, errorCallback)
-                }
-
-                function successCallback(result) {
-                    console.log("successCallback(): " + JSON.stringify(result))
-                    if (result.withFingerprint) {
-                        console.log("Successful biometric authentication.")
-                        if (result.password) {
-                            console.log("Successfully decrypted credential token.")
-                            console.log("password: " + result.password)
-                            $('input#password').val(result.password)
-                        }
-                    } else if (result.withBackup) {
-                        console.log("Authenticated with backup password")
-                    }
-                }
-
-                function errorCallback(error) {
-                    if (error === FingerprintAuth.ERRORS.FINGERPRINT_CANCELLED) {
-                        console.log("FingerprintAuth Dialog Cancelled!")
-                    } else {
-                        console.log("FingerprintAuth Error: " + error)
-                    }
-                }
-            },
         },
         on: {
-            pageInit: function () {},
-            pageBeforeOut: function () {},
-            pageBeforeRemove: function () {},
+            pageInit: function () {
+                if (storage.getItem('ID')) {
+                    $('#ID').val(storage.getItem('ID'))
+                    $('#remember').prop("checked", true)
+                }
+            },
+            pageBeforeOut: function () { },
+            pageBeforeRemove: function () { },
         },
     }
 </script>

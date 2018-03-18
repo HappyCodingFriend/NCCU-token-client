@@ -15,6 +15,27 @@
             <div class="block-title">我的點數</div>
             <div class="list">
                 <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">政大點數</div>
+                                <div class="item-after">
+                                    <span class="badge" id="">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">宿舍點數</div>
+                                <div class="item-after">
+                                    <span class="badge" id="dormitory"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!--
                     {{#each data_point}}
                     <li>
                         <div class="item-content">
@@ -27,6 +48,7 @@
                         </div>
                     </li>
                     {{/each}}
+                    -->
                 </ul>
             </div>
             <div class="block-title">系統</div>
@@ -45,6 +67,7 @@
         data: () => {
             return {
                 data_point: [
+                    ['政大點數', '100點'],
                     ['宿舍點數', '100點'],
                     ['合作社點數', '100點'],
                     ['教務點數', '10點'],
@@ -60,11 +83,25 @@
             },
         },
         on: {
-            pageInit: function () {
+            pageMounted: () => {
+                console.log('pageMounted')
             },
-            pageBeforeOut: function () {
+            pageInit: () => {
+                console.log('pageInit')
+
             },
-            pageBeforeRemove: function () {
+            pageBeforein: () => {
+                console.log('pageBeforein')
+                $.get(`http://101.0.135.141:50000/query/balance/dormitory?address=99c930Dbd570edcc16E42a863D0D9D0e44C40b03`, function (result) {
+                    console.log(result)
+                    $('#dormitory').text(result)
+                })
+            },
+            pageBeforeOut: () => {
+                console.log('pageBeforeOut')
+            },
+            pageBeforeRemove: () => {
+                console.log('pageBeforeRemove')
             },
         },
     }

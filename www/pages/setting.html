@@ -1,66 +1,141 @@
-<section class="page" id="system">
-    <nav class="navbar">
-        <div class="navbar-inner sliding">
-            <div class="left">
-                <a href="#" class="link back">
-                    <i class="icon icon-back"></i>
-                    <span class="ios-only">Back</span>
-                </a>
+<template>
+    <section class="page" id="system">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">設定</div>
             </div>
-            <div class="title">設定</div>
+        </nav>
+        <div class="page-content">
+            <div class="block-title">偏好設定</div>
+            <div class="list simple-list">
+                <ul>
+                    <li>
+                        <span>指紋登入</span>
+                        <label class="toggle toggle-init color-blue" id="fingerprint_checkbox">
+                            <input type="checkbox">
+                            <span class="toggle-icon"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <span>登入成功通知信</span>
+                        <label class="toggle toggle-init color-blue">
+                            <input type="checkbox">
+                            <span class="toggle-icon"></span>
+                        </label>
+                    </li>
+                    <li>
+                        <span>推撥通知</span>
+                        <label class="toggle toggle-init color-blue">
+                            <input type="checkbox">
+                            <span class="toggle-icon"></span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <div class="block-title">個人</div>
+            <div class="list links-list">
+                <ul>
+                    <li>
+                        <a href="#" class="item-link">
+                            個人資訊修改
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="item-link">
+                            帳號密碼修改
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="block-title">其他</div>
+            <div class="list links-list">
+                <ul>
+                    <li>
+                        <a href="#" class="item-link">
+                            系統資訊
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </nav>
-    <div class="page-content">
-        <div class="block-title">偏好設定</div>
-        <div class="list simple-list">
-            <ul>
-                <li>
-                    <span>指紋登入</span>
-                    <label class="toggle toggle-init color-black">
-                        <input type="checkbox" checked>
-                        <span class="toggle-icon"></span>
-                    </label>
-                </li>
-                <li>
-                    <span>登入成功通知信</span>
-                    <label class="toggle toggle-init color-blue">
-                        <input type="checkbox" checked>
-                        <span class="toggle-icon"></span>
-                    </label>
-                </li>
-                <li>
-                    <span>推撥通知</span>
-                    <label class="toggle toggle-init color-blue">
-                        <input type="checkbox" checked>
-                        <span class="toggle-icon"></span>
-                    </label>
-                </li>
-            </ul>
-        </div>
-        <div class="block-title">個人</div>
-        <div class="list links-list">
-            <ul>
-                <li>
-                    <a href="#" class="item-link">
-                        個人資訊修改
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="item-link">
-                        帳號密碼修改
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="block-title">其他</div>
-        <div class="list links-list">
-            <ul>
-                <li>
-                    <a href="#" class="item-link">
-                        系統資訊
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</section>
+    </section>
+</template>
+
+<script>
+    return {
+        methods: {
+
+        },
+        on: {
+            pageMounted: () => {
+                console.log('pageMounted')
+            },
+            pageInit: () => {
+                console.log('pageInit')
+            },
+            pageBeforein: () => {
+                console.log('pageBeforein')
+                let fingerprint_checkbox = app.toggle.get('#fingerprint_checkbox')
+                fingerprint_checkbox.on('change', (toggle) => {
+                    if (toggle.checked) {
+                        app.dialog.password('請輸入您的密碼', '指紋登入', (password) => {
+                            FingerprintAuth.isAvailable(isAvailableSuccess, isAvailableError)
+                            function isAvailableSuccess(result) {
+                                console.log("FingerprintAuth available: " + JSON.stringify(result))
+                                if (result.isAvailable) {
+
+                                    let encryptConfig = {
+                                        clientId: app.id,
+                                        username: 'nccu_token',
+                                        password: password,
+                                    }
+                                    FingerprintAuth.encrypt(encryptConfig, encryptSuccessCallback, encryptErrorCallback)
+
+                                    function encryptSuccessCallback(result) {
+                                        console.log("successCallback(): " + JSON.stringify(result))
+                                        if (result.withFingerprint) {
+                                            console.log("Successfully encrypted credentials.")
+                                            console.log("Encrypted credentials: " + result.token)
+                                            storage.setItem('fingerprint_token', result.token)
+                                        } else if (result.withBackup) {
+                                            console.log("Authenticated with backup password")
+                                        }
+                                    }
+
+                                    function encryptErrorCallback(error) {
+                                        if (error === FingerprintAuth.ERRORS.FINGERPRINT_CANCELLED) {
+                                            console.log("FingerprintAuth Dialog Cancelled!")
+                                        } else {
+                                            console.log("FingerprintAuth Error: " + error)
+                                        }
+                                    }
+                                }
+                            }
+                            function isAvailableError(message) {
+                                console.log("isAvailableError(): " + message)
+                                alert(message)
+                            }
+                        }, ()=> {
+                            fingerprint_checkbox.toggle()
+                        })
+                    }
+                    else {
+                        storage.removeItem('fingerprint_token')
+                    }
+                })
+            },
+            pageBeforeOut: () => {
+                console.log('pageBeforeOut')
+            },
+            pageBeforeRemove: () => {
+                console.log('pageBeforeRemove')
+            },
+        },
+    }
+</script>

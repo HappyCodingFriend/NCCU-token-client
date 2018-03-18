@@ -39,7 +39,16 @@
                         <div class="item-inner">
                             <div class="item-title item-label">轉入對象</div>
                             <div class="item-input-wrap">
-                                <input type="text" id="target" placeholder="轉入對象">
+                                <input type="text" id="ID" placeholder="轉入對象">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">對象地址</div>
+                            <div class="item-input-wrap">
+                                <input type="text" id="address" placeholder="轉入對象">
                                 <span class="input-clear-button"></span>
                             </div>
                         </div>
@@ -96,22 +105,59 @@
                         }
                     })
                     $('#number').val(data.number)
-                    $('#target').val(data.target)
+                    $('#ID').val(data.ID)
+                    $('#address').val(data.address)
+
+                    console.log(data)
                 }
             },
             transfer: () => {
-                app.dialog.password('請輸入您的交易密碼', '轉帳', function (password) {
-                    app.dialog.preloader('交易進行中...');
-                    setTimeout(function () {
-                        app.dialog.close()
-                    }, 3000)
+
+                window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
+                    dirEntry.getFile('key.json', { create: true, exclusive: false }, function (fileEntry) {
+                        readFile(fileEntry)
+                    })
                 })
+
+                function readFile(fileEntry) {
+                    fileEntry.file(function (file) {
+                        let reader = new FileReader()
+                        reader.onloadend = keyOnLoadend
+                        reader.readAsText(file)
+                    }, (evt) => {
+                        alert(evt)
+                    })
+                }
+
+                function keyOnLoadend() {
+                    console.log("Successful file read: " + this.result)
+                    let key = JSON.parse(this.result)
+                    let account = web3.eth.accounts.privateKeyToAccount('0x348ce564d427a3311b6536bbcff9390d69395b06ed6c486954e971d960fe8709')
+                    let ERC223TokenContract = new web3.eth.Contract(ERC223Token)
+                    let data = ERC223TokenContract.methods.transfer('0xcc688739b574d70597d3b5d577aac0ded7ab59ba', 100).encodeABI()
+                    app.dialog.password('請輸入您的交易密碼', '轉帳', function (password) {
+                        let tx = {
+                            nonce: '1',
+                            chainId: '0x11',
+                            to: '0x2CA6Dacbf2db0e04c8f7A73E27C385129A2b40cf',
+                            data: data,
+                            value: '0',
+                            gasPrice: '0x0',
+                            gas: '4000000',
+                        }
+                        account.signTransaction(tx)
+                        app.dialog.preloader('交易進行中...')
+                        setTimeout(function () {
+                            app.dialog.close()
+                        }, 3000)
+                    })
+                }
             }
         },
         on: {
-            pageInit: function () {},
-            pageBeforeOut: function () {},
-            pageBeforeRemove: function () {},
+            pageInit: function () { },
+            pageBeforeOut: function () { },
+            pageBeforeRemove: function () { },
         },
     }
 </script>

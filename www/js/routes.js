@@ -44,11 +44,15 @@ var routes = [{
 	},
 	{
 		path: '/setting/',
-		url: './pages/setting.html',
+		componentUrl: './pages/setting.html',
 	},
 	{
 		path: '/color_themes/',
 		componentUrl: './pages/color_themes.html',
+	},
+	{
+		path: '/tool/',
+		componentUrl: './pages/tool.html',
 	},
 	{
 		path: '/system/',
