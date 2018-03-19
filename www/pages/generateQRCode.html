@@ -1,0 +1,108 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">產生QR Code</div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <form class="list inline-labels no-hairlines-md" id="qrcode_form">
+                <ul>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">點數種類</div>
+                            <div class="item-input-wrap">
+                                <select id="point" placeholder="Please choose...">
+                                    <option value="0x2CA6Dacbf2db0e04c8f7A73E27C385129A2b40cf">宿舍點數</option>
+                                    <option value="0x5f16A398b338c6aeecD5bb2d4e851816d5b05a3d">教務處點數</option>
+                                    <option value="0x64ea6D99636AEe83B15D35a9d7CB73E9ae8242Ae">學務處點數</option>
+                                </select>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">轉出數量</div>
+                            <div class="item-input-wrap">
+                                <input type="text" id=number placeholder="轉出數量">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">轉入對象</div>
+                            <div class="item-input-wrap">
+                                <input type="text" id="targetID" placeholder="轉入對象">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">對象地址</div>
+                            <div class="item-input-wrap">
+                                <input type="text" id="address" placeholder="轉入對象">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+            <div class="block">
+                <div class="row">
+                    <button class="col button button-fill" @click="QR_code">產生QR code</button>
+                </div>
+                <div id="qrcode"></div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    return {
+        methods: {
+            QR_code: () => {
+                let text = JSON.stringify(app.form.convertToData('#qrcode_form'))
+                console.log(text)
+                let qrcode = new QRCode('qrcode', {
+                    text: text,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                })
+            },
+        },
+        on: {
+            pageMounted: () => {
+                console.log('pageMounted')
+            },
+            pageInit: () => {
+                console.log('pageInit')
+            },
+            pageBeforein: () => {
+                console.log('pageBeforein')
+                myReadFile('key.json', (key) => {
+                    console.log('keyOnLoadend')
+
+                    let jwt = JSON.parse(atob(storage.getItem('jwt').split('.')[1]))
+                    $('#targetID').val(jwt.ID)
+                    $('#name').val(jwt.name)
+                    $('#address').val(key.address)
+                })
+            },
+            pageBeforeOut: () => {
+                console.log('pageBeforeOut')
+            },
+            pageBeforeRemove: () => {
+                console.log('pageBeforeRemove')
+            },
+        },
+    }
+</script>

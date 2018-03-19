@@ -8,33 +8,20 @@
                         <span class="ios-only">Back</span>
                     </a>
                 </div>
-                <div class="title">系統</div>
+                <div class="title">工具</div>
             </div>
         </nav>
         <div class="toolbar tabbar">
             <div class="toolbar-inner">
-                <a href="#tab-1" class="tab-link tab-link-active">web3</a>
-                <a href="#tab-2" class="tab-link">qrscanner</a>
-                <a href="#tab-3" class="tab-link">brightness</a>
+                <a href="#tab-1" class="tab-link tab-link-active">1</a>
+                <a href="#tab-2" class="tab-link">2</a>
+                <a href="#tab-3" class="tab-link">3</a>
             </div>
         </div>
         <div class="tabs-animated-wrap">
             <div class="tabs">
                 <div id="tab-1" class="page-content tab tab-active">
-                    <div class="block-title">create account</div>
-                    <div class="block">
-                        <div id="out1">
-
-                        </div>
-                        <button class="col button button-fill" @click="create">產生</button>
-                    </div>
-                    <div class="block-title">read account</div>
-                    <div class="block">
-                        <div id="out2">
-
-                        </div>
-                        <button class="col button button-fill" @click="read">讀取</button>
-                    </div>
+                   
                 </div>
                 <div id="tab-2" class="page-content tab">
 
@@ -47,121 +34,3 @@
     </section>
 </template>
 
-<script>
-    let web3 = new Web3()
-    let fileSystem
-
-    function syntaxHighlight(json) {
-        if (typeof json != 'string') {
-            json = JSON.stringify(json, undefined, 2)
-        }
-        json = json.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>')
-        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-            var cls = 'number'
-            if (/^"/.test(match)) {
-                if (/:$/.test(match)) {
-                    cls = 'key'
-                } else {
-                    cls = 'string'
-                }
-            } else if (/true|false/.test(match)) {
-                cls = 'boolean'
-            } else if (/null/.test(match)) {
-                cls = 'null'
-            }
-            return '<span class="' + cls + '">' + match + '</span>';
-        })
-    }
-
-    function createFile(dirEntry, fileName, dataObj, isAppend) {
-        // Creates a new file or returns the file if it already exists.
-        dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
-            writeFile(fileEntry, dataObj, isAppend)
-        }, fail)
-    }
-
-    function writeFile(fileEntry, dataObj, isAppend) {
-        // Create a FileWriter object for our FileEntry (log.txt).
-        fileEntry.createWriter(function (fileWriter) {
-
-            fileWriter.onwriteend = function () {
-                console.log("Successful file write...")
-            }
-
-            fileWriter.onerror = function (e) {
-                console.log("Failed file write: " + e.toString())
-            }
-
-            if (!dataObj) {
-                dataObj = new Blob(['some file data'], { type: 'text/plain' })
-            }
-
-            if (isAppend) {
-                try {
-                    fileWriter.seek(fileWriter.length)
-                }
-                catch (e) {
-                    console.log("file doesn't exist!")
-                }
-            }
-
-            fileWriter.write(dataObj)
-            alert('儲存成功')
-        })
-    }
-
-    function readFile(fileEntry) {
-
-        fileEntry.file(function (file) {
-            let reader = new FileReader()
-            reader.onloadend = function () {
-                console.log("Successful file read: " + this.result)
-                $('#out2').html(syntaxHighlight(this.result))
-            }
-            reader.readAsText(file)
-        }, fail)
-    }
-
-    function fail(evt) {
-        alert(evt)
-    }
-
-    return {
-        methods: {
-            create: () => {
-                let key = web3.eth.accounts.create()
-                $('#out1').html(syntaxHighlight(key))
-                window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
-                    createFile(dirEntry, 'key.json', new Blob([JSON.stringify(key, null, 4)], { type: 'application/json' }), false)
-                })
-            },
-            read: () => {
-                window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
-                    dirEntry.getFile('key.json', { create: true, exclusive: false }, function (fileEntry) {
-                        readFile(fileEntry)
-                    })
-                })
-            },
-        },
-        on: {
-            pageMounted: () => {
-                console.log('pageMounted')
-            },
-            pageBeforein: () => {
-                console.log('pageBeforein')
-            },
-            pageInit: () => {
-                console.log('pageInit')
-                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
-                    fileSystem = fs
-                }, fail)
-            },
-            pageBeforeOut: () => {
-                console.log('pageBeforeOut')
-            },
-            pageBeforeRemove: () => {
-                console.log('pageBeforeRemove')
-            },
-        },
-    }
-</script>

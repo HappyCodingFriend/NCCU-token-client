@@ -39,7 +39,7 @@
                         <div class="item-inner">
                             <div class="item-title item-label">轉入對象</div>
                             <div class="item-input-wrap">
-                                <input type="text" id="target" placeholder="轉入對象">
+                                <input type="text" id="targetID" placeholder="轉入對象">
                                 <span class="input-clear-button"></span>
                             </div>
                         </div>
@@ -104,37 +104,15 @@
                             $(this).attr('selected', true)
                         }
                     })
-                    $('#number').val(data.number)
-                    $('#ID').val(data.ID)
-                    $('#address').val(data.address)
-
-                    console.log(data)
+                    if (data.number) $('#number').val(data.number)
+                    if (data.ID) $('#targetID').val(data.ID)
+                    if (data.address) $('#address').val(data.address)
                 }
             },
             transfer: () => {
 
-                //讀取key file
-                window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
-                    dirEntry.getFile('key.json', { create: true, exclusive: false }, function (fileEntry) {
-                        readFile(fileEntry)
-                    })
-                })
-
-                function readFile(fileEntry) {
-                    fileEntry.file(function (file) {
-                        let reader = new FileReader()
-                        reader.onloadend = keyOnLoadend
-                        reader.readAsText(file)
-                    }, (evt) => {
-                        alert(evt)
-                    })
-                }
-
-                function keyOnLoadend() {
+                myReadFile('key.json', (key) => {
                     console.log('keyOnLoadend')
-
-                    console.log(this.result)
-                    let key = JSON.parse(this.result)
                     let account = web3.eth.accounts.privateKeyToAccount(key.privateKey)
 
                     console.log(key.address)
@@ -171,7 +149,7 @@
                             })
                         })
                     })
-                }
+                })
             }
         },
         on: {

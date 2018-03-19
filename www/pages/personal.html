@@ -11,7 +11,11 @@
                 <div class="title">我的帳戶</div>
             </div>
         </nav>
-        <div class="page-content">
+        <div class="page-content ptr-content" @ptr:refresh="refresh">
+            <div class="ptr-preloader">
+                <div class="preloader"></div>
+                <div class="ptr-arrow"></div>
+            </div>
             <div class="block-title">我的點數</div>
             <div class="list">
                 <ul>
@@ -83,6 +87,25 @@
 </template>
 
 <script>
+    function reload(callback) {
+        myReadFile('key.json', (key) => {
+            console.log('keyOnLoadend')
+
+            $.get(`http://101.0.135.141:50000/query/balance/dormitory?address=${key.address}`, function (result) {
+                console.log(result)
+                $('#dormitory').text(result)
+            })
+            $.get(`http://101.0.135.141:50000/query/balance/academic?address=${key.address}`, function (result) {
+                console.log(result)
+                $('#academic').text(result)
+            })
+            $.get(`http://101.0.135.141:50000/query/balance/student?address=${key.address}`, function (result) {
+                console.log(result)
+                $('#student').text(result)
+            })
+        })
+    }
+
     return {
         data: () => {
             return {
@@ -101,6 +124,10 @@
             sign_out: () => {
                 console.log('sign_out')
             },
+            refresh: (e, done) => {
+                reload()
+                done()
+            },
         },
         on: {
             pageMounted: () => {
@@ -112,40 +139,7 @@
             },
             pageBeforein: () => {
                 console.log('pageBeforein')
-
-                //讀取key file
-                window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
-                    dirEntry.getFile('key.json', { create: true, exclusive: false }, function (fileEntry) {
-                        readFile(fileEntry)
-                    })
-                })
-
-                function readFile(fileEntry) {
-                    fileEntry.file(function (file) {
-                        let reader = new FileReader()
-                        reader.onloadend = keyOnLoadend
-                        reader.readAsText(file)
-                    }, (evt) => {
-                        alert(evt)
-                    })
-                }
-
-                function keyOnLoadend() {
-                    let key = JSON.parse(this.result)
-
-                    $.get(`http://101.0.135.141:50000/query/balance/dormitory?address=${key.address}`, function (result) {
-                        console.log(result)
-                        $('#dormitory').text(result)
-                    })
-                    $.get(`http://101.0.135.141:50000/query/balance/academic?address=${key.address}`, function (result) {
-                        console.log(result)
-                        $('#academic').text(result)
-                    })
-                    $.get(`http://101.0.135.141:50000/query/balance/student?address=${key.address}`, function (result) {
-                        console.log(result)
-                        $('#student').text(result)
-                    })
-                }
+                reload()
             },
             pageBeforeOut: () => {
                 console.log('pageBeforeOut')

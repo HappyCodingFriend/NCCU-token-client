@@ -40,7 +40,11 @@ var routes = [{
 	},
 	{
 		path: '/key/',
-		url: './pages/key.html',
+		componentUrl: './pages/key.html',
+	},
+	{
+		path: '/generateQRCode/',
+		componentUrl: './pages/generateQRCode.html',
 	},
 	{
 		path: '/setting/',

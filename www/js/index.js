@@ -32,3 +32,25 @@ document.addEventListener('deviceready', () => {
 	}, false)
 
 }, false)
+
+function myReadFile(fileName, callback) {
+	//讀取key file
+	window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
+		dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
+			readFile(fileEntry)
+		})
+	})
+
+	function readFile(fileEntry) {
+		fileEntry.file(function (file) {
+			let reader = new FileReader()
+			reader.onloadend = function () {
+				let key = JSON.parse(this.result)
+				callback(key)
+			}
+			reader.readAsText(file)
+		}, (evt) => {
+			alert(evt)
+		})
+	}
+}

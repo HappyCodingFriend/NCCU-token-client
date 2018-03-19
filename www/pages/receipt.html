@@ -22,25 +22,6 @@
                     增強亮度
                 </p>
                 <div id="qrcode"></div>
-                <a href="#" data-popup=".my-popup" class="popup-open col button button-fill" @click="generateQRCode">產生收款QR Code</a>
-            </div>
-        </div>
-        <div class="popup my-popup">
-            <div class="view">
-                <div class="page">
-                    <div class="navbar">
-                        <div class="navbar-inner">
-                            <div class="title">收款QR Code</div>
-                            <div class="right">
-                                <!-- Link to close popup -->
-                                <a class="link popup-close" href="#">Close</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="page-content">
-                    ...
-                </div>
             </div>
         </div>
     </section>
@@ -49,12 +30,13 @@
 <script>
     return {
         methods: {
-            generateQRCode: () => {
-
-            }
         },
         on: {
-            pageInit: function () {
+            pageMounted: () => {
+                console.log('pageMounted')
+            },
+            pageInit: () => {
+                console.log('pageInit')
                 $('#brightness').change(() => {
                     if ($('#brightness').is(':checked')) {
                         brightness.setBrightness(1.0)
@@ -63,26 +45,8 @@
                     }
                 })
 
-                //讀取key file
-                window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
-                    dirEntry.getFile('key.json', { create: true, exclusive: false }, function (fileEntry) {
-                        readFile(fileEntry)
-                    })
-                })
-
-                function readFile(fileEntry) {
-                    fileEntry.file(function (file) {
-                        let reader = new FileReader()
-                        reader.onloadend = keyOnLoadend
-                        reader.readAsText(file)
-                    }, (evt) => {
-                        alert(evt)
-                    })
-                }
-
-                function keyOnLoadend() {
-                    console.log(this.result)
-                    let key = JSON.parse(this.result)
+                myReadFile('key.json', (key) => {
+                    console.log('keyOnLoadend')
 
                     let jwt = JSON.parse(atob(storage.getItem('jwt').split('.')[1]))
 
@@ -98,10 +62,17 @@
                         colorLight: '#ffffff',
                         correctLevel: QRCode.CorrectLevel.H
                     })
-                }
+                })
             },
-            pageBeforeOut: function () { },
-            pageBeforeRemove: function () { },
+            pageBeforein: () => {
+                console.log('pageBeforein')
+            },
+            pageBeforeOut: () => {
+                console.log('pageBeforeOut')
+            },
+            pageBeforeRemove: () => {
+                console.log('pageBeforeRemove')
+            },
         },
     }
 </script>
