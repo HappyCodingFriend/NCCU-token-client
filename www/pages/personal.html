@@ -35,6 +35,26 @@
                             </div>
                         </div>
                     </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">教務處點數</div>
+                                <div class="item-after">
+                                    <span class="badge" id="academic"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">學務處點數</div>
+                                <div class="item-after">
+                                    <span class="badge" id="student"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                     <!--
                     {{#each data_point}}
                     <li>
@@ -116,6 +136,14 @@
                     $.get(`http://101.0.135.141:50000/query/balance/dormitory?address=${key.address}`, function (result) {
                         console.log(result)
                         $('#dormitory').text(result)
+                    })
+                    $.get(`http://101.0.135.141:50000/query/balance/academic?address=${key.address}`, function (result) {
+                        console.log(result)
+                        $('#academic').text(result)
+                    })
+                    $.get(`http://101.0.135.141:50000/query/balance/student?address=${key.address}`, function (result) {
+                        console.log(result)
+                        $('#student').text(result)
                     })
                 }
             },
