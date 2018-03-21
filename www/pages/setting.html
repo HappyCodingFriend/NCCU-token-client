@@ -82,10 +82,14 @@
             pageBeforein: () => {
                 console.log('pageBeforein')
                 let fingerprint_checkbox = app.toggle.get('#fingerprint_checkbox')
+                if (storage.getItem('fingerprint_token')) {
+                    fingerprint_checkbox.toggle()
+                }
                 fingerprint_checkbox.on('change', (toggle) => {
                     if (toggle.checked) {
                         app.dialog.password('請輸入您的密碼', '指紋登入', (password) => {
                             FingerprintAuth.isAvailable(isAvailableSuccess, isAvailableError)
+
                             function isAvailableSuccess(result) {
                                 console.log("FingerprintAuth available: " + JSON.stringify(result))
                                 if (result.isAvailable) {
@@ -95,7 +99,8 @@
                                         username: 'nccu_token',
                                         password: password,
                                     }
-                                    FingerprintAuth.encrypt(encryptConfig, encryptSuccessCallback, encryptErrorCallback)
+                                    FingerprintAuth.encrypt(encryptConfig, encryptSuccessCallback,
+                                        encryptErrorCallback)
 
                                     function encryptSuccessCallback(result) {
                                         console.log("successCallback(): " + JSON.stringify(result))
@@ -117,15 +122,15 @@
                                     }
                                 }
                             }
+
                             function isAvailableError(message) {
                                 console.log("isAvailableError(): " + message)
                                 alert(message)
                             }
-                        }, ()=> {
+                        }, () => {
                             fingerprint_checkbox.toggle()
                         })
-                    }
-                    else {
+                    } else {
                         storage.removeItem('fingerprint_token')
                     }
                 })

@@ -35,7 +35,9 @@
     "cordova-windows": "^5.0.0",
     "csp-parse": "0.0.2",
     "elementtree": "^0.1.7",
+    "es6-promise-plugin": "git+https://github.com/vstirbu/PromisesPlugin.git",
     "glob": "^7.1.2",
+    "nl-afas-cordova-plugin-securelocalstorage": "^0.1.18",
     "npm": "^5.7.1",
     "plist": "^2.1.0",
     "q": "^1.5.1"
@@ -51,7 +53,8 @@
       "cordova-plugin-browsersync": {},
       "cordova-plugin-qrscanner": {},
       "cordova-plugin-android-fingerprint-auth": {},
-      "cordova-plugin-dialogs": {}
+      "cordova-plugin-dialogs": {},
+      "nl-afas-cordova-plugin-securelocalstorage": {}
     },
     "platforms": [
       "ios",

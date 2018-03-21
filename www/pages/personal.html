@@ -123,6 +123,10 @@
             },
             sign_out: () => {
                 console.log('sign_out')
+                storage.removeItem('jwt')
+                app.dialog.alert('登出成功', '溫馨提醒', () => {
+                    app.router.back()
+                })
             },
             refresh: (e, done) => {
                 reload()

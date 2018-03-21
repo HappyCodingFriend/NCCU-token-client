@@ -2,8 +2,13 @@ let web3
 let storage
 let brightness
 
+console.log('go')
+
 document.addEventListener('deviceready', () => {
 	console.log('deviceready')
+
+	$('#app').css('visibility', 'visible')
+	$('#logo').hide()
 
 	web3 = new Web3('http://localhost:8545')
 	storage = window.localStorage
@@ -33,10 +38,21 @@ document.addEventListener('deviceready', () => {
 
 }, false)
 
+function checkJWT() {
+	if (!storage.getItem('jwt')) {
+		app.dialog.alert('您尚未登入', '警告', () => {
+			app.router.back()
+		})
+	}
+}
+
 function myReadFile(fileName, callback) {
 	//讀取key file
 	window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
-		dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
+		dirEntry.getFile(fileName, {
+			create: true,
+			exclusive: false
+		}, function (fileEntry) {
 			readFile(fileEntry)
 		})
 	})

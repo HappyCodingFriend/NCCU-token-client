@@ -17,12 +17,11 @@
                         <div class="item-inner">
                             <div class="item-title item-label">密碼</div>
                             <div class="item-input-wrap">
-                                <input id="password" type="text" placeholder="Your password">
+                                <input id="password" type="password" placeholder="Your password">
                                 <span class="input-clear-button"></span>
                             </div>
                         </div>
                     </li>
-
                 </ul>
             </form>
             <div class="block">
@@ -40,7 +39,7 @@
             </div>
             <div class="block">
                 <div class="row">
-                    <button class="col button button-fill" @click="sign_in">登入</button>
+                    <button id="sign_in_button" class="col button button-fill" @click="sign_in">登入</button>
                     <button class="col button button-fill" @click="fingerprint_decrypt">指紋登入</button>
                 </div>
             </div>
@@ -93,6 +92,7 @@
                                 console.log("Successfully decrypted credential token.")
                                 console.log("password: " + result.password)
                                 $('input#password').val(result.password)
+                                $('#sign_in_button').click()
                             }
                         } else if (result.withBackup) {
                             console.log("Authenticated with backup password")

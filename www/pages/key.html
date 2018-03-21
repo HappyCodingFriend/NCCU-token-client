@@ -42,26 +42,31 @@
             json = JSON.stringify(json, undefined, 2)
         }
         json = json.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>')
-        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-            var cls = 'number'
-            if (/^"/.test(match)) {
-                if (/:$/.test(match)) {
-                    cls = 'key'
-                } else {
-                    cls = 'string'
+        return json.replace(
+            /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+            function (match) {
+                var cls = 'number'
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key'
+                    } else {
+                        cls = 'string'
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean'
+                } else if (/null/.test(match)) {
+                    cls = 'null'
                 }
-            } else if (/true|false/.test(match)) {
-                cls = 'boolean'
-            } else if (/null/.test(match)) {
-                cls = 'null'
-            }
-            return '<span class="' + cls + '">' + match + '</span>';
-        })
+                return '<span class="' + cls + '">' + match + '</span>';
+            })
     }
 
     function createFile(dirEntry, fileName, dataObj, isAppend) {
         // Creates a new file or returns the file if it already exists.
-        dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
+        dirEntry.getFile(fileName, {
+            create: true,
+            exclusive: false
+        }, function (fileEntry) {
             writeFile(fileEntry, dataObj, isAppend)
         }, fail)
     }
@@ -79,14 +84,15 @@
             }
 
             if (!dataObj) {
-                dataObj = new Blob(['some file data'], { type: 'text/plain' })
+                dataObj = new Blob(['some file data'], {
+                    type: 'text/plain'
+                })
             }
 
             if (isAppend) {
                 try {
                     fileWriter.seek(fileWriter.length)
-                }
-                catch (e) {
+                } catch (e) {
                     console.log("file doesn't exist!")
                 }
             }
@@ -115,15 +121,24 @@
     return {
         methods: {
             create: () => {
-                let key = web3.eth.accounts.create()
-                $('#out1').html(syntaxHighlight(key))
-                window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
-                    createFile(dirEntry, 'key.json', new Blob([JSON.stringify(key, null, 4)], { type: 'application/json' }), false)
+                let account = web3.eth.accounts.create()
+                let keyFile
+                app.dialog.password('請輸入您的交易密碼', '轉帳', function (password) {
+                    keyFile = account.encrypt(password)
+                    $('#out1').html(JSON.stringify(keyFile))
+                    window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
+                        createFile(dirEntry, 'key.json', new Blob([JSON.stringify(keyFile)], {
+                            type: 'application/json'
+                        }), false)
+                    })
                 })
             },
             read: () => {
                 window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
-                    dirEntry.getFile('key.json', { create: true, exclusive: false }, function (fileEntry) {
+                    dirEntry.getFile('key.json', {
+                        create: true,
+                        exclusive: false
+                    }, function (fileEntry) {
                         readFile(fileEntry)
                     })
                 })

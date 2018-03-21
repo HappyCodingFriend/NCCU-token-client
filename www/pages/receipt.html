@@ -29,14 +29,18 @@
 
 <script>
     return {
-        methods: {
-        },
+        methods: {},
         on: {
             pageMounted: () => {
                 console.log('pageMounted')
+                checkJWT()
             },
             pageInit: () => {
                 console.log('pageInit')
+            },
+            pageBeforein: () => {
+                console.log('pageBeforein')
+                
                 $('#brightness').change(() => {
                     if ($('#brightness').is(':checked')) {
                         brightness.setBrightness(1.0)
@@ -51,8 +55,7 @@
                     let jwt = JSON.parse(atob(storage.getItem('jwt').split('.')[1]))
 
                     let text = JSON.stringify({
-                        ID: jwt.ID,
-                        name: jwt.name,
+                        targetID: jwt.ID,
                         address: key.address,
                     })
 
@@ -63,9 +66,6 @@
                         correctLevel: QRCode.CorrectLevel.H
                     })
                 })
-            },
-            pageBeforein: () => {
-                console.log('pageBeforein')
             },
             pageBeforeOut: () => {
                 console.log('pageBeforeOut')

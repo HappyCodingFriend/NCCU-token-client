@@ -30,7 +30,7 @@
                         <div class="item-inner">
                             <div class="item-title item-label">轉出數量</div>
                             <div class="item-input-wrap">
-                                <input type="text" id=number placeholder="轉出數量">
+                                <input type="text" id="number" placeholder="轉出數量">
                                 <span class="input-clear-button"></span>
                             </div>
                         </div>
@@ -88,6 +88,7 @@
                                 console.error(err)
                             }
                             console.log('The QR Code contains: ' + contents)
+                            QRScanner.cancelScan()
                             $('#app').show()
                             read(contents)
                         })
@@ -105,7 +106,7 @@
                         }
                     })
                     if (data.number) $('#number').val(data.number)
-                    if (data.ID) $('#targetID').val(data.ID)
+                    if (data.targetID) $('#targetID').val(data.targetID)
                     if (data.address) $('#address').val(data.address)
                 }
             },
@@ -113,16 +114,15 @@
 
                 myReadFile('key.json', (key) => {
                     console.log('keyOnLoadend')
-                    let account = web3.eth.accounts.privateKeyToAccount(key.privateKey)
-
-                    console.log(key.address)
-                    console.log(key.privateKey)
 
                     let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
-                    let data = ERC223TokenContract.methods.transfer($('#address').val(), parseInt($('#number').val())).encodeABI()
+                    let data = ERC223TokenContract.methods.transfer($('#address').val(), parseInt($(
+                        '#number').val())).encodeABI()
 
                     app.dialog.password('請輸入您的交易密碼', '轉帳', function (password) {
                         app.dialog.preloader('交易進行中...')
+
+                        let account = web3.eth.accounts.decrypt(key, password)
 
                         $.get('http://101.0.135.141:50000/nonce', {
                             address: key.address
@@ -153,9 +153,9 @@
             }
         },
         on: {
-            pageInit: function () { },
-            pageBeforeOut: function () { },
-            pageBeforeRemove: function () { },
+            pageInit: function () {},
+            pageBeforeOut: function () {},
+            pageBeforeRemove: function () {},
         },
     }
 </script>
