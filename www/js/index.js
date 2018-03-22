@@ -1,5 +1,6 @@
 let web3
 let storage
+let secureStorage
 let brightness
 
 console.log('go')
@@ -7,13 +8,12 @@ console.log('go')
 document.addEventListener('deviceready', () => {
 	console.log('deviceready')
 
-	$('#app').css('visibility', 'visible')
-	$('#logo').hide()
-
 	web3 = new Web3('http://localhost:8545')
 	storage = window.localStorage
+	secureStorage = cordova.plugins.SecureLocalStorage
 	brightness = cordova.plugins.brightness
 
+	//返回紐
 	document.addEventListener("backbutton", (e) => {
 		QRScanner.getStatus(function (status) {
 			if (status.scanning || status.showing) {
@@ -26,15 +26,11 @@ document.addEventListener('deviceready', () => {
 		})
 	}, false)
 
-	document.addEventListener('online', () => {
-		alert('online')
-		this.$app.statusbar.hide()
-	}, false)
-
-	document.addEventListener('offline', () => {
-		alert('offline')
-		this.$app.statusbar.show()
-	}, false)
+	//進入主畫面
+	setTimeout(() => {
+		$('#app').show()
+		$('#logo').hide()
+	}, 2000)
 
 }, false)
 
