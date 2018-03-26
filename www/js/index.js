@@ -3,7 +3,8 @@ let storage
 let secureStorage
 let brightness
 
-console.log('go')
+let points
+let friends
 
 document.addEventListener('deviceready', () => {
 	console.log('deviceready')
@@ -43,7 +44,7 @@ function checkJWT() {
 }
 
 function myReadFile(fileName, callback) {
-	//讀取key file
+
 	window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (dirEntry) {
 		dirEntry.getFile(fileName, {
 			create: true,

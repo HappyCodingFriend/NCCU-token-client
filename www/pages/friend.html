@@ -9,6 +9,18 @@
                     </a>
                 </div>
                 <div class="title">好友</div>
+                <div class="subnavbar">
+                    <form data-search-container=".virtual-list" data-search-item="li" data-search-in=".item-title" class="searchbar searchbar-init">
+                        <div class="searchbar-inner">
+                            <div class="searchbar-input-wrap">
+                                <input type="search" placeholder="Search" />
+                                <i class="searchbar-icon"></i>
+                                <span class="input-clear-button"></span>
+                            </div>
+                            <span class="searchbar-disable-button">Cancel</span>
+                        </div>
+                    </form>
+                </div>
                 <div class="right">
                     <a href="#" class="link popover-open" data-popover=".popover-menu">
                         <i class="icon f7-icons ios-only">add</i>
@@ -18,27 +30,12 @@
             </div>
         </nav>
         <div class="page-content">
-            <div class="list media-list">
+            <div class="list simple-list searchbar-not-found">
                 <ul>
-                    {{#each device_inf}}
-                    <li>
-                        <div class="item-content">
-                            <div class="item-media">
-                                <img class="head" src={{this[2]}}>
-                            </div>
-                            <div class="item-inner">
-                                <div class="item-title-row">
-                                    <div class="item-title">{{this[0]}}</div>
-                                    <div class="item-after">大學生</div>
-                                </div>
-                                <div class="item-subtitle">{{this[1]}}</div>
-                                <div class="item-text">資訊科學系</div>
-                            </div>
-                        </div>
-                    </li>
-                    {{/each}}
+                    <li>Nothing found</li>
                 </ul>
             </div>
+            <div class="list virtual-list media-list searchbar-found"></div>
         </div>
         <div class="popover popover-menu">
             <div class="popover-angle"></div>
@@ -61,21 +58,51 @@
 <script>
     return {
         data: function () {
-            return {
-                device_inf: [
-                    ['陳同學', 103703087, 'img/man1.jpg'],
-                    ['彭同學', 103703099, 'img/man2.jpg'],
-                    ['陳同學', 103703087, 'img/man1.jpg'],
-                    ['彭同學', 103703099, 'img/man2.jpg'],
-                    ['陳同學', 103703087, 'img/man1.jpg'],
-                    ['彭同學', 103703099, 'img/man2.jpg'],
-                ]
-            }
         },
         methods: {
         },
         on: {
             pageInit: function () {
+                NativeStorage.getItem('user', user => {
+                    console.log(user)
+                    $.get(`http://101.0.135.141:50000/friends?token=${user.token}`, result => {
+                        console.log(result)
+
+                        let virtualList = app.virtualList.create({
+                            el: '.virtual-list',
+                            items: result,
+                            searchAll: function (query, items) {
+                                let found = []
+                                for (let i = 0; i < items.length; i++) {
+                                    if (items[i].name.indexOf(query) >= 0 || query.trim() === '')
+                                        found.push(i)
+                                }
+                                return found
+                            },
+                            itemTemplate: `
+                                        <li>
+                                            <div class="item-content">
+                                                <div class="item-media">
+                                                    <img class="head" src="imgs/{{friendID}}.jpg">
+                                                </div>
+                                                <div class="item-inner">
+                                                    <div class="item-title-row">
+                                                        <div class="item-title">{{name}}</div>
+                                                        <div class="item-after">大學生</div>
+                                                    </div>
+                                                    <div class="item-subtitle">{{friendID}}</div>
+                                                    <div class="item-text">資訊科學系</div>
+                                                </div>
+                                            </div>
+                                        </li>`,
+                        })
+                    })
+                }, err => {
+                    console.error(err)
+                    app.dialog.alert('請先登入', '政大錢包', () => {
+                        app.router.back()
+                    })
+                })
             },
             pageBeforeOut: function () {
             },

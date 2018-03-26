@@ -2,7 +2,7 @@
     <section class="page">
         <div class="page-content">
             <h1>政大錢包</h1>
-            <form class="list no-hairlines-md" id="sign_in_form">
+            <form class="list no-hairlines-md" id="signIn_form">
                 <ul>
                     <li class="item-content item-input">
                         <div class="item-inner">
@@ -51,14 +51,13 @@
     return {
         methods: {
             sign_in: () => {
-                console.log(app.form.convertToData('#sign_in_form'))
                 let ID = $('#ID').val()
                 let password = $('#password').val()
-                $.get(`http://101.0.135.141:50000/user?ID=${ID}&password=${password}`, function (result) {
+                $.get(`http://101.0.135.141:50000/user?ID=${ID}&password=${password}`, result => {
                     console.log(result)
-                    app.dialog.alert(result.inf, '政大錢包',() => {
+                    app.dialog.alert(result.inf, '政大錢包', () => {
                         if (result.type) {
-                            storage.setItem('jwt', result.token)
+                            NativeStorage.setItem('user', result, console.log, console.error)
                             if ($('#remember').is(":checked")) {
                                 storage.setItem('ID', ID)
                             }

@@ -1,75 +1,77 @@
 {
-  "name": "com.gramr.nccu.token",
-  "displayName": "nccu-token",
-  "version": "1.0.0",
-  "description": "A sample Apache Cordova application that responds to the deviceready event.",
-  "main": "index.js",
-  "scripts": {
-    "start": "cordova run browser -- --live-reload",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "run:browser": "cordova run browser",
-    "run:android": "cordova run android",
-    "run:ios": "cordova run ios"
-  },
-  "author": "Apache Cordova Team",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "browser-sync": "^2.23.6",
-    "cheerio": "^1.0.0-rc.2",
-    "cordova-android": "^7.1.0",
-    "cordova-browser": "^5.0.3",
-    "cordova-ios": "^4.5.4",
-    "cordova-plugin-android-fingerprint-auth": "^1.4.3",
-    "cordova-plugin-badge": "^0.8.7",
-    "cordova-plugin-brightness": "^0.1.5",
-    "cordova-plugin-browsersync": "git+https://github.com/nparashuram/cordova-plugin-browsersync.git",
-    "cordova-plugin-camera": "^4.0.2",
-    "cordova-plugin-compat": "^1.2.0",
-    "cordova-plugin-console": "^1.1.0",
-    "cordova-plugin-device": "^2.0.1",
-    "cordova-plugin-dialogs": "^2.0.1",
-    "cordova-plugin-file": "^6.0.1",
-    "cordova-plugin-qrscanner": "^2.5.0",
-    "cordova-plugin-swift-support": "^3.1.1",
-    "cordova-plugin-whitelist": "^1.3.3",
-    "cordova-windows": "^5.0.0",
-    "csp-parse": "0.0.2",
-    "elementtree": "^0.1.7",
-    "es6-promise-plugin": "git+https://github.com/vstirbu/PromisesPlugin.git",
-    "glob": "^7.1.2",
-    "nl-afas-cordova-plugin-securelocalstorage": "^0.1.18",
-    "npm": "^5.7.1",
-    "plist": "^2.1.0",
-    "q": "^1.5.1"
-  },
-  "cordova": {
-    "plugins": {
-      "cordova-plugin-whitelist": {},
-      "cordova-plugin-console": {},
-      "cordova-plugin-camera": {},
-      "cordova-plugin-file": {},
-      "cordova-plugin-device": {},
-      "cordova-plugin-brightness": {},
-      "cordova-plugin-browsersync": {},
-      "cordova-plugin-qrscanner": {},
-      "cordova-plugin-android-fingerprint-auth": {},
-      "cordova-plugin-dialogs": {},
-      "nl-afas-cordova-plugin-securelocalstorage": {}
-    },
-    "platforms": [
-      "ios",
-      "browser",
-      "android",
-      "windows"
-    ]
-  },
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nidhogg5/nccu-token.git"
-  },
-  "bugs": {
-    "url": "https://github.com/nidhogg5/nccu-token/issues"
-  },
-  "homepage": "https://github.com/nidhogg5/nccu-token#readme"
+	"name": "com.gramr.nccu.token",
+	"displayName": "nccu-token",
+	"version": "1.0.0",
+	"description": "A sample Apache Cordova application that responds to the deviceready event.",
+	"main": "index.js",
+	"scripts": {
+		"start": "cordova run browser -- --live-reload",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"run:browser": "cordova run browser",
+		"run:android": "cordova run android",
+		"run:ios": "cordova run ios"
+	},
+	"author": "Apache Cordova Team",
+	"license": "Apache-2.0",
+	"dependencies": {
+		"browser-sync": "^2.23.6",
+		"cheerio": "^1.0.0-rc.2",
+		"cordova-android": "^7.1.0",
+		"cordova-browser": "^5.0.3",
+		"cordova-ios": "^4.5.4",
+		"cordova-plugin-android-fingerprint-auth": "^1.4.3",
+		"cordova-plugin-badge": "^0.8.7",
+		"cordova-plugin-brightness": "^0.1.5",
+		"cordova-plugin-browsersync": "git+https://github.com/nparashuram/cordova-plugin-browsersync.git",
+		"cordova-plugin-camera": "^4.0.2",
+		"cordova-plugin-compat": "^1.2.0",
+		"cordova-plugin-console": "^1.1.0",
+		"cordova-plugin-device": "^2.0.1",
+		"cordova-plugin-dialogs": "^2.0.1",
+		"cordova-plugin-file": "^6.0.1",
+		"cordova-plugin-nativestorage": "^2.3.1",
+		"cordova-plugin-qrscanner": "^2.5.0",
+		"cordova-plugin-swift-support": "^3.1.1",
+		"cordova-plugin-whitelist": "^1.3.3",
+		"cordova-windows": "^5.0.0",
+		"csp-parse": "0.0.2",
+		"elementtree": "^0.1.7",
+		"es6-promise-plugin": "git+https://github.com/vstirbu/PromisesPlugin.git",
+		"glob": "^7.1.2",
+		"nl-afas-cordova-plugin-securelocalstorage": "^0.1.18",
+		"npm": "^5.7.1",
+		"plist": "^2.1.0",
+		"q": "^1.5.1"
+	},
+	"cordova": {
+		"plugins": {
+			"cordova-plugin-whitelist": {},
+			"cordova-plugin-console": {},
+			"cordova-plugin-camera": {},
+			"cordova-plugin-file": {},
+			"cordova-plugin-device": {},
+			"cordova-plugin-brightness": {},
+			"cordova-plugin-browsersync": {},
+			"cordova-plugin-qrscanner": {},
+			"cordova-plugin-android-fingerprint-auth": {},
+			"cordova-plugin-dialogs": {},
+			"nl-afas-cordova-plugin-securelocalstorage": {},
+			"cordova-plugin-nativestorage": {}
+		},
+		"platforms": [
+			"ios",
+			"browser",
+			"android",
+			"windows"
+		]
+	},
+	"devDependencies": {},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/nidhogg5/nccu-token.git"
+	},
+	"bugs": {
+		"url": "https://github.com/nidhogg5/nccu-token/issues"
+	},
+	"homepage": "https://github.com/nidhogg5/nccu-token#readme"
 }

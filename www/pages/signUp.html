@@ -12,13 +12,13 @@
             </div>
         </nav>
         <div class="page-content">
-            <form class="list" id="sign_up_form">
+            <form class="list" id="signUp_form">
                 <ul>
                     <li class="item-content item-input item-input-with-info">
                         <div class="item-inner">
-                            <div class="item-title item-label">姓名</div>
+                            <div class="item-title item-label">學號</div>
                             <div class="item-input-wrap">
-                                <input type="text" name="name" placeholder="你的姓名" required validate>
+                                <input type="text" name="ID" placeholder="student ID" value="103703017" required validate>
                                 <span class="input-clear-button"></span>
                                 <div class="item-input-info">Default "required" validation</div>
                             </div>
@@ -26,9 +26,9 @@
                     </li>
                     <li class="item-content item-input item-input-with-info">
                         <div class="item-inner">
-                            <div class="item-title item-label">學號</div>
+                            <div class="item-title item-label">姓名</div>
                             <div class="item-input-wrap">
-                                <input type="text" name="student_ID" placeholder="" required validate>
+                                <input type="text" name="name" placeholder="你的姓名" value="晨禾" required validate>
                                 <span class="input-clear-button"></span>
                                 <div class="item-input-info">Default "required" validation</div>
                             </div>
@@ -38,7 +38,7 @@
                         <div class="item-inner">
                             <div class="item-title item-label">E-mail</div>
                             <div class="item-input-wrap">
-                                <input type="email" name="email" placeholder="E-mail" required validate>
+                                <input type="email" name="email" placeholder="E-mail" value="test@email.com" required validate>
                                 <span class="input-clear-button"></span>
                                 <div class="item-input-info">Default "required" validation</div>
                             </div>
@@ -48,7 +48,7 @@
                         <div class="item-inner">
                             <div class="item-title item-label">設定密碼</div>
                             <div class="item-input-wrap">
-                                <input type="password" name="password" placeholder="">
+                                <input type="password" name="password" placeholder="" value="841015">
                                 <span class="input-clear-button"></span>
                                 <div class="item-input-info">Default "required" validation</div>
                             </div>
@@ -58,17 +58,7 @@
                         <div class="item-inner">
                             <div class="item-title item-label">確認密碼</div>
                             <div class="item-input-wrap">
-                                <input type="password" name="re_password" placeholder="">
-                                <span class="input-clear-button"></span>
-                                <div class="item-input-info">Default "required" validation</div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input item-input-with-info">
-                        <div class="item-inner">
-                            <div class="item-title item-label">交易密碼</div>
-                            <div class="item-input-wrap">
-                                <input type="password" name="tx_password" placeholder="">
+                                <input type="password" name="re_password" placeholder="" value="841015">
                                 <span class="input-clear-button"></span>
                                 <div class="item-input-info">Default "required" validation</div>
                             </div>
@@ -172,12 +162,26 @@
 </template>
 
 <script>
+    let web3 = new Web3()
+
     return {
         data: () => {
         },
         methods: {
             sign_up: () => {
-                console.log(app.form.convertToData('#sign_up_form'))
+                let signUpData = app.form.convertToData('#signUp_form')
+                let decAccount = web3.eth.accounts.create()
+                app.dialog.password('請輸入您的交易密碼', '生成公私鑰', function (txPassword) {
+                    signUpData.address = decAccount.address
+                    $.post('http://101.0.135.141:50000/user', signUpData, result => {
+                        app.dialog.alert(result.inf, '政大錢包', () => {
+                            if (result.type) {
+                                NativeStorage.setItem('encAccount', decAccount.encrypt(txPassword), console.log, console.error)
+                                app.router.back()
+                            }
+                        })
+                    })
+                })
             },
         },
         on: {

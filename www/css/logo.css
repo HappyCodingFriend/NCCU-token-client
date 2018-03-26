@@ -13,11 +13,11 @@
     -moz-backface-visibility: hidden;
     -ms-backface-visibility: hidden;
     backface-visibility: hidden;
-    width: 50vw;
-    height: 50vw;
+    width: 40vw;
+    height: 40vw;
     position: relative;
     margin: 0 auto;
-    border-radius: 50vw;
+    border-radius: 40vw;
     border: solid 15px #fff;
     animation: play 1.5s ease infinite;
     -webkit-backface-visibility: hidden;
