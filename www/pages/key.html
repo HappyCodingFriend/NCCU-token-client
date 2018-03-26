@@ -45,6 +45,12 @@
                     </div>
                     <button class="col button button-fill" @click="read_NS">讀取</button>
                 </div>
+                <div class="block">
+                    <div id="out3_NS">
+
+                    </div>
+                    <button class="col button button-fill" @click="update_NS">更新</button>
+                </div>
             </div>
         </div>
 
@@ -54,30 +60,6 @@
 <script>
     let web3 = new Web3()
     let fileSystem
-
-    function syntaxHighlight(json) {
-        if (typeof json != 'string') {
-            json = JSON.stringify(json, undefined, 2)
-        }
-        json = json.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>')
-        return json.replace(
-            /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-            function (match) {
-                var cls = 'number'
-                if (/^"/.test(match)) {
-                    if (/:$/.test(match)) {
-                        cls = 'key'
-                    } else {
-                        cls = 'string'
-                    }
-                } else if (/true|false/.test(match)) {
-                    cls = 'boolean'
-                } else if (/null/.test(match)) {
-                    cls = 'null'
-                }
-                return '<span class="' + cls + '">' + match + '</span>';
-            })
-    }
 
     function createFile(dirEntry, fileName, dataObj, isAppend) {
         // Creates a new file or returns the file if it already exists.
@@ -126,7 +108,7 @@
             let reader = new FileReader()
             reader.onloadend = function () {
                 console.log("Successful file read: " + this.result)
-                $('#out2').html(syntaxHighlight(this.result))
+                $('#out2').html(JSON.stringify(this.result))
             }
             reader.readAsText(file)
         }, fail)
@@ -165,14 +147,28 @@
                 let decAccount = web3.eth.accounts.create()
                 app.dialog.password('請輸入您的交易密碼', '生成公私鑰', function (txPassword) {
                     NativeStorage.setItem('encAccount', decAccount.encrypt(txPassword), encAccount => {
-                        $('#out1_NS').html(syntaxHighlight(encAccount))
+                        $('#out1_NS').html(JSON.stringify(encAccount))
                     }, console.error)
                 })
             },
             read_NS: () => {
                 NativeStorage.getItem('encAccount', encAccount => {
-                    $('#out2_NS').html(syntaxHighlight(encAccount))
+                    $('#out2_NS').html(JSON.stringify(encAccount))
                 }, console.error)
+            },
+            update_NS: () => {
+                NativeStorage.getItem('user', user => {
+                    NativeStorage.getItem('encAccount', encAccount => {
+                        $.ajax({
+                            url: `http://101.0.135.141:50000/user?token=${user.token}`,
+                            type: 'PUT',
+                            data: { address: '0x' + encAccount.address },
+                            success: function (result) {
+                                $('#out3_NS').html(JSON.stringify(result))
+                            }
+                        })
+                    }, console.error)
+                })
             },
         },
         on: {

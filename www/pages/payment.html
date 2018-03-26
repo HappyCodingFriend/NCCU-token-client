@@ -88,9 +88,11 @@
                                 console.error(err)
                             }
                             console.log('The QR Code contains: ' + contents)
-                            QRScanner.cancelScan()
-                            $('#app').show()
-                            read(contents)
+                            QRScanner.destroy(function (status) {
+                                console.log(' QRScanner.destroy')
+                                $('#app').show()
+                                read(contents)
+                            })
                         })
                     } else if (status.denied) {
                         console.log('denied')
@@ -127,7 +129,6 @@
                         console.log(encAccount)
 
                         app.dialog.password('請輸入您的交易密碼', '轉帳', password => {
-                            app.dialog.preloader('交易進行中...')
 
                             let decAccount = web3.eth.accounts.decrypt(encAccount, password)
                             let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
@@ -155,12 +156,10 @@
 
                                 }, function (result) {
                                     console.log(result)
-                                    app.dialog.close()
-
                                     app.dialog.alert('交易成功', '政大錢包')
                                 })
                             })
-                            
+
                         }, password => {
                             console.log('輸入密碼失敗')
                         })
