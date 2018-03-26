@@ -1,0 +1,110 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">交換</div>
+                <div class="right">
+                    <a href="#" class="link popover-open" data-popover=".popover-menu">
+                        <i class="icon f7-icons ios-only">add</i>
+                        <i class="icon material-icons md-only">add</i>
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <div class="list">
+                <ul>
+                    <li>
+                        <a href="#" class="item-link item-content">
+                            <div class="item-inner item-cell" style="text-align: center;">
+                                <div class="item-row">
+                                    <div class="item-cell">邱天</div>
+                                    <div class="item-cell">103703030</div>
+                                </div>
+                                <div class="item-row">
+                                    <div class="item-cell">100 教務點數</div>
+                                    <div class="item-cell" style="width:auto;">
+                                        <i class="material-icons">cached</i>
+                                    </div>
+                                    <div class="item-cell">10 合作點數</div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="item-link item-content">
+                            <div class="item-inner item-cell" style="text-align: center;">
+                                <div class="item-row">
+                                    <div class="item-cell">齊家</div>
+                                    <div class="item-cell">103703031</div>
+                                </div>
+                                <div class="item-row">
+                                    <div class="item-cell">5 學務點數</div>
+                                    <div class="item-cell" style="width:auto;">
+                                        <i class="material-icons">cached</i>
+                                    </div>
+                                    <div class="item-cell">555 教務點數</div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="item-link item-content">
+                            <div class="item-inner item-cell" style="text-align: center;">
+                                <div class="item-row">
+                                    <div class="item-cell">韋禎</div>
+                                    <div class="item-cell">103703050</div>
+                                </div>
+                                <div class="item-row">
+                                    <div class="item-cell">100 教務點數</div>
+                                    <div class="item-cell" style="width:auto;">
+                                        <i class="material-icons">cached</i>
+                                    </div>
+                                    <div class="item-cell">8787 宿舍點數</div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    function my_success(evt) {
+        //alert(evt)
+        console.log(evt)
+    }
+    function my_error(evt) {
+        //alert(evt)
+        console.log(evt)
+    }
+    return {
+        methods: {
+        },
+        on: {
+            pageInit: function () {
+                $('#brightness').change(() => {
+                    console.log($('#brightness').is(':checked'))
+                    if ($('#brightness').is(':checked')) {
+                        brightness.setBrightness(1, my_success, my_error)
+                    }
+                    else {
+                        brightness.getBrightness(my_success, my_error)
+                    }
+                })
+            },
+            pageBeforeOut: function () {
+            },
+            pageBeforeRemove: function () {
+            },
+        },
+    }
+</script>

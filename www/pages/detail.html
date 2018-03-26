@@ -12,42 +12,11 @@
             </div>
         </nav>
         <div class="page-content">
-            <div class="block-title">2018年 2月</div>
-            <div class="list">
-                <ul>
-                    <li>
-                        <a href="#" class="item-link item-content popup-open"data-popup=".detail-popup">
-                            <div class="item-media">
-                                28日
-                            </div>
-                            <div class="item-inner">
-                                <div class="item-title">
-                                    <div class="item-header">王小明</div>
-                                    教務點數
-                                </div>
-                                <div class="item-after">
-                                    <span class="badge color-green">+20</span>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="item-link item-content popup-open" data-popup=".detail-popup">
-                            <div class="item-media">
-                                28日
-                            </div>
-                            <div class="item-inner">
-                                <div class="item-title">
-                                    <div class="item-header">王小美</div>
-                                    宿舍點數
-                                </div>
-                                <div class="item-after">
-                                    <span class="badge color-red">-10</span>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
+            <div class="block-title">付款</div>
+            <div class="list virtual-list1">
+            </div>
+            <div class="block-title">收款</div>
+            <div class="list virtual-list2">
             </div>
         </div>
         <!--明細內容-->
@@ -64,14 +33,6 @@
                 <div class="page-content">
                     <div class="list">
                         <ul>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">交易日期</div>
-                                        <div class="item-after">2018年2月28日 20:00</div>
-                                    </div>
-                                </div>
-                            </li>
                             <li>
                                 <div class="item-content">
                                     <div class="item-inner">
@@ -132,9 +93,80 @@
     return {
         methods: {},
         on: {
-            pageInit: function () {},
-            pageBeforeOut: function () {},
-            pageBeforeRemove: function () {},
+            pageInit: () => {
+                NativeStorage.getItem('user', user => {
+                    console.log(user)
+                    $.get(`http://101.0.135.141:50000/query/transactionsTo?token=${user.token}`, result => {
+                        console.log(result)
+
+                        result.forEach(element => {
+                            element.date = new Date(element.timestamp).toISOString().slice(0, 10).replace(/-/g, "")
+                        })
+
+                        let virtualList = app.virtualList.create({
+                            el: '.virtual-list1',
+                            items: result,
+                            itemTemplate: `
+                                <li>
+                                    <a href="#" class="item-link item-content popup-open" data-popup=".detail-popup">
+                                        <div class="item-media">
+                                            {{date}}
+                                        </div>
+                                        <div class="item-inner">
+                                            <div class="item-title">
+                                                <div class="item-header">{{targetID}}</div>
+                                                {{ercName}}
+                                            </div>
+                                            <div class="item-after">
+                                                <span class="badge color-red">{{number}}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            `,
+                            height: 54
+                        })
+                    })
+                    $.get(`http://101.0.135.141:50000/query/transactionsFrom?token=${user.token}`, result => {
+                        console.log(result)
+
+                        result.forEach(element => {
+                            element.date = new Date(element.timestamp).toISOString().slice(0, 10).replace(/-/g, "")
+                        })
+
+                        let virtualList = app.virtualList.create({
+                            el: '.virtual-list2',
+                            items: result,
+                            itemTemplate: `
+                                <li>
+                                    <a href="#" class="item-link item-content popup-open" data-popup=".detail-popup">
+                                        <div class="item-media">
+                                            {{date}}
+                                        </div>
+                                        <div class="item-inner">
+                                            <div class="item-title">
+                                                <div class="item-header">{{targetID}}</div>
+                                                {{ercName}}
+                                            </div>
+                                            <div class="item-after">
+                                                <span class="badge color-green">{{number}}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            `,
+                            height: 54
+                        })
+                    })
+                }, err => {
+                    console.error(err)
+                    app.dialog.alert('請先登入', '政大錢包', () => {
+                        app.router.back()
+                    })
+                })
+            },
+            pageBeforeOut: function () { },
+            pageBeforeRemove: function () { },
         },
     }
 </script>

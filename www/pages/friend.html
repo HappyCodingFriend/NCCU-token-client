@@ -29,6 +29,21 @@
                 </div>
             </div>
         </nav>
+        <div class="fab fab-right-bottom color-blue">
+            <a href="#">
+                <!-- Icons For iOS Theme -->
+                <i class="icon f7-icons ios-only">add</i>
+                <i class="icon f7-icons ios-only">close</i>
+                <!-- Icons For MD Theme -->
+                <i class="icon material-icons md-only">add</i>
+                <i class="icon material-icons md-only">close</i>
+            </a>
+            <!-- FAB speed dial actions -->
+            <div class="fab-buttons fab-buttons-top">
+                <button @click="addFriend_QR">QR</button>
+                <button @click="addFriend_ID">ID</button>
+            </div>
+        </div>
         <div class="page-content">
             <div class="list simple-list searchbar-not-found">
                 <ul>
@@ -56,30 +71,50 @@
 </template>
 
 <script>
+    let user
+
     return {
         data: function () {
         },
         methods: {
+            addFriend_QR: () => {
+
+            },
+            addFriend_ID: () => {
+                app.dialog.prompt('朋友ID?', function (friendID) {
+                    $.post(`http://101.0.135.141:50000/friend/${friendID}?token=${user.token}`, result => {
+                        app.dialog.alert('新增成功')
+                    })
+                })
+            },
         },
         on: {
             pageInit: function () {
-                NativeStorage.getItem('user', user => {
-                    console.log(user)
-                    $.get(`http://101.0.135.141:50000/friends?token=${user.token}`, result => {
-                        console.log(result)
+                NativeStorage.getItem('user', data => {
+                    user = data
+                }, err => {
+                    console.error(err)
+                    app.dialog.alert('請先登入', '政大錢包', () => {
+                        app.router.back()
+                    })
+                })
+            },
+            pageBeforeIn: function () {
+                $.get(`http://101.0.135.141:50000/friends?token=${user.token}`, result => {
+                    console.log(result)
 
-                        let virtualList = app.virtualList.create({
-                            el: '.virtual-list',
-                            items: result,
-                            searchAll: function (query, items) {
-                                let found = []
-                                for (let i = 0; i < items.length; i++) {
-                                    if (items[i].name.indexOf(query) >= 0 || query.trim() === '')
-                                        found.push(i)
-                                }
-                                return found
-                            },
-                            itemTemplate: `
+                    let virtualList = app.virtualList.create({
+                        el: '.virtual-list',
+                        items: result,
+                        searchAll: function (query, items) {
+                            let found = []
+                            for (let i = 0; i < items.length; i++) {
+                                if (items[i].name.indexOf(query) >= 0 || query.trim() === '')
+                                    found.push(i)
+                            }
+                            return found
+                        },
+                        itemTemplate: `
                                         <li>
                                             <div class="item-content">
                                                 <div class="item-media">
@@ -95,16 +130,9 @@
                                                 </div>
                                             </div>
                                         </li>`,
-                        })
-                    })
-                }, err => {
-                    console.error(err)
-                    app.dialog.alert('請先登入', '政大錢包', () => {
-                        app.router.back()
+                        height: 93.75
                     })
                 })
-            },
-            pageBeforeOut: function () {
             },
             pageBeforeRemove: function () {
             },

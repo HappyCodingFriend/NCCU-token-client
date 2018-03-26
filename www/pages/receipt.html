@@ -33,14 +33,13 @@
         on: {
             pageMounted: () => {
                 console.log('pageMounted')
-                checkJWT()
             },
             pageInit: () => {
                 console.log('pageInit')
             },
             pageBeforein: () => {
                 console.log('pageBeforein')
-                
+
                 $('#brightness').change(() => {
                     if ($('#brightness').is(':checked')) {
                         brightness.setBrightness(1.0)
@@ -49,21 +48,21 @@
                     }
                 })
 
-                myReadFile('key.json', (key) => {
-                    console.log('keyOnLoadend')
-
-                    let jwt = JSON.parse(atob(storage.getItem('jwt').split('.')[1]))
-
+                NativeStorage.getItem('user', user => {
+                    console.log(user)
                     let text = JSON.stringify({
-                        targetID: jwt.ID,
-                        address: key.address,
+                        ID: user.ID,
+                        address: user.address,
                     })
-
                     let qrcode = new QRCode('qrcode', {
                         text: text,
                         colorDark: '#000000',
                         colorLight: '#ffffff',
                         correctLevel: QRCode.CorrectLevel.H
+                    })
+                }, err => {
+                    app.dialog.alert('您尚未登入', '警告', () => {
+                        app.router.back()
                     })
                 })
             },

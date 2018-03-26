@@ -18,10 +18,10 @@
                         <div class="item-inner">
                             <div class="item-title item-label">點數種類</div>
                             <div class="item-input-wrap">
-                                <select id="point" placeholder="Please choose...">
-                                    <option value="0x2CA6Dacbf2db0e04c8f7A73E27C385129A2b40cf">宿舍點數</option>
-                                    <option value="0x5f16A398b338c6aeecD5bb2d4e851816d5b05a3d">教務處點數</option>
-                                    <option value="0x64ea6D99636AEe83B15D35a9d7CB73E9ae8242Ae">學務處點數</option>
+                                <select id="erc" placeholder="Please choose...">
+                                    <option value="0xCe1Cd66680ebA0a1783e7D88E756A7A23cE72028">宿舍點數</option>
+                                    <option value="0xab76C487a4eb5eD2E9Eaf587E4853aC259Ef8380">教務處點數</option>
+                                    <option value="0xd8fd7d4Fa2cBE55573eec5D481CE4BD9A6522AC7">學務處點數</option>
                                 </select>
                             </div>
                         </div>
@@ -30,7 +30,7 @@
                         <div class="item-inner">
                             <div class="item-title item-label">轉出數量</div>
                             <div class="item-input-wrap">
-                                <input type="text" id="number" placeholder="轉出數量">
+                                <input type="number" id="number" placeholder="轉出數量">
                                 <span class="input-clear-button"></span>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                         <div class="item-inner">
                             <div class="item-title item-label">對象地址</div>
                             <div class="item-input-wrap">
-                                <input type="text" id="address" placeholder="轉入對象">
+                                <input type="text" id="targetAddress" placeholder="轉入對象">
                                 <span class="input-clear-button"></span>
                             </div>
                         </div>
@@ -99,63 +99,86 @@
 
                 function read(text) {
                     let data = JSON.parse(text)
+                    /*
                     $('#point').children().each(function () {
                         $(this).attr('selected', false)
                         if ($(this).text() == data.point) {
                             $(this).attr('selected', true)
                         }
                     })
+                    */
                     if (data.number) $('#number').val(data.number)
-                    if (data.targetID) $('#targetID').val(data.targetID)
-                    if (data.address) $('#address').val(data.address)
+                    if (data.ID) $('#targetID').val(data.ID)
+                    if (data.address) $('#targetAddress').val(data.address)
                 }
             },
             transfer: () => {
 
-                myReadFile('key.json', (key) => {
-                    console.log('keyOnLoadend')
+                let number = parseInt($('#number').val())
+                let targetID = $('#targetID').val()
+                let targetAddress = $('#targetAddress').val()
+                let ercName = $('#erc option:selected').text()
+                let ercAddress = $('#erc').val()
 
-                    let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
-                    let data = ERC223TokenContract.methods.transfer($('#address').val(), parseInt($(
-                        '#number').val())).encodeABI()
+                NativeStorage.getItem('user', user => {
+                    console.log(user)
 
-                    app.dialog.password('請輸入您的交易密碼', '轉帳', function (password) {
-                        app.dialog.preloader('交易進行中...')
+                    NativeStorage.getItem('encAccount', encAccount => {
+                        console.log(encAccount)
 
-                        let account = web3.eth.accounts.decrypt(key, password)
+                        app.dialog.password('請輸入您的交易密碼', '轉帳', password => {
+                            app.dialog.preloader('交易進行中...')
 
-                        $.get('http://101.0.135.141:50000/nonce', {
-                            address: key.address
-                        }, function (nonce) {
-                            console.log('nonce', parseInt(nonce))
+                            let decAccount = web3.eth.accounts.decrypt(encAccount, password)
+                            let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
+                            let data = ERC223TokenContract.methods.transfer(targetAddress, number).encodeABI()
 
-                            let tx = {
-                                nonce: parseInt(nonce),
-                                chainId: '0x11',
-                                to: $('#point').val(),
-                                data: data,
-                                gasPrice: '0x0',
-                                gas: 4000000,
-                            }
-                            let sign_tx = account.signTransaction(tx)
+                            $.get('http://101.0.135.141:50000/nonce', {
+                                address: decAccount.address
+                            }, function (nonce) {
+                                let tx = {
+                                    nonce: parseInt(nonce),
+                                    chainId: '0x11',
+                                    to: ercAddress,
+                                    data: data,
+                                    gasPrice: '0x0',
+                                    gas: 4000000,
+                                }
+                                let sign_tx = decAccount.signTransaction(tx)
 
-                            $.post('http://101.0.135.141:50000/transaction', {
-                                sign_tx: sign_tx._rejectionHandler0.rawTransaction
-                            }, function (result) {
-                                console.log(result)
-                                app.dialog.close()
+                                $.post(`http://101.0.135.141:50000/transaction?token=${user.token}`, {
+                                    sign_tx: sign_tx._rejectionHandler0.rawTransaction,
+                                    number,
+                                    targetID,
+                                    targetAddress,
+                                    ercName,
 
-                                app.dialog.alert('交易成功', '政大錢包')
+                                }, function (result) {
+                                    console.log(result)
+                                    app.dialog.close()
+
+                                    app.dialog.alert('交易成功', '政大錢包')
+                                })
                             })
+                            
+                        }, password => {
+                            console.log('輸入密碼失敗')
                         })
+
+                    }, console.error)
+
+                }, err => {
+                    app.dialog.alert('您尚未登入', '警告', () => {
+                        app.router.back()
                     })
                 })
             }
         },
         on: {
-            pageInit: function () {},
-            pageBeforeOut: function () {},
-            pageBeforeRemove: function () {},
+            pageInit: function () { },
+            pageBeforein: () => { },
+            pageBeforeOut: function () { },
+            pageBeforeRemove: function () { },
         },
     }
 </script>

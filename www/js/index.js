@@ -31,16 +31,18 @@ document.addEventListener('deviceready', () => {
 	setTimeout(() => {
 		$('#app').show()
 		$('#logo').hide()
-	}, 2000)
+	}, 1000)
 
 }, false)
 
-function checkJWT() {
-	if (!storage.getItem('jwt')) {
+function checkUser() {
+	NativeStorage.getItem('user', user => {
+		console.log(user)
+	}, err => {
 		app.dialog.alert('您尚未登入', '警告', () => {
 			app.router.back()
 		})
-	}
+	})
 }
 
 function myReadFile(fileName, callback) {

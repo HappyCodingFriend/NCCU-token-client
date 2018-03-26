@@ -12,15 +12,16 @@
             </div>
         </nav>
         <div class="page-content">
+            <div class="block-title">File System</div>
             <div class="block">
-                <div class="block-title">create account</div>
+                <div class="block-title">Create Account</div>
                 <div class="block">
                     <div id="out1">
 
                     </div>
                     <button class="col button button-fill" @click="create">產生</button>
                 </div>
-                <div class="block-title">read account</div>
+                <div class="block-title">Read Account</div>
                 <div class="block">
                     <div id="out2">
 
@@ -28,8 +29,25 @@
                     <button class="col button button-fill" @click="read">讀取</button>
                 </div>
             </div>
+            <div class="block-title">Native Storage</div>
+            <div class="block">
+                <div class="block-title">Create Account</div>
+                <div class="block">
+                    <div id="out1_NS">
+
+                    </div>
+                    <button class="col button button-fill" @click="create_NS">產生</button>
+                </div>
+                <div class="block-title">Read Account</div>
+                <div class="block">
+                    <div id="out2_NS">
+
+                    </div>
+                    <button class="col button button-fill" @click="read_NS">讀取</button>
+                </div>
+            </div>
         </div>
-        </div>
+
     </section>
 </template>
 
@@ -142,6 +160,19 @@
                         readFile(fileEntry)
                     })
                 })
+            },
+            create_NS: () => {
+                let decAccount = web3.eth.accounts.create()
+                app.dialog.password('請輸入您的交易密碼', '生成公私鑰', function (txPassword) {
+                    NativeStorage.setItem('encAccount', decAccount.encrypt(txPassword), encAccount => {
+                        $('#out1_NS').html(syntaxHighlight(encAccount))
+                    }, console.error)
+                })
+            },
+            read_NS: () => {
+                NativeStorage.getItem('encAccount', encAccount => {
+                    $('#out2_NS').html(syntaxHighlight(encAccount))
+                }, console.error)
             },
         },
         on: {

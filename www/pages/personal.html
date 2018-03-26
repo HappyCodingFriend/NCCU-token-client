@@ -24,7 +24,7 @@
                             <div class="item-inner">
                                 <div class="item-title">政大點數</div>
                                 <div class="item-after">
-                                    <span class="badge" id="">0</span>
+                                    <span class="badge color-blue" id="">0</span>
                                 </div>
                             </div>
                         </div>
@@ -34,7 +34,7 @@
                             <div class="item-inner">
                                 <div class="item-title">宿舍點數</div>
                                 <div class="item-after">
-                                    <span class="badge" id="dormitory"></span>
+                                    <span class="badge color-green" id="dormitory"></span>
                                 </div>
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                             <div class="item-inner">
                                 <div class="item-title">教務處點數</div>
                                 <div class="item-after">
-                                    <span class="badge" id="academic"></span>
+                                    <span class="badge color-green" id="academic"></span>
                                 </div>
                             </div>
                         </div>
@@ -54,31 +54,41 @@
                             <div class="item-inner">
                                 <div class="item-title">學務處點數</div>
                                 <div class="item-after">
-                                    <span class="badge" id="student"></span>
+                                    <span class="badge color-green" id="student"></span>
                                 </div>
                             </div>
                         </div>
                     </li>
-                    <!--
-                    {{#each data_point}}
+                </ul>
+            </div>
+            <div class="block-title">帳戶資訊</div>
+            <div class="list">
+                <ul>
                     <li>
                         <div class="item-content">
                             <div class="item-inner">
-                                <div class="item-title">{{this[0]}}</div>
+                                <div class="item-title">地址 SQL</div>
                                 <div class="item-after">
-                                    <span class="badge">{{this[1]}}</span>
+                                    <span class="badge color-orange" id="address_SQL">地址</span>
                                 </div>
                             </div>
                         </div>
                     </li>
-                    {{/each}}
-                    -->
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">地址 NS</div>
+                                <div class="item-after">
+                                    <span class="badge color-orange" id="address_NS">地址</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
             <div class="block-title">系統</div>
             <div class="list simple-list">
                 <ul>
-                    <li @click="inf">帳戶資訊</li>
                     <li @click="sign_out">登出</li>
                 </ul>
             </div>
@@ -88,34 +98,33 @@
 
 <script>
     function reload(callback) {
-        myReadFile('key.json', (key) => {
-            console.log('keyOnLoadend')
 
-            $.get(`http://101.0.135.141:50000/query/balance/dormitory?address=${key.address}`, function (result) {
-                console.log(result)
+        NativeStorage.getItem('user', user => {
+            console.log(user)
+            $('#address_SQL').text(user.address)
+            $.get(`http://101.0.135.141:50000/point/0xCe1Cd66680ebA0a1783e7D88E756A7A23cE72028?token=${user.token}`, function (result) {
                 $('#dormitory').text(result)
             })
-            $.get(`http://101.0.135.141:50000/query/balance/academic?address=${key.address}`, function (result) {
-                console.log(result)
+            $.get(`http://101.0.135.141:50000/point/0xab76C487a4eb5eD2E9Eaf587E4853aC259Ef8380?token=${user.token}`, function (result) {
                 $('#academic').text(result)
             })
-            $.get(`http://101.0.135.141:50000/query/balance/student?address=${key.address}`, function (result) {
-                console.log(result)
+            $.get(`http://101.0.135.141:50000/point/0xd8fd7d4Fa2cBE55573eec5D481CE4BD9A6522AC7?token=${user.token}`, function (result) {
                 $('#student').text(result)
             })
+        }, err => {
+            app.dialog.alert('您尚未登入', '警告', () => {
+                app.router.back()
+            })
         })
+
+        NativeStorage.getItem('encAccount', encAccount => {
+            console.log(encAccount.address)
+            $('#address_NS').text(encAccount.address)
+        }, console.error)
     }
 
     return {
         data: () => {
-            return {
-                data_point: [
-                    ['政大點數', '100點'],
-                    ['宿舍點數', '100點'],
-                    ['合作社點數', '100點'],
-                    ['教務點數', '10點'],
-                ]
-            }
         },
         methods: {
             inf: () => {
@@ -123,9 +132,13 @@
             },
             sign_out: () => {
                 console.log('sign_out')
-                storage.removeItem('jwt')
-                app.dialog.alert('登出成功', '溫馨提醒', () => {
-                    app.router.back()
+                NativeStorage.remove('user', () => {
+                    app.dialog.alert('登出成功', '溫馨提醒', () => {
+                        app.router.back()
+                    })
+                }, err => {
+                    console.error(err)
+                    app.dialog.alert('登出失敗', '警告', () => { })
                 })
             },
             refresh: (e, done) => {

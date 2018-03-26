@@ -31,8 +31,12 @@ let routes = [{
 	componentUrl: './pages/friend.html',
 },
 {
-	path: '/exchange_rate/',
-	componentUrl: './pages/exchange_rate.html',
+	path: '/exchange/',
+	componentUrl: './pages/exchange.html',
+},
+{
+	path: '/exchangeRate/',
+	componentUrl: './pages/exchangeRate.html',
 },
 {
 	path: '/personal/',
