@@ -1,0 +1,133 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">掛單</div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <div class="list inline-labels no-hairlines-md">
+                <ul>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">換出點數</div>
+                            <div class="item-input-wrap">
+                                <select id="erc_out" placeholder="Please choose...">
+                                </select>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">換出數量</div>
+                            <div class="item-input-wrap">
+                                <input id="number_out" type="number" placeholder="換出數量">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">換入點數</div>
+                            <div class="item-input-wrap">
+                                <select id="erc_in" placeholder="Please choose...">
+                                </select>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">換入數量</div>
+                            <div class="item-input-wrap">
+                                <input id="number_in" type="number" placeholder="換出數量">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">到期日</div>
+                            <div class="item-input-wrap">
+                                <input id="date" type="date">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="block">
+                <div class="row">
+                    <button class="col button button-fill" @click="order_button">掛單</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    function load() {
+        let selectTemplate = `
+            <ul>
+                {{#each this}}
+                <option value={{this.address}}>{{this.name}}</option>
+                {{/each}}
+            </ul>
+        `
+        let compiledSelectTemplate = Template7.compile(selectTemplate)
+        $('select#erc_out').html(compiledSelectTemplate(points))
+        $('select#erc_in').html(compiledSelectTemplate(points))
+    }
+    return {
+        data: function () {
+        },
+        methods: {
+            order_button: () => {
+                //轉出點數ERC address
+                console.log($('select#erc_out').val())
+                console.log($('#number_out').val())
+
+                //轉入點數ERC address
+                console.log($('select#erc_in').val())
+                console.log($('#number_in').val())
+
+                //取得到期日
+                console.log($('#date').val())
+
+                //取得Account
+                NativeStorage.getItem('encAccount', encAccount => {
+                    app.dialog.password('請輸入您的交易密碼', '掛單', password => {
+                        let decAccount = web3.eth.accounts.decrypt(encAccount, password)
+                        console.log(decAccount)
+
+                    })
+                })
+
+                //取得nonce
+                api.getNonce((nonce) => {
+                    console.log(nonce)
+                })
+            },
+        },
+        on: {
+            pageMounted: () => {
+                console.group('exchangeOrder')
+            },
+            pageInit: () => {
+            },
+            pageBeforeIn: () => {
+                load()
+            },
+            pageBeforeOut: () => {
+            },
+            pageBeforeRemove: () => {
+                console.groupEnd()
+            },
+        },
+    }
+</script>

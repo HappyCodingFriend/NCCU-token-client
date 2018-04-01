@@ -10,7 +10,7 @@
                 </div>
                 <div class="title">交換</div>
                 <div class="right">
-                    <a href="#" class="link popover-open" data-popover=".popover-menu">
+                    <a @click="add_button" class="link">
                         <i class="icon f7-icons ios-only">add</i>
                         <i class="icon material-icons md-only">add</i>
                     </a>
@@ -88,6 +88,9 @@
     }
     return {
         methods: {
+            add_button: () => {
+                app.router.navigate('/exchangeOrder/')
+            }
         },
         on: {
             pageInit: function () {

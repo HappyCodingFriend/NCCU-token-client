@@ -1,19 +1,44 @@
-<section class="page">
-    <nav class="navbar">
-        <div class="navbar-inner sliding">
-            <div class="left">
-                <a href="#" class="link back">
-                    <i class="icon icon-back"></i>
-                    <span class="ios-only">Back</span>
-                </a>
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">Not found</div>
             </div>
-            <div class="title">Not found</div>
+        </nav>
+        <div class="page-content">
+            <div class="block block-strong">
+                <p>Sorry</p>
+                <p>Requested content not found.</p>
+            </div>
         </div>
-    </nav>
-    <div class="page-content">
-        <div class="block block-strong">
-            <p>Sorry</p>
-            <p>Requested content not found.</p>
-        </div>
-    </div>
-</section>
+    </section>
+</template>
+
+<script>
+    return {
+        data: function () {
+        },
+        methods: {
+        },
+        on: {
+            pageMounted: () => {
+                console.group('')
+            },
+            pageInit: () => {
+            },
+            pageBeforeIn: () => {
+            },
+            pageBeforeOut: () => {
+            },
+            pageBeforeRemove: () => {
+                console.groupEnd()
+            },
+        },
+    }
+</script>

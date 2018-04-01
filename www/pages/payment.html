@@ -164,9 +164,7 @@
                         let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
                         let data = ERC223TokenContract.methods.transfer(targetAddress, number).encodeABI()
 
-                        $.get('http://101.0.135.141:50000/nonce', {
-                            address: decAccount.address
-                        }, function (nonce) {
+                        api.getNonce((nonce) => {
                             let tx = {
                                 nonce: parseInt(nonce),
                                 chainId: '0x11',

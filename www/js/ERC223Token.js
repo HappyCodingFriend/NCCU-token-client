@@ -1,5 +1,5 @@
 let ERC223Token = {
-    "abi": [
+    abi: [
         {
             "constant": true,
             "inputs": [],

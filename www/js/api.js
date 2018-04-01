@@ -108,6 +108,13 @@ let api = {
             callback(data)
         }, 'json')
     },
+
+    getNonce: (callback) => {
+        app.request.get(getUrl('nonce', { token: user.token }), (data, status, xhr) => {
+            console.log(status, data)
+            callback(data)
+        }, 'json')
+    }
 }
 
 
