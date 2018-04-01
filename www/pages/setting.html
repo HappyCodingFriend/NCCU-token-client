@@ -56,9 +56,9 @@
             <div class="block-title">其他</div>
             <div class="list links-list">
                 <ul>
-                    <li>
-                        <a href="#" class="item-link">
-                            系統資訊
+                    <li @click="sign_out">
+                        <a class="item-link">
+                            登出
                         </a>
                     </li>
                 </ul>
@@ -70,7 +70,18 @@
 <script>
     return {
         methods: {
-
+            sign_out: () => {
+                console.log('sign_out')
+                NativeStorage.remove('user', () => {
+                    app.dialog.alert('登出成功', '溫馨提醒', () => {
+                        user = null
+                        app.router.navigate('/signIn/')
+                    })
+                }, err => {
+                    console.error(err)
+                    app.dialog.alert('登出失敗', '警告', () => { })
+                })
+            },
         },
         on: {
             pageMounted: () => {

@@ -19,9 +19,6 @@
                             <div class="item-title item-label">點數種類</div>
                             <div class="item-input-wrap">
                                 <select id="erc" placeholder="Please choose...">
-                                    <option value="0xCe1Cd66680ebA0a1783e7D88E756A7A23cE72028">宿舍點數</option>
-                                    <option value="0xab76C487a4eb5eD2E9Eaf587E4853aC259Ef8380">教務處點數</option>
-                                    <option value="0xd8fd7d4Fa2cBE55573eec5D481CE4BD9A6522AC7">學務處點數</option>
                                 </select>
                             </div>
                         </div>
@@ -46,6 +43,15 @@
                     </li>
                     <li class="item-content item-input">
                         <div class="item-inner">
+                            <div class="item-title item-label">對象姓名</div>
+                            <div class="item-input-wrap">
+                                <input type="text" id="targetName" placeholder="轉入對象">
+                                <span class="input-clear-button"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
                             <div class="item-title item-label">對象地址</div>
                             <div class="item-input-wrap">
                                 <input type="text" id="targetAddress" placeholder="轉入對象">
@@ -57,9 +63,9 @@
             </div>
             <div class="block">
                 <div class="row">
-                    <button class="col button button-fill">好友</button>
-                    <button class="col button button-fill" @click="QR_code">掃描QR code</button>
-                    <button class="col button button-fill">帳號</button>
+                    <button class="col button button-fill" @click="user_button">帳號</button>
+                    <button class="col button button-fill" @click="friend_button">好友</button>
+                    <button class="col button button-fill" @click="qrcode_button">掃描QR code</button>
                 </div>
             </div>
             <div class="block">
@@ -72,9 +78,36 @@
 </template>
 
 <script>
+    function load() {
+        let selectTemplate = `
+            <ul>
+                {{#each this}}
+                <option value={{this.address}}>{{this.name}}</option>
+                {{/each}}
+            </ul>
+        `
+        let compiledSelectTemplate = Template7.compile(selectTemplate)
+        $('select#erc').html(compiledSelectTemplate(points))
+    }
     return {
         methods: {
-            QR_code: () => {
+            user_button: () => {
+                api.getUser($('#targetID').val(), (data) => {
+                    if (!data.type) {
+                        console.log(data.type)
+                        app.dialog.alert(data.inf)
+                    }
+                    else {
+                        console.log(data.type)
+                        $('#targetName').val(data.inf.name)
+                        $('#targetAddress').val(data.inf.address)
+                    }
+                })
+            },
+            friend_button: () => {
+
+            },
+            qrcode_button: () => {
                 QRScanner.prepare((err, status) => {
                     if (status == undefined) {
                         console.log('denied')
@@ -122,62 +155,60 @@
                 let ercName = $('#erc option:selected').text()
                 let ercAddress = $('#erc').val()
 
-                NativeStorage.getItem('user', user => {
-                    console.log(user)
+                NativeStorage.getItem('encAccount', encAccount => {
+                    console.log(encAccount)
 
-                    NativeStorage.getItem('encAccount', encAccount => {
-                        console.log(encAccount)
+                    app.dialog.password('請輸入您的交易密碼', '轉帳', password => {
 
-                        app.dialog.password('請輸入您的交易密碼', '轉帳', password => {
+                        let decAccount = web3.eth.accounts.decrypt(encAccount, password)
+                        let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
+                        let data = ERC223TokenContract.methods.transfer(targetAddress, number).encodeABI()
 
-                            let decAccount = web3.eth.accounts.decrypt(encAccount, password)
-                            let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
-                            let data = ERC223TokenContract.methods.transfer(targetAddress, number).encodeABI()
+                        $.get('http://101.0.135.141:50000/nonce', {
+                            address: decAccount.address
+                        }, function (nonce) {
+                            let tx = {
+                                nonce: parseInt(nonce),
+                                chainId: '0x11',
+                                to: ercAddress,
+                                data: data,
+                                gasPrice: '0x0',
+                                gas: 4000000,
+                            }
+                            let sign_tx = decAccount.signTransaction(tx)
 
-                            $.get('http://101.0.135.141:50000/nonce', {
-                                address: decAccount.address
-                            }, function (nonce) {
-                                let tx = {
-                                    nonce: parseInt(nonce),
-                                    chainId: '0x11',
-                                    to: ercAddress,
-                                    data: data,
-                                    gasPrice: '0x0',
-                                    gas: 4000000,
-                                }
-                                let sign_tx = decAccount.signTransaction(tx)
+                            $.post(`http://101.0.135.141:50000/transaction?token=${user.token}`, {
+                                sign_tx: sign_tx._rejectionHandler0.rawTransaction,
+                                number,
+                                targetID,
+                                targetAddress,
+                                ercName,
 
-                                $.post(`http://101.0.135.141:50000/transaction?token=${user.token}`, {
-                                    sign_tx: sign_tx._rejectionHandler0.rawTransaction,
-                                    number,
-                                    targetID,
-                                    targetAddress,
-                                    ercName,
-
-                                }, function (result) {
-                                    console.log(result)
-                                    app.dialog.alert('交易成功', '政大錢包')
-                                })
+                            }, function (result) {
+                                console.log(result)
+                                app.dialog.alert('交易成功', '政大錢包')
                             })
-
-                        }, password => {
-                            console.log('輸入密碼失敗')
                         })
 
-                    }, console.error)
-
-                }, err => {
-                    app.dialog.alert('您尚未登入', '警告', () => {
-                        app.router.back()
+                    }, password => {
+                        console.log('輸入密碼失敗')
                     })
-                })
+
+                }, console.error)
             }
         },
         on: {
-            pageInit: function () { },
-            pageBeforein: () => { },
-            pageBeforeOut: function () { },
-            pageBeforeRemove: function () { },
+            pageMounted: () => {
+                console.group('payment')
+            },
+            pageInit: () => { },
+            pageBeforein: () => {
+                load()
+            },
+            pageBeforeOut: () => { },
+            pageBeforeRemove: () => {
+                console.groupEnd()
+            },
         },
     }
 </script>

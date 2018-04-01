@@ -1,0 +1,42 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">樣板</div>
+            </div>
+        </nav>
+        <div class="page-content">
+
+        </div>
+    </section>
+</template>
+
+<script>
+    return {
+        data: () => { },
+        methods: {},
+        on: {
+            pageMounted: () => {
+                console.log('pageMounted')
+            },
+            pageInit: () => {
+                console.log('pageInit')
+            },
+            pageBeforein: () => {
+                console.log('pageBeforein')
+            },
+            pageBeforeOut: function () {
+                console.log('pageBeforeOut')
+            },
+            pageBeforeRemove: function () {
+                console.log('pageBeforeRemove')
+            },
+        },
+    }
+</script>

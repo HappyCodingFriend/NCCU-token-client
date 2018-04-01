@@ -13,9 +13,9 @@
         </nav>
         <div class="toolbar tabbar">
             <div class="toolbar-inner">
-                <a href="#tab-1" class="tab-link tab-link-active">device</a>
-                <a href="#tab-2" class="tab-link">qrscanner</a>
-                <a href="#tab-3" class="tab-link">brightness</a>
+                <a href="#tab-1" class="tab-link tab-link-active">系統資訊</a>
+                <a href="#tab-2" class="tab-link">2</a>
+                <a href="#tab-3" class="tab-link">3</a>
             </div>
         </div>
         <div class="tabs-animated-wrap">
@@ -23,12 +23,12 @@
                 <div id="tab-1" class="page-content tab tab-active">
                     <div class="list">
                         <ul>
-                            {{#each data_device}}
+                            {{#each system_data}}
                             <li>
                                 <div class="item-content">
                                     <div class="item-inner">
-                                        <div class="item-title">{{this[0]}}</div>
-                                        <div class="item-after">{{this[1]}}</div>
+                                        <div class="item-title">{{@key}}</div>
+                                        <div class="item-after">{{this}}</div>
                                     </div>
                                 </div>
                             </li>
@@ -37,62 +37,10 @@
                     </div>
                 </div>
                 <div id="tab-2" class="page-content tab">
-                    <div class="list">
-                        <ul id='list_qrscanner'>
-                            {{#each data_qrscanner}}
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">{{this[0]}}</div>
-                                        <div class="item-after">{{this[1]}}</div>
-                                    </div>
-                                </div>
-                            </li>
-                            {{/each}}
-                        </ul>
-                    </div>
+
                 </div>
                 <div id="tab-3" class="page-content tab">
-                    <div class="block-title">Volume</div>
-                    <div class="list simple-list">
-                        <ul>
-                            <li>
-                                <div class="item-cell width-auto flex-shrink-0">
-                                    <i class="icon f7-icons ios-only">volume_mute_fill</i>
-                                    <i class="icon material-icons md-only">volume_mute</i>
-                                </div>
-                                <div class="item-cell flex-shrink-3">
-                                    <!-- range slider -->
-                                    <div class="range-slider range-slider-init">
-                                        <input type="range" min="0" max="100" step="1" value="10">
-                                    </div>
-                                </div>
-                                <div class="item-cell width-auto flex-shrink-0">
-                                    <i class="icon f7-icons ios-only">volume_fill</i>
-                                    <i class="icon material-icons md-only">volume_up</i>
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="block-title">Brightness</div>
-                        <div class="list simple-list">
-                            <li>
-                                <div class="item-cell width-auto flex-shrink-0">
-                                    <i class="icon f7-icons ios-only">circle</i>
-                                    <i class="icon material-icons md-only">brightness_low</i>
-                                </div>
-                                <div class="item-cell flex-shrink-3">
-                                    <!-- range slider, enable labels -->
-                                    <div class="range-slider range-slider-init color-orange" data-label="true" @range:change="onRangeChange">
-                                        <input type="range" min="0" max="100" step="10" value="50">
-                                    </div>
-                                </div>
-                                <div class="item-cell width-auto flex-shrink-0">
-                                    <i class="icon f7-icons ios-only">circle_half</i>
-                                    <i class="icon material-icons md-only">brightness_high</i>
-                                </div>
-                            </li>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -102,31 +50,13 @@
 <script>
     return {
         data: function () {
-            console.log('data')
             return {
-                data_device: [
-                    ['cordova', device.cordova],
-                    ['model', device.model],
-                    ['platform', device.platform],
-                    ['uuid', device.uuid],
-                    ['version', device.version],
-                    ['manufacturer', device.manufacturer],
-                    ['isVirtual', device.isVirtual],
-                    ['serial', device.serial],
-                ],
-                data_qrscanner: [
-                    ['authorized', status.authorized],
-                    ['denied', status.denied],
-                    ['restricted', status.restricted],
-                    ['prepared', status.prepared],
-                    ['scanning', status.scanning],
-                    ['previewing', status.previewing],
-                    ['showing', status.showing],
-                    ['lightEnabled', status.lightEnabled],
-                    ['canOpenSettings', status.canOpenSettings],
-                    ['canEnableLight', status.canEnableLight],
-                    ['currentCamera', status.currentCamera],
-                ],
+                system_data: {
+                    id: app.id,
+                    theme: app.theme,
+                    version: app.version,
+                    language: app.language,
+                },
             }
         },
         methods: {
@@ -137,19 +67,16 @@
         },
         on: {
             pageMounted: () => {
-                console.log('pageMounted')
-            },
-            pageBeforein: () => {
-                console.log('pageBeforein')
+                console.group('system')
             },
             pageInit: () => {
-                console.log('pageInit')
+            },
+            pageBeforein: () => {
             },
             pageBeforeOut: () => {
-                console.log('pageBeforeOut')
             },
             pageBeforeRemove: () => {
-                console.log('pageBeforeRemove')
+                console.groupEnd()
             },
         },
     }

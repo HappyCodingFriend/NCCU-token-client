@@ -1,0 +1,121 @@
+<template>
+	<section class="page">
+		<nav class="navbar">
+			<div class="navbar-inner sliding">
+				<div class="left">
+					<a href="#" class="link back">
+						<i class="icon icon-back"></i>
+						<span class="ios-only">Back</span>
+					</a>
+				</div>
+				<div class="title">測試</div>
+			</div>
+		</nav>
+		<div class="toolbar tabbar">
+			<div class="toolbar-inner">
+				<a href="#tab-1" class="tab-link tab-link-active">device</a>
+				<a href="#tab-2" class="tab-link">qrscanner</a>
+				<a href="#tab-3" class="tab-link">brightness</a>
+			</div>
+		</div>
+		<div class="tabs-animated-wrap">
+			<div class="tabs">
+				<div id="tab-1" class="page-content tab tab-active">
+					<div id="deviceList" class="list">
+					</div>
+				</div>
+				<div id="tab-2" class="page-content tab">
+					<div id="qrscannerList" class="list">
+
+					</div>
+				</div>
+				<div id="tab-3" class="page-content tab">
+					<div class="block-title">Volume</div>
+					<div class="list simple-list">
+						<ul>
+							<li>
+								<div class="item-cell width-auto flex-shrink-0">
+									<i class="icon f7-icons ios-only">volume_mute_fill</i>
+									<i class="icon material-icons md-only">volume_mute</i>
+								</div>
+								<div class="item-cell flex-shrink-3">
+									<!-- range slider -->
+									<div class="range-slider range-slider-init">
+										<input type="range" min="0" max="100" step="1" value="10">
+									</div>
+								</div>
+								<div class="item-cell width-auto flex-shrink-0">
+									<i class="icon f7-icons ios-only">volume_fill</i>
+									<i class="icon material-icons md-only">volume_up</i>
+								</div>
+							</li>
+						</ul>
+						<div class="block-title">Brightness</div>
+						<div class="list simple-list">
+							<li>
+								<div class="item-cell width-auto flex-shrink-0">
+									<i class="icon f7-icons ios-only">circle</i>
+									<i class="icon material-icons md-only">brightness_low</i>
+								</div>
+								<div class="item-cell flex-shrink-3">
+									<!-- range slider, enable labels -->
+									<div class="range-slider range-slider-init color-orange" data-label="true" @range:change="onRangeChange">
+										<input type="range" min="0" max="100" step="10" value="50">
+									</div>
+								</div>
+								<div class="item-cell width-auto flex-shrink-0">
+									<i class="icon f7-icons ios-only">circle_half</i>
+									<i class="icon material-icons md-only">brightness_high</i>
+								</div>
+							</li>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</template>
+
+<script>
+	return {
+		data: function () {
+		},
+		methods: {
+			onRangeChange: function (e, range) {
+				console.log(range.value)
+				brightness.setBrightness(range.value / 100)
+			}
+		},
+		on: {
+			pageMounted: () => {
+			},
+			pageInit: () => {
+			},
+			pageBeforein: () => {
+				let listTemplate = `			
+					<ul>
+						{{#each this}}
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title">{{@key}}</div>
+									<div class="item-after">{{this}}</div>
+								</div>
+							</div>
+						</li>
+						{{/each}}
+					</ul>
+				`
+				let compiledListTemplate = Template7.compile(listTemplate)
+				$('#deviceList').html(compiledListTemplate(toJSON(device)))
+				QRScanner.getStatus(function (status) {
+					$('#qrscannerList').html(compiledListTemplate(status))
+				})
+			},
+			pageBeforeOut: () => {
+			},
+			pageBeforeRemove: () => {
+			},
+		},
+	}
+</script>

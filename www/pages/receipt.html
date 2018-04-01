@@ -32,14 +32,11 @@
         methods: {},
         on: {
             pageMounted: () => {
-                console.log('pageMounted')
+                console.group('receipt')
             },
             pageInit: () => {
-                console.log('pageInit')
             },
             pageBeforein: () => {
-                console.log('pageBeforein')
-
                 $('#brightness').change(() => {
                     if ($('#brightness').is(':checked')) {
                         brightness.setBrightness(1.0)
@@ -48,29 +45,21 @@
                     }
                 })
 
-                NativeStorage.getItem('user', user => {
-                    console.log(user)
-                    let text = JSON.stringify({
-                        ID: user.ID,
-                        address: user.address,
-                    })
-                    let qrcode = new QRCode('qrcode', {
-                        text: text,
-                        colorDark: '#000000',
-                        colorLight: '#ffffff',
-                        correctLevel: QRCode.CorrectLevel.H
-                    })
-                }, err => {
-                    app.dialog.alert('您尚未登入', '警告', () => {
-                        app.router.back()
-                    })
+                let text = JSON.stringify({
+                    ID: user.ID,
+                    address: user.address,
+                })
+                let qrcode = new QRCode('qrcode', {
+                    text: text,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
                 })
             },
             pageBeforeOut: () => {
-                console.log('pageBeforeOut')
             },
             pageBeforeRemove: () => {
-                console.log('pageBeforeRemove')
+                console.groupEnd()
             },
         },
     }

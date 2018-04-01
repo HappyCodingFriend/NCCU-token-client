@@ -33,13 +33,13 @@
                     記住帳號
                 </p>
                 <div class="row">
-                    <a class="">註冊</a>
-                    <a class="">忘記密碼</a>
+                    <a @click="signUp">註冊</a>
+                    <a>忘記密碼</a>
                 </div>
             </div>
             <div class="block">
                 <div class="row">
-                    <button id="sign_in_button" class="col button button-fill" @click="sign_in">登入</button>
+                    <button id="sign_in_button" class="col button button-fill" @click="signIn">登入</button>
                     <button class="col button button-fill" @click="fingerprint_decrypt">指紋登入</button>
                 </div>
             </div>
@@ -50,21 +50,27 @@
 <script>
     return {
         methods: {
-            sign_in: () => {
+            signUp: () => {
+                app.router.navigate('/signUp/')
+            },
+            signIn: () => {
                 let ID = $('#ID').val()
                 let password = $('#password').val()
-                $.get(`http://101.0.135.141:50000/user?ID=${ID}&password=${password}`, result => {
-                    console.log(result)
-                    app.dialog.alert(result.inf, '政大錢包', () => {
-                        if (result.type) {
-                            NativeStorage.setItem('user', result, console.log, console.error)
+                api.signIn(ID, password, (data, status, xhr) => {
+                    console.log(status, data)
+                    app.dialog.alert(data.inf, '政大錢包', () => {
+                        if (data.type) {
+                            NativeStorage.setItem('user', data, console.log, console.error)
+                            user = data
                             if ($('#remember').is(":checked")) {
-                                storage.setItem('ID', ID)
+                                setting.remember = true
+                                setting.rememberID = ID
                             }
                             else {
-                                storage.removeItem('ID')
+                                setting.remember = false
+                                delete setting.rememberID
                             }
-                            app.router.back()
+                            app.router.navigate('/')
                         }
                     })
                 })
@@ -113,14 +119,22 @@
             },
         },
         on: {
-            pageInit: function () {
-                if (storage.getItem('ID')) {
-                    $('#ID').val(storage.getItem('ID'))
+            pageMounted: () => {
+                console.group('signIn')
+            },
+            pageInit: () => {
+            },
+            pageBeforein: () => {
+                if (setting.remember) {
+                    $('#ID').val(setting.rememberID)
                     $('#remember').prop("checked", true)
                 }
             },
-            pageBeforeOut: function () { },
-            pageBeforeRemove: function () { },
+            pageBeforeOut: () => {
+            },
+            pageBeforeRemove: () => {
+                console.groupEnd()
+            },
         },
     }
 </script>

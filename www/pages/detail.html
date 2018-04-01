@@ -11,12 +11,20 @@
                 <div class="title">明細</div>
             </div>
         </nav>
-        <div class="page-content">
-            <div class="block-title">付款</div>
-            <div class="list virtual-list1">
+        <div class="page-content ptr-content" @ptr:refresh="refresh">
+            <div class="ptr-preloader">
+                <div class="preloader"></div>
+                <div class="ptr-arrow"></div>
             </div>
-            <div class="block-title">收款</div>
-            <div class="list virtual-list2">
+            <div class="block-title">轉出</div>
+            <div id="detailList_To" class="list">
+                <ul>
+                </ul>
+            </div>
+            <div class="block-title">轉入</div>
+            <div id="detailList_From" class="list">
+                <ul>
+                </ul>
             </div>
         </div>
         <!--明細內容-->
@@ -30,143 +38,71 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-content">
-                    <div class="list">
-                        <ul>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">轉出帳戶</div>
-                                        <div class="item-after">王小明/10159001</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">轉入帳戶</div>
-                                        <div class="item-after">王小明/10159002</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">交易類別</div>
-                                        <div class="item-after">轉帳</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">點數種類</div>
-                                        <div class="item-after">教務點數</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">交易金額</div>
-                                        <div class="item-after">+20</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">交易狀態</div>
-                                        <div class="item-after">成功</div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+
             </div>
         </div>
     </section>
 </template>
 
 <script>
+    function load() {
+        let listTemplate = `
+            <ul>
+                {{#each this.tx}}
+                <li>
+                    <a href="#" class="item-link item-content popup-open" data-popup=".detail-popup">
+                        <div class="item-media">
+                            {{date}}
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title">
+                                <div class="item-header">{{targetID}}</div>
+                                {{ercName}}
+                            </div>
+                            <div class="item-after">
+                                <span class="badge color-{{@root.color}}">{{@root.sign}}{{number}}</span>
+                            </div>
+                        </div>
+                    </a>
+                 </li>
+                {{/each}}
+            </ul>
+        `
+        let compiledListTemplate = Template7.compile(listTemplate)
+
+        api.getTransactionsTo((tx) => {
+            let data = {
+                color: 'red',
+                sign: '-',
+                tx: tx,
+            }
+            $('#detailList_To').html(compiledListTemplate(data))
+        })
+        api.getTransactionsFrom((tx) => {
+            let data = {
+                color: 'green',
+                sign: '+',
+                tx: tx,
+            }
+            $('#detailList_From').html(compiledListTemplate(data))
+        })
+    }
     return {
         methods: {},
         on: {
-            pageInit: () => {
-                NativeStorage.getItem('user', user => {
-                    console.log(user)
-                    $.get(`http://101.0.135.141:50000/query/transactionsTo?token=${user.token}`, result => {
-                        console.log(result)
-
-                        result.forEach(element => {
-                            element.date = new Date(element.timestamp).toISOString().slice(0, 10).replace(/-/g, "")
-                        })
-
-                        let virtualList = app.virtualList.create({
-                            el: '.virtual-list1',
-                            items: result,
-                            itemTemplate: `
-                                <li>
-                                    <a href="#" class="item-link item-content popup-open" data-popup=".detail-popup">
-                                        <div class="item-media">
-                                            {{date}}
-                                        </div>
-                                        <div class="item-inner">
-                                            <div class="item-title">
-                                                <div class="item-header">{{targetID}}</div>
-                                                {{ercName}}
-                                            </div>
-                                            <div class="item-after">
-                                                <span class="badge color-red">{{number}}</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            `,
-                            height: 54
-                        })
-                    })
-                    $.get(`http://101.0.135.141:50000/query/transactionsFrom?token=${user.token}`, result => {
-                        console.log(result)
-
-                        result.forEach(element => {
-                            element.date = new Date(element.timestamp).toISOString().slice(0, 10).replace(/-/g, "")
-                        })
-
-                        let virtualList = app.virtualList.create({
-                            el: '.virtual-list2',
-                            items: result,
-                            itemTemplate: `
-                                <li>
-                                    <a href="#" class="item-link item-content popup-open" data-popup=".detail-popup">
-                                        <div class="item-media">
-                                            {{date}}
-                                        </div>
-                                        <div class="item-inner">
-                                            <div class="item-title">
-                                                <div class="item-header">{{targetID}}</div>
-                                                {{ercName}}
-                                            </div>
-                                            <div class="item-after">
-                                                <span class="badge color-green">{{number}}</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            `,
-                            height: 54
-                        })
-                    })
-                }, err => {
-                    console.error(err)
-                    app.dialog.alert('請先登入', '政大錢包', () => {
-                        app.router.back()
-                    })
-                })
+            pageMounted: () => {
+                console.group('detail')
             },
-            pageBeforeOut: function () { },
-            pageBeforeRemove: function () { },
+            pageInit: () => {
+            },
+            pageBeforeIn: () => {
+                load()
+            },
+            pageBeforeOut: () => {
+            },
+            pageBeforeRemove: () => {
+                console.groupEnd()
+            },
         },
     }
 </script>

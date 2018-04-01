@@ -1,7 +1,7 @@
 <template>
     <section class="page">
         <nav class="navbar">
-            <div class="navbar-inner sliding">
+            <div class="navbar-inner">
                 <div class="left">
                     <a href="#" class="link back">
                         <i class="icon icon-back"></i>
@@ -9,24 +9,24 @@
                     </a>
                 </div>
                 <div class="title">好友</div>
-                <div class="subnavbar">
-                    <form data-search-container=".virtual-list" data-search-item="li" data-search-in=".item-title" class="searchbar searchbar-init">
-                        <div class="searchbar-inner">
-                            <div class="searchbar-input-wrap">
-                                <input type="search" placeholder="Search" />
-                                <i class="searchbar-icon"></i>
-                                <span class="input-clear-button"></span>
-                            </div>
-                            <span class="searchbar-disable-button">Cancel</span>
-                        </div>
-                    </form>
-                </div>
                 <div class="right">
-                    <a href="#" class="link popover-open" data-popover=".popover-menu">
-                        <i class="icon f7-icons ios-only">add</i>
-                        <i class="icon material-icons md-only">add</i>
+                    <!-- Link to enable searchbar -->
+                    <a class="link icon-only searchbar-enable" data-searchbar=".searchbar">
+                        <i class="icon f7-icons ios-only">search_strong</i>
+                        <i class="icon material-icons md-only">search</i>
                     </a>
                 </div>
+                <!-- Searchbar is a direct child of "navbar-inner" -->
+                <form class="searchbar searchbar-expandable">
+                    <div class="searchbar-inner">
+                        <div class="searchbar-input-wrap">
+                            <input type="search" placeholder="Search" />
+                            <i class="searchbar-icon"></i>
+                            <span class="input-clear-button"></span>
+                        </div>
+                        <span class="searchbar-disable-button">Cancel</span>
+                    </div>
+                </form>
             </div>
         </nav>
         <div class="fab fab-right-bottom color-blue">
@@ -40,39 +40,47 @@
             </a>
             <!-- FAB speed dial actions -->
             <div class="fab-buttons fab-buttons-top">
-                <button @click="addFriend_QR">QR</button>
-                <button @click="addFriend_ID">ID</button>
+                <a @click="addFriend_QR">QR</a>
+                <a @click="addFriend_ID">ID</a>
             </div>
         </div>
-        <div class="page-content">
-            <div class="list simple-list searchbar-not-found">
-                <ul>
-                    <li>Nothing found</li>
-                </ul>
+        <div class="page-content ptr-content" @ptr:refresh="refresh">
+            <div class="ptr-preloader">
+                <div class="preloader"></div>
+                <div class="ptr-arrow"></div>
             </div>
-            <div class="list virtual-list media-list searchbar-found"></div>
-        </div>
-        <div class="popover popover-menu">
-            <div class="popover-angle"></div>
-            <div class="popover-inner">
-                <div class="list">
-                    <ul>
-                        <li>
-                            <a href="/dialog/" class="list-button item-link popover-close">掃描QR code</a>
-                        </li>
-                        <li>
-                            <a href="/tabs/" class="list-button item-link popover-close">以帳號新增</a>
-                        </li>
-                    </ul>
-                </div>
+            <div id="friendList" class="list media-list">
             </div>
         </div>
     </section>
 </template>
 
 <script>
-    let user
-
+    function load() {
+        let listTemplate = `
+            <ul>
+                {{#each this}}
+                <li>
+                    <div class="item-content">
+                        <div class="item-media">
+                            <img class="head" src="imgs/{{friendID}}.jpg">
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title-row">
+                                <div class="item-title">{{name}}</div>
+                                <div class="item-after">大學生</div>
+                            </div>
+                            <div class="item-subtitle">{{friendID}}</div>
+                            <div class="item-text">資訊科學系</div>
+                        </div>
+                    </div>
+                </li>
+                {{/each}}
+            </ul>
+        `
+        let compiledListTemplate = Template7.compile(listTemplate)
+        $('#friendList').html(compiledListTemplate(friends))
+    }
     return {
         data: function () {
         },
@@ -82,59 +90,30 @@
             },
             addFriend_ID: () => {
                 app.dialog.prompt('朋友ID?', function (friendID) {
-                    $.post(`http://101.0.135.141:50000/friend/${friendID}?token=${user.token}`, result => {
-                        app.dialog.alert('新增成功')
+                    api.addFriend(friendID, (data) => {
+                        load()
+                        app.dialog.alert(data.inf)
                     })
                 })
+            },
+            refresh: (e, done) => {
+                api.getFriends(load)
+                done()
             },
         },
         on: {
-            pageInit: function () {
-                NativeStorage.getItem('user', data => {
-                    user = data
-                }, err => {
-                    console.error(err)
-                    app.dialog.alert('請先登入', '政大錢包', () => {
-                        app.router.back()
-                    })
-                })
+            pageMounted: () => {
+                console.group('friend')
             },
-            pageBeforeIn: function () {
-                $.get(`http://101.0.135.141:50000/friends?token=${user.token}`, result => {
-                    console.log(result)
-
-                    let virtualList = app.virtualList.create({
-                        el: '.virtual-list',
-                        items: result,
-                        searchAll: function (query, items) {
-                            let found = []
-                            for (let i = 0; i < items.length; i++) {
-                                if (items[i].name.indexOf(query) >= 0 || query.trim() === '')
-                                    found.push(i)
-                            }
-                            return found
-                        },
-                        itemTemplate: `
-                                        <li>
-                                            <div class="item-content">
-                                                <div class="item-media">
-                                                    <img class="head" src="imgs/{{friendID}}.jpg">
-                                                </div>
-                                                <div class="item-inner">
-                                                    <div class="item-title-row">
-                                                        <div class="item-title">{{name}}</div>
-                                                        <div class="item-after">大學生</div>
-                                                    </div>
-                                                    <div class="item-subtitle">{{friendID}}</div>
-                                                    <div class="item-text">資訊科學系</div>
-                                                </div>
-                                            </div>
-                                        </li>`,
-                        height: 93.75
-                    })
-                })
+            pageInit: () => {
             },
-            pageBeforeRemove: function () {
+            pageBeforeIn: () => {
+                load()
+            },
+            pageBeforeOut: () => {
+            },
+            pageBeforeRemove: () => {
+                console.groupEnd()
             },
         },
     }

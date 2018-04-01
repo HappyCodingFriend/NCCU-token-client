@@ -17,49 +17,7 @@
                 <div class="ptr-arrow"></div>
             </div>
             <div class="block-title">我的點數</div>
-            <div class="list">
-                <ul>
-                    <li>
-                        <div class="item-content">
-                            <div class="item-inner">
-                                <div class="item-title">政大點數</div>
-                                <div class="item-after">
-                                    <span class="badge color-blue" id="">0</span>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="item-content">
-                            <div class="item-inner">
-                                <div class="item-title">宿舍點數</div>
-                                <div class="item-after">
-                                    <span class="badge color-green" id="dormitory"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="item-content">
-                            <div class="item-inner">
-                                <div class="item-title">教務處點數</div>
-                                <div class="item-after">
-                                    <span class="badge color-green" id="academic"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="item-content">
-                            <div class="item-inner">
-                                <div class="item-title">學務處點數</div>
-                                <div class="item-after">
-                                    <span class="badge color-green" id="student"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+            <div id="pointList" class="list">
             </div>
             <div class="block-title">帳戶資訊</div>
             <div class="list">
@@ -86,83 +44,64 @@
                     </li>
                 </ul>
             </div>
-            <div class="block-title">系統</div>
-            <div class="list simple-list">
-                <ul>
-                    <li @click="sign_out">登出</li>
-                </ul>
-            </div>
         </div>
     </section>
 </template>
 
 <script>
-    function reload(callback) {
-
-        NativeStorage.getItem('user', user => {
-            console.log(user)
-            $('#address_SQL').text(user.address)
-            $.get(`http://101.0.135.141:50000/point/0xCe1Cd66680ebA0a1783e7D88E756A7A23cE72028?token=${user.token}`, function (result) {
-                $('#dormitory').text(result)
+    function load() {
+        for (let i in points) {
+            api.getPoint(points[i].address, (balance) => {
+                $(`#${points[i].address}`).text(balance)
             })
-            $.get(`http://101.0.135.141:50000/point/0xab76C487a4eb5eD2E9Eaf587E4853aC259Ef8380?token=${user.token}`, function (result) {
-                $('#academic').text(result)
-            })
-            $.get(`http://101.0.135.141:50000/point/0xd8fd7d4Fa2cBE55573eec5D481CE4BD9A6522AC7?token=${user.token}`, function (result) {
-                $('#student').text(result)
-            })
-        }, err => {
-            app.dialog.alert('您尚未登入', '警告', () => {
-                app.router.back()
-            })
-        })
-
-        NativeStorage.getItem('encAccount', encAccount => {
-            console.log(encAccount.address)
-            $('#address_NS').text(encAccount.address)
-        }, console.error)
+        }
     }
-
     return {
         data: () => {
         },
         methods: {
-            inf: () => {
-                console.log('inf')
-            },
-            sign_out: () => {
-                console.log('sign_out')
-                NativeStorage.remove('user', () => {
-                    app.dialog.alert('登出成功', '溫馨提醒', () => {
-                        app.router.back()
-                    })
-                }, err => {
-                    console.error(err)
-                    app.dialog.alert('登出失敗', '警告', () => { })
-                })
-            },
             refresh: (e, done) => {
-                reload()
+                api.getPoints(load()) 
                 done()
             },
         },
         on: {
             pageMounted: () => {
-                console.log('pageMounted')
+                console.group('personal')
             },
             pageInit: () => {
-                console.log('pageInit')
-
             },
             pageBeforein: () => {
-                console.log('pageBeforein')
-                reload()
+                let listTemplate = `
+                    <ul>
+                        {{#each this}}
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">{{name}}</div>
+                                    <div class="item-after">
+                                        <span class="badge color-blue" id={{address}}></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {{/each}}
+                    </ul>
+                `
+                let compiledListTemplate = Template7.compile(listTemplate)
+                $('#pointList').html(compiledListTemplate(points))
+                
+                load()
+
+                $('#address_SQL').text(user.address)
+                NativeStorage.getItem('encAccount', encAccount => {
+                    $('#address_NS').text(`0x${encAccount.address}`)
+                }, console.error)
             },
             pageBeforeOut: () => {
-                console.log('pageBeforeOut')
             },
             pageBeforeRemove: () => {
-                console.log('pageBeforeRemove')
+                console.groupEnd()
             },
         },
     }

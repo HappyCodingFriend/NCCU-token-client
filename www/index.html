@@ -2,15 +2,16 @@
 <html>
 
 <head>
-	<!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
-	<meta name="format-detection" content="telephone=no">
-	<meta name="msapplication-tap-highlight" content="no">
-	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="theme-color" content="#2196f3">
+
+	<title>政大點數</title>
+
 	<link rel="stylesheet" type="text/css" href="css/framework7/framework7.css">
 	<link rel="stylesheet" type="text/css" href="css/app.css">
-	<link rel="stylesheet" type="text/css" href="css/logo.css">
 	<link rel="stylesheet" type="text/css" href="css/index.css">
-	<title>政大點數</title>
 </head>
 
 <body>
@@ -28,13 +29,13 @@
 						<div class="list links-list">
 							<ul>
 								<li>
-									<a href="/transaction/" class="panel-close">收付</a>
-								</li>
-								<li>
 									<a href="/friend/" class="panel-close">好友</a>
 								</li>
 								<li>
 									<a href="/detail/" class="panel-close">明細</a>
+								</li>
+								<li>
+									<a href="/timeline/" class="panel-close">交易時間線</a>
 								</li>
 								<li>
 									<a href="/exchange_rate/" class="panel-close">匯率</a>
@@ -47,6 +48,9 @@
 								</li>
 								<li>
 									<a href="/setting/" class="panel-close">設定</a>
+								</li>
+								<li>
+									<a href="/system/" class="panel-close">系統</a>
 								</li>
 								<br>
 								<li>
@@ -68,10 +72,10 @@
 									<a href="/color_themes/" class="panel-close">色彩主題</a>
 								</li>
 								<li>
-									<a href="/tool/" class="panel-close">工具</a>
+									<a href="/template/" class="panel-close">樣板</a>
 								</li>
 								<li>
-									<a href="/system/" class="panel-close">系統</a>
+									<a href="/test/" class="panel-close">測試</a>
 								</li>
 							</ul>
 						</div>
@@ -151,12 +155,17 @@
 			</div>
 		</div>
 	</div>
+
 	<script type="text/javascript" src="cordova.js"></script>
 	<script type="text/javascript" src="js/framework7/framework7.min.js"></script>
-	<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+
 	<script type="text/javascript" src="js/qrcode.min.js"></script>
 	<script type="text/javascript" src="js/web3.min.js"></script>
 	<script type="text/javascript" src="js/ERC223Token.js"></script>
+
+	<script type="text/javascript" src="js/api.js"></script>
+	<script type="text/javascript" src="js/lib.js"></script>
+
 	<script type="text/javascript" src="js/routes.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript" src="js/index.js"></script>

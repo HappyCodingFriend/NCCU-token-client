@@ -27,6 +27,10 @@ let routes = [{
 	componentUrl: './pages/detail.html',
 },
 {
+	path: '/timeline/',
+	componentUrl: './pages/timeline.html',
+},
+{
 	path: '/friend/',
 	componentUrl: './pages/friend.html',
 },
@@ -59,12 +63,16 @@ let routes = [{
 	componentUrl: './pages/color_themes.html',
 },
 {
-	path: '/tool/',
-	componentUrl: './pages/tool.html',
+	path: '/template/',
+	componentUrl: './pages/template.html',
 },
 {
 	path: '/system/',
 	componentUrl: './pages/system.html',
+},
+{
+	path: '/test/',
+	componentUrl: './pages/test.html',
 },
 {
 	path: '(.*)',

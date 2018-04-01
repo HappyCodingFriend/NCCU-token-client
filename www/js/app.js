@@ -1,23 +1,24 @@
 // Dom7
-var $$ = Dom7
+let $ = Dom7
 
 // Theme
-var theme = 'auto';
-if (document.location.search.indexOf('theme=') >= 0) {
-	theme = document.location.search.split('theme=')[1].split('&')[0]
-}
+let theme = 'auto'
 
 // Init App
-var app = new Framework7({
-	id: 'io.framework7.testapp',
+let app = new Framework7({
 	root: '#app',
+	id: 'com.myapp.test',
+	name: '政大點數',
 	theme: theme,
+	version: '0.1.0',
+	language: 'zh-Hant',
 	data: function () {
 		return {
-			user: {
-				firstName: 'John',
-				lastName: 'Doe',
-			},
+			server: {
+				protocol: 'http',
+				ip: '150.116.233.133',
+				port: '50000',
+			}
 		};
 	},
 	methods: {
@@ -29,4 +30,7 @@ var app = new Framework7({
 	vi: {
 		placementId: 'pltd4o7ibb9rc653x14',
 	},
+	touch: {
+		fastClicks: false,
+	}
 })
