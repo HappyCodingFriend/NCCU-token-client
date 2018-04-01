@@ -75,8 +75,8 @@
             })
 
             let orderAddress = exchange.address
-            let point1 = exchange.point1
-            let value1 = exchange.value1
+            let point = exchange.point2
+            let value = exchange.value2
 
             //取得Account
             NativeStorage.getItem('encAccount', encAccount => {
@@ -85,7 +85,17 @@
 
                     //取得nonce
                     api.getNonce((nonce) => {
-
+                        let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi);
+                        let data = ERC223TokenContract.methods.transfer(orderAddress, value).encodeABI();
+                        let tx = {
+                            nonce: parseInt(nonce),
+                            to: point,
+                            data: data,
+                            gas: 4000000,
+                            gasPrice: '0x0',
+                            chainId: '0x11',
+                        }
+                        let signTx = decAccount.signTransaction(tx)
                     })
                 })
             })
