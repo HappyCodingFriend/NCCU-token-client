@@ -12,7 +12,7 @@
             </div>
         </nav>
         <div class="page-content">
-            <div class="list inline-labels no-hairlines-md">
+            <form class="list inline-labels no-hairlines-md">
                 <ul>
                     <li class="item-content item-input">
                         <div class="item-inner">
@@ -60,7 +60,7 @@
                         </div>
                     </li>
                 </ul>
-            </div>
+            </form>
             <div class="block">
                 <div class="row">
                     <button class="col button button-fill" @click="order_button">掛單</button>
@@ -89,45 +89,40 @@
         methods: {
             order_button: () => {
                 //轉出點數ERC address
-                let token1 = $('select#erc_out').val();
-                console.log($('select#erc_out').val())
+                let point1 = $('select#erc_out').val()
                 let value1 = $('#number_out').val()
-                console.log($('#number_out').val())
 
                 //轉入點數ERC address
-                let token2 = $('select#erc_in').val();
-                console.log($('select#erc_in').val())
-                let value2 = $('#number_in').val();
-                console.log($('#number_in').val())
+                let point2 = $('select#erc_in').val()
+                let value2 = $('#number_in').val()
 
                 //取得到期日
-                let deadline = (new Date(new Date($('#date').val()) - 8 * 60 * 60 * 1000)).valueOf();
-                console.log($('#date').val())
+                let deadline = (new Date(new Date($('#date').val()) - 8 * 60 * 60 * 1000)).valueOf()
 
                 //取得Account
                 NativeStorage.getItem('encAccount', encAccount => {
                     app.dialog.password('請輸入您的交易密碼', '掛單', password => {
                         let decAccount = web3.eth.accounts.decrypt(encAccount, password)
-                        console.log(decAccount)
 
                         //取得nonce
                         api.getNonce((nonce) => {
-                            console.log(nonce)
-
                             //sign tx
-                            let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi);
-                            let data = ERC223TokenContract.methods.addExchange(token2, value1, value2, deadline).encodeABI();
-                            let tx = web3.eth.accounts.signTransaction({
-                                to: token1,
+                            let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
+                            let data = ERC223TokenContract.methods.addExchange(point2, value1, value2, deadline).encodeABI()
+                            let tx = {
+                                nonce: parseInt(nonce),
+                                to: point1,
+                                data: data,
                                 gas: 4000000,
                                 gasPrice: '0x0',
-                                nonce: nonce,
-                                data: data,
-                                chainId: "0x11"
-                            }, decAccount.privateKey)
-                            //if you want to send raw transaction , you need send tx.rawTransaction.
-                        })
+                                chainId: '0x11',
+                            }
+                            let signTx = decAccount.signTransaction(tx)
 
+                            api.addOrder(signTx._rejectionHandler0.rawTransaction, point1, value1, point2, value2, (data) => {
+                                app.dialog.alert('掛單成功', '政大錢包')
+                            })
+                        })
                     })
                 })
             },

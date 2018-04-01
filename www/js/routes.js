@@ -39,8 +39,8 @@ let routes = [{
 	componentUrl: './pages/exchange.html',
 },
 {
-	path: '/exchangeOrder/',
-	componentUrl: './pages/exchangeOrder.html',
+	path: '/order/',
+	componentUrl: './pages/order.html',
 },
 {
 	path: '/exchangeRate/',

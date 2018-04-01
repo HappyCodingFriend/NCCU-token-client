@@ -1,5 +1,6 @@
 let api = {
 
+    //sign
     signIn: (ID, password, success) => {
         app.request.post(getUrl('signIn'), {
             ID,
@@ -13,6 +14,7 @@ let api = {
 
     },
 
+    //user
     getUser: (ID, callback) => {
         app.request.get(getUrl('user', { token: user.token, ID: ID }), (data, status, xhr) => {
             console.log(status, data)
@@ -37,7 +39,7 @@ let api = {
         })
     },
 
-    //取得朋友列表
+    //Friend
     getFriends: (callback) => {
         app.request.get(getUrl('friends', { token: user.token }), (data, status, xhr) => {
             console.log(status, data)
@@ -78,7 +80,7 @@ let api = {
         })
     },
 
-    //取得點數列表
+    //point
     getPoints: (callback) => {
         app.request.get(getUrl('points', { token: user.token }), (data, status, xhr) => {
             console.log(status, data)
@@ -87,7 +89,6 @@ let api = {
         }, 'json')
     },
 
-    //取的點數餘額
     getPoint: (address, callback) => {
         app.request.get(getUrl('point/' + address, { token: user.token }), (data, status, xhr) => {
             console.log(status, data)
@@ -95,6 +96,7 @@ let api = {
         }, 'json')
     },
 
+    //transaction
     getTransactionsTo: (callback) => {
         app.request.get(getUrl('query/transactionsTo', { token: user.token }), (data, status, xhr) => {
             console.log(status, data)
@@ -109,6 +111,37 @@ let api = {
         }, 'json')
     },
 
+    //order
+    getOrders: (callback) => {
+        app.request.get(getUrl('orders', { token: user.token }), (data, status, xhr) => {
+            console.log(status, data)
+            callback(data)
+        }, 'json')
+    },
+
+    getOrder: () => {
+        app.request.get(getUrl('order', { token: user.token }), (data, status, xhr) => {
+            console.log(status, data)
+            callback(data)
+        }, 'json')
+    },
+
+    addOrder: (signTx, point1, value1, point2, value2, callback) => {
+        app.request.post(getUrl('order', { token: user.token }), {
+            signTx,
+            point1,
+            value1,
+            point2,
+            value2,
+        }, (data, status, xhr) => {
+            console.log(status, data)
+            callback(data)
+        }, (xhr, status) => {
+            console.error(status)
+        }, 'json')
+    },
+
+    //nonce
     getNonce: (callback) => {
         app.request.get(getUrl('nonce', { token: user.token }), (data, status, xhr) => {
             console.log(status, data)

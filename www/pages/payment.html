@@ -173,10 +173,10 @@
                                 gasPrice: '0x0',
                                 gas: 4000000,
                             }
-                            let sign_tx = decAccount.signTransaction(tx)
+                            let signTx = decAccount.signTransaction(tx)
 
                             $.post(`http://101.0.135.141:50000/transaction?token=${user.token}`, {
-                                sign_tx: sign_tx._rejectionHandler0.rawTransaction,
+                                signTx: signTx._rejectionHandler0.rawTransaction,
                                 number,
                                 targetID,
                                 targetAddress,
