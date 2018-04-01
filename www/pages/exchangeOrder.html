@@ -89,14 +89,19 @@
         methods: {
             order_button: () => {
                 //轉出點數ERC address
+                let token1 = $('select#erc_out').val();
                 console.log($('select#erc_out').val())
+                let value1 = $('#number_out').val()
                 console.log($('#number_out').val())
 
                 //轉入點數ERC address
+                let token2 = $('select#erc_in').val();
                 console.log($('select#erc_in').val())
+                let value2 = $('#number_in').val();
                 console.log($('#number_in').val())
 
                 //取得到期日
+                let deadline = (new Date(new Date($('#date').val()) - 8 * 60 * 60 * 1000)).valueOf();
                 console.log($('#date').val())
 
                 //取得Account
@@ -105,12 +110,25 @@
                         let decAccount = web3.eth.accounts.decrypt(encAccount, password)
                         console.log(decAccount)
 
-                    })
-                })
+                        //取得nonce
+                        api.getNonce((nonce) => {
+                            console.log(nonce)
 
-                //取得nonce
-                api.getNonce((nonce) => {
-                    console.log(nonce)
+                            //sign tx
+                            let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi);
+                            let data = ERC223TokenContract.methods.addExchange(token2, value1, value2, deadline).encodeABI();
+                            let tx = web3.eth.accounts.signTransaction({
+                                to: token1,
+                                gas: 4000000,
+                                gasPrice: '0x0',
+                                nonce: nonce,
+                                data: data,
+                                chainId: "0x11"
+                            }, decAccount.privateKey)
+                            //if you want to send raw transaction , you need send tx.rawTransaction.
+                        })
+
+                    })
                 })
             },
         },
