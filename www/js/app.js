@@ -10,7 +10,7 @@ let app = new Framework7({
 	id: 'com.myapp.test',
 	name: '政大點數',
 	theme: theme,
-	version: '0.1.0',
+	version: '1.0.0 Alpha',
 	language: 'zh-Hant',
 	data: function () {
 		return {

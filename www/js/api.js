@@ -10,8 +10,13 @@ let api = {
         }, 'json')
     },
 
-    signUp: () => {
-
+    signUp: (signUpData, callback) => {
+        app.request.post(getUrl('signUp'), signUpData, (data, status, xhr) => {
+            console.log(status, data)
+            callback(data)
+        }, (xhr, status) => {
+            console.error(status)
+        }, 'json')
     },
 
     //user
@@ -111,6 +116,20 @@ let api = {
         }, 'json')
     },
 
+    postTransaction: (signTx, targetID, number, point, callback) => {
+        app.request.post(getUrl('transaction', { token: user.token }), {
+            signTx,
+            targetID,
+            number,
+            point,
+        }, (data, status, xhr) => {
+            console.log(status, data)
+            callback(data)
+        }, (xhr, status) => {
+            console.error(status)
+        }, 'json')
+    },
+
     //order
     getOrders: (callback) => {
         app.request.get(getUrl('orders', { token: user.token }), (data, status, xhr) => {
@@ -139,6 +158,25 @@ let api = {
         }, (xhr, status) => {
             console.error(status)
         }, 'json')
+    },
+
+    updateOrder: (signTx, autoID, callback) => {
+        app.request({
+            url: getUrl('order', { token: user.token }),
+            method: 'PUT',
+            data: {
+                signTx,
+                autoID,
+            },
+            success: (data, status, xhr) => {
+                console.log(status, data)
+                callback(data)
+            },
+            error: (xhr, status) => {
+                console.error(status)
+            },
+            dataType: 'json',
+        })
     },
 
     //nonce

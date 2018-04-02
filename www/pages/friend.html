@@ -60,8 +60,8 @@
         let listTemplate = `
             <ul>
                 {{#each this}}
-                <li>
-                    <div class="item-content">
+                <li class="swipeout deleted-callback">
+                    <div class="item-content swipeout-content">
                         <div class="item-media">
                             <img class="head" src="imgs/{{friendID}}.jpg">
                         </div>
@@ -73,6 +73,9 @@
                             <div class="item-subtitle">{{friendID}}</div>
                             <div class="item-text">資訊科學系</div>
                         </div>
+                        <div class="swipeout-actions-right">
+                            <a href="#" class="swipeout-delete">Delete</a>
+                        </div>
                     </div>
                 </li>
                 {{/each}}
@@ -80,6 +83,10 @@
         `
         let compiledListTemplate = Template7.compile(listTemplate)
         $('#friendList').html(compiledListTemplate(friends))
+
+        $('.deleted-callback').on('swipeout:deleted', () => {
+            
+        })
     }
     return {
         data: function () {

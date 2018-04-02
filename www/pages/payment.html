@@ -18,8 +18,17 @@
                         <div class="item-inner">
                             <div class="item-title item-label">點數種類</div>
                             <div class="item-input-wrap">
-                                <select id="erc" placeholder="Please choose...">
+                                <select id="point" placeholder="Please choose...">
                                 </select>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                            <div class="item-title item-label">剩餘數量</div>
+                            <div class="item-input-wrap">
+                                <input type="number" id="balance" placeholder="剩餘數量">
+                                <span class="input-clear-button"></span>
                             </div>
                         </div>
                     </li>
@@ -65,7 +74,7 @@
                 <div class="row">
                     <button class="col button button-fill" @click="user_button">帳號</button>
                     <button class="col button button-fill" @click="friend_button">好友</button>
-                    <button class="col button button-fill" @click="qrcode_button">掃描QR code</button>
+                    <button class="col button button-fill" @click="qrcode_button">QR code</button>
                 </div>
             </div>
             <div class="block">
@@ -87,7 +96,13 @@
             </ul>
         `
         let compiledSelectTemplate = Template7.compile(selectTemplate)
-        $('select#erc').html(compiledSelectTemplate(points))
+        $('select#point').html(compiledSelectTemplate(points))
+
+        $('select#point').change(() => {
+            api.getPoint($('select#point').val(), (balance) => {
+                $('#balance').val(balance)
+            })
+        })
     }
     return {
         methods: {
@@ -149,15 +164,12 @@
             },
             transfer: () => {
 
+                let point = $('#point').val()
                 let number = parseInt($('#number').val())
                 let targetID = $('#targetID').val()
                 let targetAddress = $('#targetAddress').val()
-                let ercName = $('#erc option:selected').text()
-                let ercAddress = $('#erc').val()
 
                 NativeStorage.getItem('encAccount', encAccount => {
-                    console.log(encAccount)
-
                     app.dialog.password('請輸入您的交易密碼', '轉帳', password => {
 
                         let decAccount = web3.eth.accounts.decrypt(encAccount, password)
@@ -168,22 +180,15 @@
                             let tx = {
                                 nonce: parseInt(nonce),
                                 chainId: '0x11',
-                                to: ercAddress,
+                                to: point,
                                 data: data,
                                 gasPrice: '0x0',
                                 gas: 4000000,
                             }
                             let signTx = decAccount.signTransaction(tx)
 
-                            $.post(`http://101.0.135.141:50000/transaction?token=${user.token}`, {
-                                signTx: signTx._rejectionHandler0.rawTransaction,
-                                number,
-                                targetID,
-                                targetAddress,
-                                ercName,
-
-                            }, function (result) {
-                                console.log(result)
+                            api.postTransaction(signTx._rejectionHandler0.rawTransaction, targetID, number, point, (data) => {
+                                console.log(data)
                                 app.dialog.alert('交易成功', '政大錢包')
                             })
                         })

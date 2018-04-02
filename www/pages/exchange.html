@@ -25,17 +25,15 @@
 </template>
 
 <script>
-    function load(exchanges) {
-        var pointMap = new Map();
-        for (let i in points) {
-            pointMap.set(points[i].address, points[i].name)
-        }
-        for (let i in exchanges) {
-            exchanges[i].name1 = pointMap.get(exchanges[i].point1)
-            exchanges[i].name2 = pointMap.get(exchanges[i].point2)
-        }
+    function load() {
+        api.getOrders((exchanges) => {
 
-        let listTemplate = `
+            for (let i in exchanges) {
+                exchanges[i].name1 = pointMap.get(exchanges[i].point1)
+                exchanges[i].name2 = pointMap.get(exchanges[i].point2)
+            }
+
+            let listTemplate = `
             <ul>
                 {{#each this}}
                 <li>
@@ -64,38 +62,46 @@
                 {{/each}}
             </ul>
         `
-        let compiledListTemplate = Template7.compile(listTemplate)
-        $('#exchangeList').html(compiledListTemplate(exchanges))
+            let compiledListTemplate = Template7.compile(listTemplate)
+            $('#exchangeList').html(compiledListTemplate(exchanges))
 
-        $('#exchangeList li').on('click', function (e) {
+            $('#exchangeList li').on('click', function (e) {
 
-            let autoID = $(this).find('.autoID').text()
-            let exchange = exchanges.find((element) => {
-                return element.autoID = autoID
-            })
+                let autoID = $(this).find('.autoID').text()
+                let exchange = exchanges.find((element) => {
+                    return element.autoID == autoID
+                })
 
-            let orderAddress = exchange.address
-            let point = exchange.point2
-            let value = exchange.value2
+                //取得Account
+                NativeStorage.getItem('encAccount', encAccount => {
+                    app.dialog.password('請輸入您的交易密碼', '掛單', password => {
+                        let decAccount = web3.eth.accounts.decrypt(encAccount, password)
 
-            //取得Account
-            NativeStorage.getItem('encAccount', encAccount => {
-                app.dialog.password('請輸入您的交易密碼', '掛單', password => {
-                    let decAccount = web3.eth.accounts.decrypt(encAccount, password)
+                        //取得nonce
+                        api.getNonce((nonce) => {
+                            let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
+                            let data = ERC223TokenContract.methods.transfer(exchange.address, parseInt(exchange.value2)).encodeABI()
+                            let tx = {
+                                nonce: parseInt(nonce),
+                                to: exchange.point2,
+                                data: data,
+                                gas: 4000000,
+                                gasPrice: '0x0',
+                                chainId: '0x11',
+                            }
+                            let signTx = decAccount.signTransaction(tx)._rejectionHandler0.rawTransaction
 
-                    //取得nonce
-                    api.getNonce((nonce) => {
-                        let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi);
-                        let data = ERC223TokenContract.methods.transfer(orderAddress, value).encodeABI();
-                        let tx = {
-                            nonce: parseInt(nonce),
-                            to: point,
-                            data: data,
-                            gas: 4000000,
-                            gasPrice: '0x0',
-                            chainId: '0x11',
-                        }
-                        let signTx = decAccount.signTransaction(tx)
+                            api.updateOrder(signTx, autoID, (data) => {
+                                console.log(data)
+                                if (data.type) {
+                                    load()
+                                    app.dialog.alert('買單成功')
+                                }
+                                else {
+                                    app.dialog.alert('買單失敗')
+                                }
+                            })
+                        })
                     })
                 })
             })
@@ -111,17 +117,15 @@
             pageMounted: () => {
                 console.group('exchange')
             },
-            pageInit: function () {
+            pageInit: () => {
 
             },
-            pageBeforeIn: function () {
-                api.getOrders((data) => {
-                    load(data)
-                })
+            pageBeforeIn: () => {
+                load()
             },
-            pageBeforeOut: function () {
+            pageBeforeOut: () => {
             },
-            pageBeforeRemove: function () {
+            pageBeforeRemove: () => {
                 console.groupEnd()
             },
         },

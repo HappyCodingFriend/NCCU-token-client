@@ -173,11 +173,11 @@
                 let decAccount = web3.eth.accounts.create()
                 app.dialog.password('請輸入您的交易密碼', '生成公私鑰', function (txPassword) {
                     signUpData.address = decAccount.address
-                    $.post('http://101.0.135.141:50000/user', signUpData, result => {
-                        app.dialog.alert(result.inf, '政大錢包', () => {
-                            if (result.type) {
+                    api.signUp(signUpData, (data) => {
+                        app.dialog.alert(data.inf, '政大錢包', () => {
+                            if (data.type) {
                                 NativeStorage.setItem('encAccount', decAccount.encrypt(txPassword), console.log, console.error)
-                                app.router.back()
+                                app.router.navigate('/')
                             }
                         })
                     })

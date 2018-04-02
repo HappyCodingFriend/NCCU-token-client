@@ -12,55 +12,94 @@
             </div>
         </nav>
         <div class="page-content">
-            <form class="list inline-labels no-hairlines-md">
-                <ul>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">換出點數</div>
-                            <div class="item-input-wrap">
-                                <select id="erc_out" placeholder="Please choose...">
-                                </select>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">換出數量</div>
-                            <div class="item-input-wrap">
-                                <input id="number_out" type="number" placeholder="換出數量">
-                                <span class="input-clear-button"></span>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">換入點數</div>
-                            <div class="item-input-wrap">
-                                <select id="erc_in" placeholder="Please choose...">
-                                </select>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">換入數量</div>
-                            <div class="item-input-wrap">
-                                <input id="number_in" type="number" placeholder="換出數量">
-                                <span class="input-clear-button"></span>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">到期日</div>
-                            <div class="item-input-wrap">
-                                <input id="date" type="date">
-                                <span class="input-clear-button"></span>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </form>
+
+            <div class="card">
+                <div class="card-header">換出</div>
+                <div class="card-content card-content-padding">
+                    <form class="list inline-labels no-hairlines-md">
+                        <ul>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">換出點數</div>
+                                    <div class="item-input-wrap">
+                                        <select id="point_out" placeholder="Please choose...">
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">剩餘點數</div>
+                                    <div class="item-input-wrap">
+                                        <input id="balance_out" type="number" placeholder="剩餘點數">
+                                        <span class="input-clear-button"></span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">換出數量</div>
+                                    <div class="item-input-wrap">
+                                        <input id="number_out" type="number" placeholder="換出數量">
+                                        <span class="input-clear-button"></span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+                <div class="card-footer">Footer</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">換入</div>
+                <div class="card-content card-content-padding">
+                    <form class="list inline-labels no-hairlines-md">
+                        <ul>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">換入點數</div>
+                                    <div class="item-input-wrap">
+                                        <select id="point_in" placeholder="Please choose...">
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">剩餘點數</div>
+                                    <div class="item-input-wrap">
+                                        <input id="balance_in" type="number" placeholder="剩餘點數">
+                                        <span class="input-clear-button"></span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">換入數量</div>
+                                    <div class="item-input-wrap">
+                                        <input id="number_in" type="number" placeholder="換出數量">
+                                        <span class="input-clear-button"></span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!--
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">到期日</div>
+                                    <div class="item-input-wrap">
+                                        <input id="date" type="date">
+                                        <span class="input-clear-button"></span>
+                                    </div>
+                                </div>
+                            </li>
+                            -->
+                        </ul>
+                    </form>
+                </div>
+                <div class="card-footer">Footer</div>
+            </div>
+
             <div class="block">
                 <div class="row">
                     <button class="col button button-fill" @click="order_button">掛單</button>
@@ -80,8 +119,19 @@
             </ul>
         `
         let compiledSelectTemplate = Template7.compile(selectTemplate)
-        $('select#erc_out').html(compiledSelectTemplate(points))
-        $('select#erc_in').html(compiledSelectTemplate(points))
+        $('select#point_out').html(compiledSelectTemplate(points))
+        $('select#point_in').html(compiledSelectTemplate(points))
+
+        $('select#point_out').change(() => {
+            api.getPoint($('select#point_out').val(), (balance) => {
+                $('#balance_out').val(balance)
+            })
+        })
+        $('select#point_in').change(() => {
+            api.getPoint($('select#point_in').val(), (balance) => {
+                $('#balance_in').val(balance)
+            })
+        })
     }
     return {
         data: function () {
@@ -89,15 +139,15 @@
         methods: {
             order_button: () => {
                 //轉出點數ERC address
-                let point1 = $('select#erc_out').val()
+                let point1 = $('select#point_out').val()
                 let value1 = $('#number_out').val()
 
                 //轉入點數ERC address
-                let point2 = $('select#erc_in').val()
+                let point2 = $('select#point_in').val()
                 let value2 = $('#number_in').val()
 
                 //取得到期日
-                let deadline = (new Date(new Date($('#date').val()) - 8 * 60 * 60 * 1000)).valueOf()
+                let deadline = 0//(new Date(new Date($('#date').val()) - 8 * 60 * 60 * 1000)).valueOf()
 
                 //取得Account
                 NativeStorage.getItem('encAccount', encAccount => {
@@ -120,7 +170,9 @@
                             let signTx = decAccount.signTransaction(tx)
 
                             api.addOrder(signTx._rejectionHandler0.rawTransaction, point1, value1, point2, value2, (data) => {
-                                app.dialog.alert('掛單成功', '政大錢包')
+                                app.dialog.alert('掛單成功', '政大錢包', ()=>{
+                                    app.router.back()
+                                })
                             })
                         })
                     })
@@ -129,7 +181,7 @@
         },
         on: {
             pageMounted: () => {
-                console.group('exchangeOrder')
+                console.group('order')
             },
             pageInit: () => {
             },

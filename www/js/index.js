@@ -5,6 +5,7 @@ let brightness
 
 let friends
 let points
+let pointMap = new Map()
 
 let user
 let setting = {}
@@ -30,7 +31,12 @@ function onDeviceReady() {
 			//登入確認
 			user = item
 			api.getFriends()
-			api.getPoints()
+			api.getPoints(() => {
+				pointMap = new Map()
+				for (let i in points) {
+					pointMap.set(points[i].address, points[i].name)
+				}
+			})
 
 			$('#app').show()
 			$('#logo').hide()

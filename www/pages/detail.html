@@ -57,7 +57,7 @@
                         <div class="item-inner">
                             <div class="item-title">
                                 <div class="item-header">{{targetID}}</div>
-                                {{ercName}}
+                                {{pointName}}
                             </div>
                             <div class="item-after">
                                 <span class="badge color-{{@root.color}}">{{@root.sign}}{{number}}</span>
@@ -71,6 +71,9 @@
         let compiledListTemplate = Template7.compile(listTemplate)
 
         api.getTransactionsTo((tx) => {
+            for (let i in tx) {
+                tx[i].pointName = pointMap.get(tx[i].point)
+            }
             let data = {
                 color: 'red',
                 sign: '-',
@@ -79,6 +82,9 @@
             $('#detailList_To').html(compiledListTemplate(data))
         })
         api.getTransactionsFrom((tx) => {
+            for (let i in tx) {
+                tx[i].pointName = pointMap.get(tx[i].point)
+            }
             let data = {
                 color: 'green',
                 sign: '+',
