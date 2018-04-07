@@ -62,6 +62,13 @@
                         if (data.type) {
                             NativeStorage.setItem('user', data, console.log, console.error)
                             user = data
+                            api.getFriends()
+                            api.getPoints(() => {
+                                pointMap = new Map()
+                                for (let i in points) {
+                                    pointMap.set(points[i].address, points[i].name)
+                                }
+                            })
                             if ($('#remember').is(":checked")) {
                                 setting.remember = true
                                 setting.rememberID = ID
@@ -71,6 +78,10 @@
                                 delete setting.rememberID
                             }
                             app.router.navigate('/')
+
+                            $('.profile_block img').attr('src', `imgs/${user.ID}.jpg`)
+                            $('.profile_block p').eq(0).text(user.name)
+                            $('.profile_block p').eq(1).text(user.email)
                         }
                     })
                 })

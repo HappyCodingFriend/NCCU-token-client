@@ -12,69 +12,60 @@
             </div>
         </nav>
         <div class="page-content">
-            <div class="list inline-labels no-hairlines-md">
-                <ul>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">點數種類</div>
-                            <div class="item-input-wrap">
-                                <select id="point" placeholder="Please choose...">
-                                </select>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">剩餘數量</div>
-                            <div class="item-input-wrap">
-                                <input type="number" id="balance" placeholder="剩餘數量">
-                                <span class="input-clear-button"></span>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">轉出數量</div>
-                            <div class="item-input-wrap">
-                                <input type="number" id="number" placeholder="轉出數量">
-                                <span class="input-clear-button"></span>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">轉入對象</div>
-                            <div class="item-input-wrap">
-                                <input type="text" id="targetID" placeholder="轉入對象">
-                                <span class="input-clear-button"></span>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">對象姓名</div>
-                            <div class="item-input-wrap">
-                                <input type="text" id="targetName" placeholder="轉入對象">
-                                <span class="input-clear-button"></span>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">對象地址</div>
-                            <div class="item-input-wrap">
-                                <input type="text" id="targetAddress" placeholder="轉入對象">
-                                <span class="input-clear-button"></span>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+            <div class="card">
+                <div class="card-header">轉帳對象</div>
+                <div class="card-content card-content-padding">
+                    <div class="list media-list no-hairlines-md">
+                        <ul>
+                            <li class="swipeout deleted-callback">
+                                <div class="item-content" id="target">
+                                    <div class="item-media">
+                                        <img class="head" src="imgs/man.png">
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title-row">
+                                            <div class="item-title">請選擇轉帳對象</div>
+                                            <div class="item-after"></div>
+                                        </div>
+                                        <div class="item-subtitle" id="targetID"></div>
+                                        <div class="item-text"></div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="link" @click="user_button">帳號</a>
+                    <a href="#" class="link" @click="friend_button">好友</a>
+                    <a href="#" class="link" @click="qrcode_button">QR code</a>
+                </div>
             </div>
-            <div class="block">
-                <div class="row">
-                    <button class="col button button-fill" @click="user_button">帳號</button>
-                    <button class="col button button-fill" @click="friend_button">好友</button>
-                    <button class="col button button-fill" @click="qrcode_button">QR code</button>
+            <div class="card">
+                <div class="card-header">轉帳點數</div>
+                <div class="card-content card-content-padding">
+                    <div class="list inline-labels no-hairlines-md">
+                        <ul>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">點數種類</div>
+                                    <div class="item-input-wrap">
+                                        <select id="point" placeholder="Please choose...">
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">轉出數量</div>
+                                    <div class="item-input-wrap">
+                                        <input type="number" id="number" placeholder="轉出數量">
+                                        <span class="input-clear-button"></span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="block">
@@ -98,25 +89,37 @@
         let compiledSelectTemplate = Template7.compile(selectTemplate)
         $('select#point').html(compiledSelectTemplate(points))
 
-        $('select#point').change(() => {
-            api.getPoint($('select#point').val(), (balance) => {
-                $('#balance').val(balance)
+        loadPoint()
+    }
+    function loadPoint() {
+        $('select#point option').each((i, item) => {
+            console.log(item)
+            api.getPoint(item.value, (balance) => {
+                item.text += `(${balance})`
             })
         })
+    }
+    function putFriend(ID, name, address) {
+        $('#target img').attr('src', `imgs/${ID}.jpg`)
+        $('#target .item-title').text(name)
+        $('#target .item-after').text('大學部')
+        $('#target .item-subtitle').text(ID)
+        $('#target .item-text').text(address)
     }
     return {
         methods: {
             user_button: () => {
-                api.getUser($('#targetID').val(), (data) => {
-                    if (!data.type) {
-                        console.log(data.type)
-                        app.dialog.alert(data.inf)
-                    }
-                    else {
-                        console.log(data.type)
-                        $('#targetName').val(data.inf.name)
-                        $('#targetAddress').val(data.inf.address)
-                    }
+                app.dialog.prompt('請輸入轉帳對象ID', (targetID) => {
+                    api.getUser(targetID, (data) => {
+                        if (!data.type) {
+                            console.log(data.type)
+                            app.dialog.alert(data.inf)
+                        }
+                        else {
+                            console.log(data.type)
+                            putFriend(data.inf.ID, data.inf.name, data.inf.address)
+                        }
+                    })
                 })
             },
             friend_button: () => {
@@ -148,26 +151,24 @@
                 })
 
                 function read(text) {
-                    let data = JSON.parse(text)
-                    /*
-                    $('#point').children().each(function () {
-                        $(this).attr('selected', false)
-                        if ($(this).text() == data.point) {
-                            $(this).attr('selected', true)
+                    api.getUser(text, (data) => {
+                        if (!data.type) {
+                            console.log(data.type)
+                            app.dialog.alert(data.inf)
+                        }
+                        else {
+                            console.log(data.type)
+                            putFriend(data.inf.ID, data.inf.name, data.inf.address)
                         }
                     })
-                    */
-                    if (data.number) $('#number').val(data.number)
-                    if (data.ID) $('#targetID').val(data.ID)
-                    if (data.address) $('#targetAddress').val(data.address)
                 }
             },
             transfer: () => {
 
                 let point = $('#point').val()
                 let number = parseInt($('#number').val())
-                let targetID = $('#targetID').val()
-                let targetAddress = $('#targetAddress').val()
+                let targetID = $('#target .item-subtitle').text()
+                let targetAddress = $('#target .item-text').text()
 
                 NativeStorage.getItem('encAccount', encAccount => {
                     app.dialog.password('請輸入您的交易密碼', '轉帳', password => {
@@ -189,6 +190,7 @@
 
                             api.postTransaction(signTx._rejectionHandler0.rawTransaction, targetID, number, point, (data) => {
                                 console.log(data)
+                                load()
                                 app.dialog.alert('交易成功', '政大錢包')
                             })
                         })

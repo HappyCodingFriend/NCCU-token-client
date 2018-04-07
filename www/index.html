@@ -25,8 +25,12 @@
 			<div class="panel panel-left panel-cover">
 				<div class="page">
 					<div class="page-content">
-						<div class="block-title">Main View Navigation</div>
-						<div class="list links-list">
+						<div class="profile_block padding">
+							<img class="head">
+							<p class="no-margin"></p>
+							<p class="no-margin"></p>
+						</div>
+						<div class="list links-list no-margin">
 							<ul>
 								<li>
 									<a href="/friend/" class="panel-close">好友</a>
@@ -38,10 +42,13 @@
 									<a href="/timeline/" class="panel-close">交易時間線</a>
 								</li>
 								<li>
-									<a href="/order/" class="panel-close">掛單</a>
+									<a href="/order/" class="panel-close">交換</a>
 								</li>
 								<li>
-									<a href="/exchangeRate/" class="panel-close">匯率</a>
+									<a href="/payment/" class="panel-close">轉帳</a>
+								</li>
+								<li>
+									<a href="/receipt/" class="panel-close">收款</a>
 								</li>
 								<li>
 									<a href="/personal/" class="panel-close">我的帳戶</a>
@@ -52,10 +59,13 @@
 								<li>
 									<a href="/setting/" class="panel-close">設定</a>
 								</li>
+								<!--
 								<li>
 									<a href="/system/" class="panel-close">系統</a>
 								</li>
-								<br>
+								<li>
+									<a href="/exchangeRate/" class="panel-close">匯率</a>
+								</li>
 								<li>
 									<a href="/signIn/" class="panel-close">登入</a>
 								</li>
@@ -80,6 +90,7 @@
 								<li>
 									<a href="/test/" class="panel-close">測試</a>
 								</li>
+								-->
 							</ul>
 						</div>
 					</div>
@@ -93,16 +104,16 @@
 						<div class="navbar-inner">
 							<div class="left">
 								<a href="#" class="link icon-only panel-open" data-panel="left">
-									<i class="icon f7-icons ios-only">home</i>
-									<i class="icon material-icons md-only">home</i>
+									<i class="icon f7-icons ios-only">view_headline</i>
+									<i class="icon material-icons md-only">view_headline</i>
 								</a>
 							</div>
-							<div class="title sliding">政大點數</div>
+							<div class="title sliding text-align-center">政大點數系統</div>
 						</div>
 					</header>
-					<div class="toolbar tabbar tabbar-labels">
+					<div class="toolbar tabbar-labels">
 						<div class="toolbar-inner">
-							<a href="/exchange/" class="tab-link tab-link-active">
+							<a href="/exchange/" class="tab-link">
 								<i class="icon icon-fill f7-icons ios-only">email_fill</i>
 								<i class="icon material-icons md-only">cached</i>
 								<span class="tabbar-label">交換</span>
@@ -137,6 +148,7 @@
 										<span class="tabbar-label">明細</span>
 									</a>
 								</div>
+								<!--
 								<div class="col-50">
 									<a href="/exchangeRate/" class="square_block">
 										<i class="f7-icons big ios-only">settings</i>
@@ -144,6 +156,7 @@
 										<span class="tabbar-label">匯率</span>
 									</a>
 								</div>
+								-->
 								<div class="col-50">
 									<a href="/personal/" class="square_block">
 										<i class="f7-icons big ios-only">settings</i>

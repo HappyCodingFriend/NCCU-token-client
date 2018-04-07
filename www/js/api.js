@@ -68,15 +68,13 @@ let api = {
         })
     },
 
-    deleteFriend: () => {
+    deleteFriend: (friendID, callback) => {
         app.request({
-            url: getUrl('friend', { token: user.token }),
+            url: getUrl('friend/' + friendID, { token: user.token }),
             method: 'DELETE',
-            data: {
-                address,
-            },
             success: (data, status, xhr) => {
-                console.log(status)
+                console.log(status, data)
+                callback(data)
             },
             error: (xhr, status) => {
                 console.error(status)

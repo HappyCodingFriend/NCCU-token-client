@@ -32,5 +32,5 @@ let app = new Framework7({
 	},
 	touch: {
 		fastClicks: false,
-	}
+	},
 })

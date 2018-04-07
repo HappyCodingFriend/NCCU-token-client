@@ -74,7 +74,7 @@
                             <div class="item-text">資訊科學系</div>
                         </div>
                         <div class="swipeout-actions-right">
-                            <a href="#" class="swipeout-delete">Delete</a>
+                            <a href="#" class="swipeout-delete">刪除</a>
                         </div>
                     </div>
                 </li>
@@ -84,8 +84,8 @@
         let compiledListTemplate = Template7.compile(listTemplate)
         $('#friendList').html(compiledListTemplate(friends))
 
-        $('.deleted-callback').on('swipeout:deleted', () => {
-            
+        $('.deleted-callback').on('swipeout:deleted', (evt) => {
+            console.log(evt)
         })
     }
     return {
@@ -93,12 +93,49 @@
         },
         methods: {
             addFriend_QR: () => {
+                QRScanner.prepare((err, status) => {
+                    if (status == undefined) {
+                        console.log('denied')
+                    } else if (status.authorized) {
+                        console.log('authorized')
+                        QRScanner.show((status) => {
+                            $('#app').hide()
+                        })
+                        QRScanner.scan((err, contents) => {
+                            if (err) {
+                                console.error(err)
+                            }
+                            console.log('The QR Code contains: ' + contents)
+                            QRScanner.destroy(function (status) {
+                                console.log(' QRScanner.destroy')
+                                $('#app').show()
+                                read(contents)
+                            })
+                        })
+                    } else if (status.denied) {
+                        console.log('denied')
+                    }
+                })
 
+                function read(text) {
+                    api.getUser(text, (data) => {
+                        if (!data.type) {
+                            console.log(data.type)
+                            app.dialog.alert(data.inf)
+                        }
+                        else {
+                            api.addFriend(text, (data) => {
+                                load()
+                                app.dialog.alert(data.inf)
+                            })
+                        }
+                    })
+                }
             },
             addFriend_ID: () => {
                 app.dialog.prompt('朋友ID?', function (friendID) {
                     api.addFriend(friendID, (data) => {
-                        load()
+                        api.getFriends(load)
                         app.dialog.alert(data.inf)
                     })
                 })
@@ -113,6 +150,7 @@
                 console.group('friend')
             },
             pageInit: () => {
+
             },
             pageBeforeIn: () => {
                 load()

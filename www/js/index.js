@@ -38,6 +38,10 @@ function onDeviceReady() {
 				}
 			})
 
+			$('.profile_block img').attr('src', `imgs/${user.ID}.jpg`)
+			$('.profile_block p').eq(0).text(user.name)
+			$('.profile_block p').eq(1).text(user.email)
+
 			$('#app').show()
 			$('#logo').hide()
 		}, (xhr, status) => {

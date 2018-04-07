@@ -19,10 +19,31 @@ h1 {
     font-size: 5rem
 }
 
+.tab-link-highlight {
+    display: none;
+}
+
 img.head {
     width: 16vw;
     height: 16vw;
     border-radius: 50%;
+}
+
+#pointList {
+    font-size: 1.5rem;
+}
+
+#pointList span {
+    font-size: 1rem;
+}
+
+.profile_block {
+    background-image: url("../imgs/photo.jpg");
+    background-size: cover;
+}
+
+.profile_block p {
+    color: ghostwhite;
 }
 
 .square_block {
