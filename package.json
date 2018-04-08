@@ -7,9 +7,10 @@
 	"scripts": {
 		"start": "cordova run browser -- --live-reload",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"run:browser": "cordova run browser",
 		"run:android": "cordova run android",
-		"run:ios": "cordova run ios"
+		"run:ios": "cordova run ios",
+		"build:android": "cordova build android",
+		"build:ios": "cordova build ios"
 	},
 	"author": "Apache Cordova Team",
 	"license": "Apache-2.0",
