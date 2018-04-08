@@ -14,38 +14,6 @@
         <div class="page-content">
             <!-- Timeline -->
             <div class="timeline">
-                <!-- Timeline item -->
-                <div class="timeline-item">
-                    <div class="timeline-item-date">21
-                        <small>DEC</small>
-                    </div>
-                    <div class="timeline-item-divider"></div>
-                    <div class="timeline-item-content">Plain text item</div>
-                </div>
-                <!-- Timeline item with inner -->
-                <div class="timeline-item">
-                    <div class="timeline-item-date">22
-                        <small>DEC</small>
-                    </div>
-                    <div class="timeline-item-divider"></div>
-                    <div class="timeline-item-content">
-                        <div class="timeline-item-inner">Another text goes here</div>
-                    </div>
-                </div>
-                <!-- Timeline item with special timeline elements -->
-                <div class="timeline-item">
-                    <div class="timeline-item-date">23
-                        <small>DEC</small>
-                    </div>
-                    <div class="timeline-item-divider"></div>
-                    <div class="timeline-item-content">
-                        <div class="timeline-item-time">12:33</div>
-                        <div class="timeline-item-title">Item Title</div>
-                        <div class="timeline-item-subtitle">Item Subtitle</div>
-                        <div class="timeline-item-text">Item Text</div>
-                    </div>
-                </div>
-                <!-- Timeline item with special timeline elements and inner -->
                 <div class="timeline-item">
                     <div class="timeline-item-date">24
                         <small>DEC</small>
@@ -54,54 +22,10 @@
                     <div class="timeline-item-content">
                         <div class="timeline-item-inner">
                             <div class="timeline-item-time">12:33</div>
-                            ...
+                            <div class="timeline-item-title">Item Title</div>
+                            <div class="timeline-item-subtitle">Item Subtitle</div>
+                            <div class="timeline-item-text">Item Text</div>
                         </div>
-                    </div>
-                </div>
-                <!-- Timeline item with multiple events per day  -->
-                <div class="timeline-item">
-                    <div class="timeline-item-date">25
-                        <small>DEC</small>
-                    </div>
-                    <div class="timeline-item-divider"></div>
-                    <div class="timeline-item-content">
-                        <div class="timeline-item-time">12:33</div>
-                        <div class="timeline-item-title">Item Title</div>
-                        <div class="timeline-item-subtitle">Item Subtitle</div>
-                        <div class="timeline-item-text">Item Text</div>
-                        <div class="timeline-item-time">15:45</div>
-                        <div class="timeline-item-title">Item Title</div>
-                        <div class="timeline-item-subtitle">Item Subtitle</div>
-                        <div class="timeline-item-text">Item Text</div>
-                    </div>
-                </div>
-                <!-- Timeline item with multiple events (inners) per day -->
-                <div class="timeline-item">
-                    <div class="timeline-item-date">26
-                        <small>DEC</small>
-                    </div>
-                    <div class="timeline-item-divider"></div>
-                    <div class="timeline-item-content">
-                        <div class="timeline-item-inner">
-                            <div class="timeline-item-time">12:33</div>
-                            ...
-                        </div>
-                        <div class="timeline-item-inner">
-                            <div class="timeline-item-time">15:45</div>
-                            ...
-                        </div>
-                    </div>
-                </div>
-                <!-- Timeline item with Card -->
-                <div class="timeline-item">
-                    <div class="timeline-item-date">27
-                        <small>DEC</small>
-                    </div>
-                    <div class="timeline-item-divider"></div>
-                    <div class="timeline-item-content card">
-                        <div class="card-header">Card header</div>
-                        <div class="card-content card-content-padding">Card content</div>
-                        <div class="card-footer">Card footer</div>
                     </div>
                 </div>
             </div>
@@ -110,12 +34,55 @@
 </template>
 
 <script>
+    function load() {
+        let listTemplate = `
+            {{#each this}}
+            <div class="timeline-item">
+                <div class="timeline-item-date">{{this.date}}</div>
+                <div class="timeline-item-divider"></div>
+                <div class="timeline-item-content">
+                    <div class="timeline-item-inner">
+                        <div class="timeline-item-time">{{this.time}}</div>
+                        <div class="timeline-item-title">{{this.pointName}}</div>
+                        <div class="timeline-item-subtitle">{{this.targetID}}</div>
+                        <div class="timeline-item-text">{{this.number}}</div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        `
+        let compiledListTemplate = Template7.compile(listTemplate)
+
+        api.getTransactionsTo((txTo) => {
+            api.getTransactionsFrom((txFrom) => {
+                let tx = txTo.concat(txFrom)
+                for (let i in tx) {
+                    let date = new Date(tx[i].timestamp)
+                    tx[i].date = date.toLocaleDateString()
+                    tx[i].time = date.toLocaleTimeString()
+
+                    tx[i].pointName = pointMap.get(tx[i].point)
+                }
+                $('.timeline').html(compiledListTemplate(tx))
+            })
+        })
+    }
     return {
         methods: {},
         on: {
-            pageInit: () => {},
-            pageBeforeOut: function () { },
-            pageBeforeRemove: function () { },
+            pageMounted: () => {
+                console.group('timeline')
+            },
+            pageInit: () => {
+            },
+            pageBeforeIn: () => {
+                load()
+            },
+            pageBeforeOut: () => {
+            },
+            pageBeforeRemove: () => {
+                console.groupEnd()
+            },
         },
     }
 </script>

@@ -11,44 +11,55 @@
                 <div class="title">明細</div>
             </div>
         </nav>
-        <div class="page-content ptr-content" @ptr:refresh="refresh">
-            <div class="ptr-preloader">
-                <div class="preloader"></div>
-                <div class="ptr-arrow"></div>
-            </div>
-            <div class="block-title">轉出</div>
-            <div id="detailList_To" class="list">
-                <ul>
-                </ul>
-            </div>
-            <div class="block-title">轉入</div>
-            <div id="detailList_From" class="list">
-                <ul>
-                </ul>
+        <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+                <a href="#tab-1" class="tab-link tab-link-active">轉出</a>
+                <a href="#tab-2" class="tab-link">轉入</a>
+                <a href="#tab-3" class="tab-link">掛單</a>
+                <a href="#tab-4" class="tab-link">買單</a>
             </div>
         </div>
-        <!--明細內容-->
-        <div class="popup detail-popup">
-            <div class="page">
-                <div class="navbar">
-                    <div class="navbar-inner">
-                        <div class="title">明細內容</div>
-                        <div class="right">
-                            <a href="#" class="link popup-close">關閉</a>
-                        </div>
+        <div class="tabs-animated-wrap">
+            <div class="tabs">
+                <div id="tab-1" class="page-content tab tab-active">
+                    <div id="txList_to" class="list margin-top">
                     </div>
                 </div>
-
+                <div id="tab-2" class="page-content tab">
+                    <div id="txList_from" class="list margin-top">
+                    </div>
+                </div>
+                <div id="tab-3" class="page-content tab">
+                    <div id="orderList_to" class="list margin-top">
+                    </div>
+                </div>
+                <div id="tab-4" class="page-content tab">
+                    <div id="orderList_from" class="list margin-top">
+                    </div>
+                </div>
             </div>
-        </div>
+            <!--明細內容-->
+            <div class="popup detail-popup">
+                <div class="page">
+                    <div class="navbar">
+                        <div class="navbar-inner">
+                            <div class="title">明細內容</div>
+                            <div class="right">
+                                <a href="#" class="link popup-close">關閉</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
     </section>
 </template>
 
 <script>
-    function load() {
+    function loadTx() {
         let listTemplate = `
             <ul>
-                {{#each this.tx}}
+                {{#each this.tx reverse="true"}}
                 <li>
                     <a href="#" class="item-link item-content popup-open" data-popup=".detail-popup">
                         <div class="item-media">
@@ -72,6 +83,7 @@
 
         api.getTransactionsTo((tx) => {
             for (let i in tx) {
+                tx[i].date = new Date(tx[i].timestamp).toLocaleDateString()
                 tx[i].pointName = pointMap.get(tx[i].point)
             }
             let data = {
@@ -79,10 +91,11 @@
                 sign: '-',
                 tx: tx,
             }
-            $('#detailList_To').html(compiledListTemplate(data))
+            $('#txList_to').html(compiledListTemplate(data))
         })
         api.getTransactionsFrom((tx) => {
             for (let i in tx) {
+                tx[i].date = new Date(tx[i].timestamp).toLocaleDateString()
                 tx[i].pointName = pointMap.get(tx[i].point)
             }
             let data = {
@@ -90,7 +103,111 @@
                 sign: '+',
                 tx: tx,
             }
-            $('#detailList_From').html(compiledListTemplate(data))
+            $('#txList_from').html(compiledListTemplate(data))
+        })
+
+    }
+    function loadOrderTo() {
+        let listTemplate = `
+            <ul>
+                <li>
+                    <div class="item-inner item-cell text-align-center">
+                        <div class="item-row">
+                            <div class="item-cell">買家</div>
+                            <div class="item-cell">換出</div>
+                            <div class="item-cell">換入</div>
+                        </div>
+                    </div>
+                </li>
+                {{#each this reverse="true"}}
+                <li>
+                    <a href="#" class="item-link item-content">
+                        <div class="item-inner item-cell text-align-center">
+                            <div class="item-row">
+                                <div class="item-cell">{{buyer}}</div>
+                                <div class="item-cell">
+                                    <div class="item-row">
+                                        <span class="badge color-red">-{{value1}}</span>
+                                    </div>
+                                    <div class="item-row">
+                                        {{name1}}
+                                    </div>
+                                </div>
+                                <div class="item-cell">
+                                    <div class="item-row">
+                                        <span class="badge color-green">+{{value2}}</span>
+                                    </div>
+                                    <div class="item-row">
+                                        {{name2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                {{/each}}
+            </ul>
+        `
+        let compiledListTemplate = Template7.compile(listTemplate)
+        api.getOrderTo((exchanges) => {
+            for (let i in exchanges) {
+                if(!exchanges[i].buyer) {
+                    exchanges[i].buyer = '未被購買'
+                }
+                exchanges[i].name1 = pointMap.get(exchanges[i].point1)
+                exchanges[i].name2 = pointMap.get(exchanges[i].point2)
+            }
+            $('#orderList_to').html(compiledListTemplate(exchanges))
+        })
+    }
+    function loadOrderFrom() {
+        let listTemplate = `
+            <ul>
+                <li>
+                    <div class="item-inner item-cell text-align-center">
+                        <div class="item-row">
+                            <div class="item-cell">發起人</div>
+                            <div class="item-cell">換入</div>
+                            <div class="item-cell">換出</div>
+                        </div>
+                    </div>
+                </li>
+                {{#each this reverse="true"}}
+                <li>
+                    <a href="#" class="item-link item-content">
+                        <div class="item-inner item-cell text-align-center">
+                            <div class="item-row">
+                                <div class="item-cell">{{owner}}</div>
+                                <div class="item-cell">
+                                    <div class="item-row">
+                                        <span class="badge color-green">+{{value1}}</span>
+                                    </div>
+                                    <div class="item-row">
+                                        {{name1}}
+                                    </div>
+                                </div>
+                                <div class="item-cell">
+                                    <div class="item-row">
+                                        <span class="badge color-red">-{{value2}}</span>
+                                    </div>
+                                    <div class="item-row">
+                                        {{name2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                {{/each}}
+            </ul>
+        `
+        let compiledListTemplate = Template7.compile(listTemplate)
+        api.getOrderFrom((exchanges) => {
+            for (let i in exchanges) {
+                exchanges[i].name1 = pointMap.get(exchanges[i].point1)
+                exchanges[i].name2 = pointMap.get(exchanges[i].point2)
+            }
+            $('#orderList_from').html(compiledListTemplate(exchanges))
         })
     }
     return {
@@ -102,7 +219,9 @@
             pageInit: () => {
             },
             pageBeforeIn: () => {
-                load()
+                loadTx()
+                loadOrderTo()
+                loadOrderFrom()
             },
             pageBeforeOut: () => {
             },

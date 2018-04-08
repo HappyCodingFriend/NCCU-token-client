@@ -1,16 +1,13 @@
 // Dom7
 let $ = Dom7
 
-// Theme
-let theme = 'auto'
-
 // Init App
 let app = new Framework7({
 	root: '#app',
 	id: 'com.myapp.test',
 	name: '政大點數',
-	theme: theme,
-	version: '1.0.0 Alpha',
+	theme: 'auto',
+	version: '1.0.2',
 	language: 'zh-Hant',
 	data: function () {
 		return {

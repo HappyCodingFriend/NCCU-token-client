@@ -18,7 +18,7 @@
             </div>
         </nav>
         <div class="page-content">
-            <div id="exchangeList" class="list">
+            <div id="exchangeList" class="list margin-top">
             </div>
         </div>
     </section>
@@ -34,40 +34,51 @@
             }
 
             let listTemplate = `
-            <ul>
-                {{#each this}}
-                <li>
-                    <a class="item-link item-content">
-                        <div class="item-inner item-cell" style="text-align: center;">
+                <ul>
+                    <li>
+                        <div class="item-inner item-cell text-align-center">
                             <div class="item-row">
-                                <div class="item-cell autoID">{{this.autoID}}</div>
-                                <div class="item-cell">{{this.owner}}</div>
-                            </div>
-                            <div class="item-row">
-                                <div class="item-cell">
-                                    <span class="badge color-green">{{value1}}</span>
-                                    {{name1}}
-                                </div>
-                                <div class="item-cell" style="width:auto;">
-                                    <i class="material-icons">cached</i>
-                                </div>
-                                <div class="item-cell">
-                                    <span class="badge color-blue">{{value2}}</span>
-                                    {{name2}}
-                                </div>
+                                <div class="item-cell">發起人</div>
+                                <div class="item-cell">換入</div>
+                                <div class="item-cell">換出</div>
                             </div>
                         </div>
-                    </a>
-                </li>
-                {{/each}}
-            </ul>
-        `
+                    </li>
+                    {{#each this}}
+                    <li autoID={{autoID}}>
+                        <a href="#" class="item-link item-content">
+                            <div class="item-inner item-cell text-align-center">
+                                <div class="item-row">
+                                    <div class="item-cell">{{owner}}</div>
+                                    <div class="item-cell">
+                                        <div class="item-row">
+                                            <span class="badge color-green">+{{value1}}</span>
+                                        </div>
+                                        <div class="item-row">
+                                            {{name1}}
+                                        </div>
+                                    </div>
+                                    <div class="item-cell">
+                                        <div class="item-row">
+                                            <span class="badge color-red">-{{value2}}</span>
+                                        </div>
+                                        <div class="item-row">
+                                            {{name2}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    {{/each}}
+                </ul>
+            `
             let compiledListTemplate = Template7.compile(listTemplate)
             $('#exchangeList').html(compiledListTemplate(exchanges))
 
             $('#exchangeList li').on('click', function (e) {
 
-                let autoID = $(this).find('.autoID').text()
+                let autoID = $(this).attr('autoID')
                 let exchange = exchanges.find((element) => {
                     return element.autoID == autoID
                 })

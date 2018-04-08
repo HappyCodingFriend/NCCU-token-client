@@ -143,6 +143,20 @@ let api = {
         }, 'json')
     },
 
+    getOrderTo: (callback) => {
+        app.request.get(getUrl('query/orderTo', { token: user.token }), (data, status, xhr) => {
+            console.log(status, data)
+            callback(data)
+        }, 'json')
+    },
+
+    getOrderFrom: (callback) => {
+        app.request.get(getUrl('query/orderFrom', { token: user.token }), (data, status, xhr) => {
+            console.log(status, data)
+            callback(data)
+        }, 'json')
+    },
+
     addOrder: (signTx, point1, value1, point2, value2, callback) => {
         app.request.post(getUrl('order', { token: user.token }), {
             signTx,

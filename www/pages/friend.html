@@ -29,6 +29,14 @@
                 </form>
             </div>
         </nav>
+        <div class="page-content ptr-content" @ptr:refresh="refresh">
+            <div class="ptr-preloader">
+                <div class="preloader"></div>
+                <div class="ptr-arrow"></div>
+            </div>
+            <div id="friendList" class="list media-list margin-top no-hairlines">
+            </div>
+        </div>
         <div class="fab fab-right-bottom color-blue">
             <a href="#">
                 <!-- Icons For iOS Theme -->
@@ -42,14 +50,6 @@
             <div class="fab-buttons fab-buttons-top">
                 <a @click="addFriend_QR">QR</a>
                 <a @click="addFriend_ID">ID</a>
-            </div>
-        </div>
-        <div class="page-content ptr-content" @ptr:refresh="refresh">
-            <div class="ptr-preloader">
-                <div class="preloader"></div>
-                <div class="ptr-arrow"></div>
-            </div>
-            <div id="friendList" class="list media-list">
             </div>
         </div>
     </section>
@@ -125,7 +125,7 @@
                         }
                         else {
                             api.addFriend(text, (data) => {
-                                load()
+                                api.getFriends(load)
                                 app.dialog.alert(data.inf)
                             })
                         }

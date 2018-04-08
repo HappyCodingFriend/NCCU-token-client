@@ -29,15 +29,6 @@
                             </li>
                             <li class="item-content item-input">
                                 <div class="item-inner">
-                                    <div class="item-title item-label">剩餘點數</div>
-                                    <div class="item-input-wrap">
-                                        <input id="balance_out" type="number" placeholder="剩餘點數">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
                                     <div class="item-title item-label">換出數量</div>
                                     <div class="item-input-wrap">
                                         <input id="number_out" type="number" placeholder="換出數量">
@@ -66,18 +57,9 @@
                             </li>
                             <li class="item-content item-input">
                                 <div class="item-inner">
-                                    <div class="item-title item-label">剩餘點數</div>
-                                    <div class="item-input-wrap">
-                                        <input id="balance_in" type="number" placeholder="剩餘點數">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
                                     <div class="item-title item-label">換入數量</div>
                                     <div class="item-input-wrap">
-                                        <input id="number_in" type="number" placeholder="換出數量">
+                                        <input id="number_in" type="number" placeholder="換入數量">
                                         <span class="input-clear-button"></span>
                                     </div>
                                 </div>
@@ -130,6 +112,20 @@
                 $('#balance_in').val(balance)
             })
         })
+
+        loadPoint()
+    }
+    function loadPoint() {
+        $('select#point_in option').each((i, item) => {
+            api.getPoint(item.value, (balance) => {
+                item.text += `(${balance})`
+            })
+        })
+        $('select#point_out option').each((i, item) => {
+            api.getPoint(item.value, (balance) => {
+                item.text += `(${balance})`
+            })
+        })
     }
     return {
         data: function () {
@@ -168,7 +164,7 @@
                             let signTx = decAccount.signTransaction(tx)
 
                             api.addOrder(signTx._rejectionHandler0.rawTransaction, point1, value1, point2, value2, (data) => {
-                                app.dialog.alert('掛單成功', '政大錢包', ()=>{
+                                app.dialog.alert('掛單成功', '政大錢包', () => {
                                     app.router.back()
                                 })
                             })

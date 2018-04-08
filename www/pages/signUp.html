@@ -12,15 +12,15 @@
             </div>
         </nav>
         <div class="page-content">
-            <form class="list" id="signUp_form">
+            <form class="list margin-top no-hairlines" id="signUp_form">
                 <ul>
                     <li class="item-content item-input item-input-with-info">
                         <div class="item-inner">
                             <div class="item-title item-label">學號</div>
                             <div class="item-input-wrap">
-                                <input type="text" name="ID" placeholder="student ID" value="103703017" required validate>
+                                <input type="text" name="ID" placeholder="student ID" required validate pattern="[0-9]*" data-error-message="請輸入正確學號!">
                                 <span class="input-clear-button"></span>
-                                <div class="item-input-info">Default "required" validation</div>
+                                <div class="item-input-info">請輸入學校學號</div>
                             </div>
                         </div>
                     </li>
@@ -28,9 +28,9 @@
                         <div class="item-inner">
                             <div class="item-title item-label">姓名</div>
                             <div class="item-input-wrap">
-                                <input type="text" name="name" placeholder="你的姓名" value="晨禾" required validate>
+                                <input type="text" name="name" placeholder="你的姓名" required validate>
                                 <span class="input-clear-button"></span>
-                                <div class="item-input-info">Default "required" validation</div>
+                                <div class="item-input-info">請輸入真實姓名</div>
                             </div>
                         </div>
                     </li>
@@ -38,9 +38,9 @@
                         <div class="item-inner">
                             <div class="item-title item-label">E-mail</div>
                             <div class="item-input-wrap">
-                                <input type="email" name="email" placeholder="E-mail" value="test@email.com" required validate>
+                                <input type="email" name="email" placeholder="E-mail" required validate>
                                 <span class="input-clear-button"></span>
-                                <div class="item-input-info">Default "required" validation</div>
+                                <div class="item-input-info">請輸入學校信箱</div>
                             </div>
                         </div>
                     </li>
@@ -48,9 +48,9 @@
                         <div class="item-inner">
                             <div class="item-title item-label">設定密碼</div>
                             <div class="item-input-wrap">
-                                <input type="password" name="password" placeholder="" value="841015">
+                                <input type="password" name="password" placeholder="" required validate pattern="[a-zA-Z0-9]{6,16}$" data-error-message="密碼長度在 6-16 字元內，只能包含數字、英文字">
                                 <span class="input-clear-button"></span>
-                                <div class="item-input-info">Default "required" validation</div>
+                                <div class="item-input-info">密碼長度在 6-16 字元內，只能包含數字、英文字</div>
                             </div>
                         </div>
                     </li>
@@ -58,15 +58,15 @@
                         <div class="item-inner">
                             <div class="item-title item-label">確認密碼</div>
                             <div class="item-input-wrap">
-                                <input type="password" name="re_password" placeholder="" value="841015">
+                                <input type="password" name="re_password" placeholder="">
                                 <span class="input-clear-button"></span>
-                                <div class="item-input-info">Default "required" validation</div>
+                                <div class="item-input-info">重複輸入密碼</div>
                             </div>
                         </div>
                     </li>
                 </ul>
             </form>
-            <div class="block block-strong">
+            <div class="block">
                 <p>
                     <label class="checkbox">
                         <input type="checkbox">
