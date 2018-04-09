@@ -8,14 +8,14 @@
                         <span class="ios-only">Back</span>
                     </a>
                 </div>
-                <div class="title">明細</div>
+                <div class="title">交易歷史</div>
             </div>
         </nav>
         <div class="toolbar tabbar">
             <div class="toolbar-inner">
                 <a href="#tab-1" class="tab-link tab-link-active">轉出</a>
                 <a href="#tab-2" class="tab-link">轉入</a>
-                <a href="#tab-3" class="tab-link">掛單</a>
+                <a href="#tab-3" class="tab-link">賣單</a>
                 <a href="#tab-4" class="tab-link">買單</a>
             </div>
         </div>
@@ -150,10 +150,10 @@
         `
         let compiledListTemplate = Template7.compile(listTemplate)
         api.getOrderTo((exchanges) => {
+            exchanges = exchanges.filter((item, index, array) => {
+                return item.buyer != null
+            })
             for (let i in exchanges) {
-                if(!exchanges[i].buyer) {
-                    exchanges[i].buyer = '未被購買'
-                }
                 exchanges[i].name1 = pointMap.get(exchanges[i].point1)
                 exchanges[i].name2 = pointMap.get(exchanges[i].point2)
             }
@@ -166,7 +166,7 @@
                 <li>
                     <div class="item-inner item-cell text-align-center">
                         <div class="item-row">
-                            <div class="item-cell">發起人</div>
+                            <div class="item-cell">賣家</div>
                             <div class="item-cell">換入</div>
                             <div class="item-cell">換出</div>
                         </div>

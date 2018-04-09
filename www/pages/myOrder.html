@@ -1,0 +1,90 @@
+<template>
+    <section class="page">
+        <nav class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">我的賣單</div>
+            </div>
+        </nav>
+        <div class="page-content">
+            <div id="orderList" class="list margin-top">
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+    function loadOrder() {
+        let listTemplate =
+            `
+            <ul>
+                <li>
+                    <div class="item-inner item-cell text-align-center">
+                        <div class="item-row">
+                            <div class="item-cell">換出</div>
+                            <div class="item-cell">換入</div>
+                        </div>
+                    </div>
+                </li>
+                {{#each this reverse="true"}}
+                <li>
+                    <a href="#" class="item-link item-content">
+                        <div class="item-inner item-cell text-align-center">
+                            <div class="item-row">
+                                <div class="item-cell">
+                                    <div class="item-row">
+                                        <span class="badge color-red">-{{value1}}</span>
+                                    </div>
+                                    <div class="item-row">
+                                        {{name1}}
+                                    </div>
+                                </div>
+                                <div class="item-cell">
+                                    <div class="item-row">
+                                        <span class="badge color-green">+{{value2}}</span>
+                                    </div>
+                                    <div class="item-row">
+                                        {{name2}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                {{/each}}
+            </ul>
+        `
+        let compiledListTemplate = Template7.compile(listTemplate)
+        api.getOrderTo((exchanges) => {
+            exchanges = exchanges.filter((item, index, array) => {
+                return item.buyer == null
+            })
+            for (let i in exchanges) {
+                exchanges[i].name1 = pointMap.get(exchanges[i].point1)
+                exchanges[i].name2 = pointMap.get(exchanges[i].point2)
+            }
+            $('#orderList').html(compiledListTemplate(exchanges))
+        })
+    }
+    return {
+        methods: {},
+        on: {
+            pageMounted: () => {
+                console.group('detail')
+            },
+            pageInit: () => {},
+            pageBeforeIn: () => {
+                loadOrder()
+            },
+            pageBeforeOut: () => {},
+            pageBeforeRemove: () => {
+                console.groupEnd()
+            },
+        },
+    }
+</script>

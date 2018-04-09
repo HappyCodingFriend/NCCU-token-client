@@ -15,6 +15,10 @@ h1 {
     font-size: 3rem
 }
 
+.toolbar {
+    background: #ff0066;
+}
+
 .big {
     font-size: 5rem
 }
