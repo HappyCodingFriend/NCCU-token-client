@@ -56,7 +56,7 @@
 </template>
 
 <script>
-    function loadTx() {
+    function loadTxTo() {
         let listTemplate = `
             <ul>
                 {{#each this.tx reverse="true"}}
@@ -67,7 +67,7 @@
                         </div>
                         <div class="item-inner">
                             <div class="item-title">
-                                <div class="item-header">{{targetID}}</div>
+                                <div class="item-header">{{targetName}}</div>
                                 {{pointName}}
                             </div>
                             <div class="item-after">
@@ -80,7 +80,6 @@
             </ul>
         `
         let compiledListTemplate = Template7.compile(listTemplate)
-
         api.getTransactionsTo((tx) => {
             for (let i in tx) {
                 tx[i].date = new Date(tx[i].timestamp).toLocaleDateString()
@@ -93,6 +92,31 @@
             }
             $('#txList_to').html(compiledListTemplate(data))
         })
+    }
+    function loadTxFrom() {
+        let listTemplate = `
+            <ul>
+                {{#each this.tx reverse="true"}}
+                <li>
+                    <a href="#" class="item-link item-content popup-open" data-popup=".detail-popup">
+                        <div class="item-media">
+                            {{date}}
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title">
+                                <div class="item-header">{{name}}</div>
+                                {{pointName}}
+                            </div>
+                            <div class="item-after">
+                                <span class="badge color-{{@root.color}}">{{@root.sign}}{{number}}</span>
+                            </div>
+                        </div>
+                    </a>
+                 </li>
+                {{/each}}
+            </ul>
+        `
+        let compiledListTemplate = Template7.compile(listTemplate)
         api.getTransactionsFrom((tx) => {
             for (let i in tx) {
                 tx[i].date = new Date(tx[i].timestamp).toLocaleDateString()
@@ -105,7 +129,6 @@
             }
             $('#txList_from').html(compiledListTemplate(data))
         })
-
     }
     function loadOrderTo() {
         let listTemplate = `
@@ -124,7 +147,7 @@
                     <a href="#" class="item-link item-content">
                         <div class="item-inner item-cell text-align-center">
                             <div class="item-row">
-                                <div class="item-cell">{{buyer}}</div>
+                                <div class="item-cell">{{buyerName}}</div>
                                 <div class="item-cell">
                                     <div class="item-row">
                                         <span class="badge color-red">-{{value1}}</span>
@@ -177,7 +200,7 @@
                     <a href="#" class="item-link item-content">
                         <div class="item-inner item-cell text-align-center">
                             <div class="item-row">
-                                <div class="item-cell">{{owner}}</div>
+                                <div class="item-cell">{{ownerName}}</div>
                                 <div class="item-cell">
                                     <div class="item-row">
                                         <span class="badge color-green">+{{value1}}</span>
@@ -219,7 +242,8 @@
             pageInit: () => {
             },
             pageBeforeIn: () => {
-                loadTx()
+                loadTxTo()
+                loadTxFrom()
                 loadOrderTo()
                 loadOrderFrom()
             },
