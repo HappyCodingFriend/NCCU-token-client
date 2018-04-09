@@ -59,7 +59,6 @@
     <plugin name="cordova-plugin-dialogs" spec="^2.0.1" />
     <plugin name="nl-afas-cordova-plugin-securelocalstorage" spec="^0.1.18" />
     <plugin name="cordova-plugin-nativestorage" spec="^2.3.1" />
-    <plugin name="phonegap-nfc" spec="^0.7.1" />
     <engine name="ios" spec="^4.5.4" />
     <engine name="browser" spec="^5.0.3" />
     <engine name="android" spec="^7.1.0" />
