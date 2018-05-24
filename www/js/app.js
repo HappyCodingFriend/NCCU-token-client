@@ -13,8 +13,8 @@ let app = new Framework7({
 		return {
 			server: {
 				protocol: 'http',
-				//ip: '140.119.163.46',
-				ip: '150.116.233.133',
+				ip: '140.119.163.46',
+				//ip: '150.116.233.133',
 				port: '50000',
 			}
 		};

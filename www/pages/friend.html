@@ -83,6 +83,10 @@
         $('.deleted-callback').on('swipeout:deleted', function (evt) {
             console.log(evt)
             api.deleteFriend($(this).attr('data-friendID'), (data) => {
+                api.getFriends((friends) => {
+                    console.log('讀取朋友成功')
+                    myData.friends = friends
+                })
                 app.dialog.alert(data.inf)
             })
         })
