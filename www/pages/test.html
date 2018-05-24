@@ -13,9 +13,9 @@
 		</nav>
 		<div class="toolbar tabbar">
 			<div class="toolbar-inner">
-				<a href="#tab-1" class="tab-link tab-link-active">device</a>
-				<a href="#tab-2" class="tab-link">qrscanner</a>
-				<a href="#tab-3" class="tab-link">brightness</a>
+				<a href="#tab-1" class="tab-link tab-link-active">Device</a>
+				<a href="#tab-2" class="tab-link">QRscanner</a>
+				<a href="#tab-3" class="tab-link">Keyboard</a>
 			</div>
 		</div>
 		<div class="tabs-animated-wrap">
@@ -30,45 +30,15 @@
 					</div>
 				</div>
 				<div id="tab-3" class="page-content tab">
-					<div class="block-title">Volume</div>
 					<div class="list simple-list">
 						<ul>
 							<li>
-								<div class="item-cell width-auto flex-shrink-0">
-									<i class="icon f7-icons ios-only">volume_mute_fill</i>
-									<i class="icon material-icons md-only">volume_mute</i>
-								</div>
-								<div class="item-cell flex-shrink-3">
-									<!-- range slider -->
-									<div class="range-slider range-slider-init">
-										<input type="range" min="0" max="100" step="1" value="10">
-									</div>
-								</div>
-								<div class="item-cell width-auto flex-shrink-0">
-									<i class="icon f7-icons ios-only">volume_fill</i>
-									<i class="icon material-icons md-only">volume_up</i>
-								</div>
+								<button class="col button button-fill" onclick="Keyboard.show()">Keyboard.show()</button>
+							</li>
+							<li>
+								<button class="col button button-fill" onclick="Keyboard.hide()">Keyboard.hide()</button>
 							</li>
 						</ul>
-						<div class="block-title">Brightness</div>
-						<div class="list simple-list">
-							<li>
-								<div class="item-cell width-auto flex-shrink-0">
-									<i class="icon f7-icons ios-only">circle</i>
-									<i class="icon material-icons md-only">brightness_low</i>
-								</div>
-								<div class="item-cell flex-shrink-3">
-									<!-- range slider, enable labels -->
-									<div class="range-slider range-slider-init color-orange" data-label="true" @range:change="onRangeChange">
-										<input type="range" min="0" max="100" step="10" value="50">
-									</div>
-								</div>
-								<div class="item-cell width-auto flex-shrink-0">
-									<i class="icon f7-icons ios-only">circle_half</i>
-									<i class="icon material-icons md-only">brightness_high</i>
-								</div>
-							</li>
-						</div>
 					</div>
 				</div>
 			</div>

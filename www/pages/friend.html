@@ -29,11 +29,7 @@
                 </form>
             </div>
         </nav>
-        <div class="page-content ptr-content" @ptr:refresh="refresh">
-            <div class="ptr-preloader">
-                <div class="preloader"></div>
-                <div class="ptr-arrow"></div>
-            </div>
+        <div class="page-content">
             <div id="friendList" class="list media-list margin-top no-hairlines">
             </div>
         </div>
@@ -56,11 +52,12 @@
 </template>
 
 <script>
+    let test
     function load() {
         let listTemplate = `
             <ul>
                 {{#each this}}
-                <li class="swipeout deleted-callback">
+                <li class="swipeout deleted-callback" data-friendID="{{friendID}}">
                     <div class="item-content swipeout-content">
                         <div class="item-media">
                             <img class="head" src="imgs/{{friendID}}.jpg">
@@ -81,39 +78,38 @@
             </ul>
         `
         let compiledListTemplate = Template7.compile(listTemplate)
-        $('#friendList').html(compiledListTemplate(friends))
+        $('#friendList').html(compiledListTemplate(myData.friends))
 
-        $('.deleted-callback').on('swipeout:deleted', (evt) => {
+        $('.deleted-callback').on('swipeout:deleted', function (evt) {
             console.log(evt)
+            api.deleteFriend($(this).attr('data-friendID'), (data) => {
+                app.dialog.alert(data.inf)
+            })
         })
     }
     return {
         data: function () {
         },
         methods: {
-            addFriend_QR: () => {
-                QRScanner.prepare((err, status) => {
-                    if (status == undefined) {
-                        console.log('denied')
-                    } else if (status.authorized) {
-                        console.log('authorized')
-                        QRScanner.show((status) => {
-                            $('#app').hide()
-                        })
-                        QRScanner.scan((err, contents) => {
-                            if (err) {
-                                console.error(err)
-                            }
-                            console.log('The QR Code contains: ' + contents)
-                            QRScanner.destroy(function (status) {
-                                console.log(' QRScanner.destroy')
-                                $('#app').show()
-                                read(contents)
-                            })
-                        })
-                    } else if (status.denied) {
-                        console.log('denied')
+            addFriend_QR: function () {
+
+                QRScanner.scan((err, contents) => {
+                    if (err) {
+                        console.error(err)
                     }
+                    else {
+                        console.log('The QR Code contains: ' + contents)
+                        QRScanner.destroy(function (status) {
+                            console.log(' QRScanner.destroy')
+                            $('#app').show()
+                            read(contents)
+                        })
+                    }
+                })
+
+                QRScanner.show((status) => {
+                    console.log(status)
+                    $('#app').hide()
                 })
 
                 function read(text) {
@@ -124,39 +120,46 @@
                         }
                         else {
                             api.addFriend(text, (data) => {
-                                api.getFriends(load)
+                                api.getFriends((friends) => {
+                                    myData.friends = friends
+                                    load()
+                                })
                                 app.dialog.alert(data.inf)
                             })
                         }
                     })
                 }
             },
-            addFriend_ID: () => {
+            addFriend_ID: function () {
                 app.dialog.prompt('朋友ID?', function (friendID) {
-                    api.addFriend(friendID, (data) => {
-                        api.getFriends(load)
-                        app.dialog.alert(data.inf)
-                    })
+                    if (friendID == myData.user.ID) {
+                        app.dialog.alert('不能加自己為好友')
+                    }
+                    else {
+                        api.addFriend(friendID, (data) => {
+                            api.getFriends((friends) => {
+                                myData.friends = friends
+                                load()
+                            })
+                            app.dialog.alert(data.inf)
+                        })
+                    }
                 })
-            },
-            refresh: (e, done) => {
-                api.getFriends(load)
-                done()
             },
         },
         on: {
-            pageMounted: () => {
+            pageMounted: function () {
                 console.group('friend')
             },
-            pageInit: () => {
+            pageInit: function () {
 
             },
-            pageBeforeIn: () => {
+            pageBeforeIn: function () {
                 load()
             },
-            pageBeforeOut: () => {
+            pageBeforeOut: function () {
             },
-            pageBeforeRemove: () => {
+            pageBeforeRemove: function () {
                 console.groupEnd()
             },
         },

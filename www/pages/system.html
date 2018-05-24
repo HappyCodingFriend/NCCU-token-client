@@ -14,7 +14,7 @@
         <div class="toolbar tabbar">
             <div class="toolbar-inner">
                 <a href="#tab-1" class="tab-link tab-link-active">系統資訊</a>
-                <a href="#tab-2" class="tab-link">2</a>
+                <a href="#tab-2" class="tab-link">帳戶資訊</a>
                 <a href="#tab-3" class="tab-link">3</a>
             </div>
         </div>
@@ -37,7 +37,6 @@
                     </div>
                 </div>
                 <div id="tab-2" class="page-content tab">
-                    <div class="block-title">帳戶資訊</div>
                     <div class="list">
                         <ul>
                             <li>
@@ -84,10 +83,6 @@
             }
         },
         methods: {
-            onRangeChange: function (e, range) {
-                console.log(range.value)
-                brightness.setBrightness(range.value / 100)
-            }
         },
         on: {
             pageMounted: () => {
@@ -96,6 +91,10 @@
             pageInit: () => {
             },
             pageBeforein: () => {
+                $('#address_SQL').text(myData.user.address)
+                NativeStorage.getItem('encAccount', encAccount => {
+                    $('#address_NS').text(`0x${encAccount.address}`)
+                }, console.error)
             },
             pageBeforeOut: () => {
             },

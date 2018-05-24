@@ -60,28 +60,18 @@
                     console.log(status, data)
                     app.dialog.alert(data.inf, '政大錢包', () => {
                         if (data.type) {
+
                             NativeStorage.setItem('user', data, console.log, console.error)
-                            user = data
-                            api.getFriends()
-                            api.getPoints(() => {
-                                pointMap = new Map()
-                                for (let i in points) {
-                                    pointMap.set(points[i].address, points[i].name)
-                                }
-                            })
+                            init(data)
+                            
                             if ($('#remember').is(":checked")) {
-                                setting.remember = true
-                                setting.rememberID = ID
+                                storage.setItem('rememberID', ID)
                             }
                             else {
-                                setting.remember = false
-                                delete setting.rememberID
+                                storage.removeItem('rememberID', ID)
                             }
-                            app.router.navigate('/')
 
-                            $('.profile_block img').attr('src', `imgs/${user.ID}.jpg`)
-                            $('.profile_block p').eq(0).text(user.name)
-                            $('.profile_block p').eq(1).text(user.email)
+                            app.router.navigate('/')
                         }
                     })
                 })
@@ -136,8 +126,9 @@
             pageInit: () => {
             },
             pageBeforein: () => {
-                if (setting.remember) {
-                    $('#ID').val(setting.rememberID)
+                rememberID = storage.getItem('rememberID')
+                if (rememberID) {
+                    $('#ID').val(rememberID)
                     $('#remember').prop("checked", true)
                 }
             },

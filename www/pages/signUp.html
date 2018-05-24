@@ -177,7 +177,7 @@
                         app.dialog.alert(data.inf, '政大錢包', () => {
                             if (data.type) {
                                 NativeStorage.setItem('encAccount', decAccount.encrypt(txPassword), console.log, console.error)
-                                app.router.navigate('/')
+                                app.router.navigate('/signIn/')
                             }
                         })
                     })

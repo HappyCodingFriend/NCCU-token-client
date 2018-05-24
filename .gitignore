@@ -60,3 +60,6 @@ typings/
 # cordova dependency directory
 platforms/
 plugins/
+
+# vscode
+.vs/

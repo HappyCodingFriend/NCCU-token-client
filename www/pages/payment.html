@@ -78,6 +78,46 @@
 </template>
 
 <script>
+    // Create dynamic Popup
+    let contentTemplate = `
+        <div class="popup">
+            <div class="block-title">請選擇好友</div>
+            <div id="friendList" class="list media-list margin-top no-hairlines">
+                <ul>
+                    {{#each this}}
+                    <li data-friendID="{{friendID}}">
+                        <div class="item-content">
+                            <div class="item-media">
+                                <img class="head" src="imgs/{{friendID}}.jpg">
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">{{name}}</div>
+                                </div>
+                                <div class="item-subtitle">{{friendID}}</div>
+                                <div class="item-text">資訊科學系</div>
+                            </div>
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    `
+    let compiledContentTemplate = Template7.compile(contentTemplate)
+    let content = compiledContentTemplate(myData.friends)
+    let dynamicPopup = app.popup.create({
+        content: content,
+        on: {
+            open: function (popup) {
+                $('#friendList li').once('click', function () {
+                    putTarget($(this).attr('data-friendID'))
+                    dynamicPopup.close()
+                })
+            }
+        }
+    });
+
     function load() {
         let selectTemplate = `
             <ul>
@@ -87,10 +127,11 @@
             </ul>
         `
         let compiledSelectTemplate = Template7.compile(selectTemplate)
-        $('select#point').html(compiledSelectTemplate(points))
+        $('select#point').html(compiledSelectTemplate(myData.points))
 
         loadPoint()
     }
+
     function loadPoint() {
         $('select#point option').each((i, item) => {
             api.getPoint(item.value, (balance) => {
@@ -98,68 +139,51 @@
             })
         })
     }
-    function putFriend(ID, name, address) {
-        $('#target img').attr('src', `imgs/${ID}.jpg`)
-        $('#target .item-title').text(name)
-        $('#target .item-subtitle').text(ID)
-        $('#target .item-text').text(address)
+
+    function putTarget(targetID) {
+        api.getUser(targetID, (res) => {
+            if (!res.type) {
+                app.dialog.alert(res.inf)
+            }
+            else {
+                $('#target img').attr('src', `imgs/${res.inf.ID}.jpg`)
+                $('#target .item-title').text(res.inf.name)
+                $('#target .item-subtitle').text(res.inf.ID)
+                $('#target .item-text').text(res.inf.address)
+            }
+        })
     }
+
     return {
         methods: {
             user_button: () => {
                 app.dialog.prompt('請輸入轉帳對象ID', (targetID) => {
-                    api.getUser(targetID, (data) => {
-                        if (!data.type) {
-                            console.log(data.type)
-                            app.dialog.alert(data.inf)
-                        }
-                        else {
-                            console.log(data.type)
-                            putFriend(data.inf.ID, data.inf.name, data.inf.address)
-                        }
-                    })
+                    putTarget(targetID)
                 })
             },
             friend_button: () => {
-
+                console.log('friend')
+                dynamicPopup.open();
             },
             qrcode_button: () => {
-                QRScanner.prepare((err, status) => {
-                    if (status == undefined) {
-                        console.log('denied')
-                    } else if (status.authorized) {
-                        console.log('authorized')
-                        QRScanner.show((status) => {
-                            $('#app').hide()
+                QRScanner.scan((err, contents) => {
+                    if (err) {
+                        console.error(err)
+                    }
+                    else {
+                        console.log('The QR Code contains: ' + contents)
+                        QRScanner.destroy(function (status) {
+                            console.log(' QRScanner.destroy')
+                            $('#app').show()
+                            putTarget(contents)
                         })
-                        QRScanner.scan((err, contents) => {
-                            if (err) {
-                                console.error(err)
-                            }
-                            console.log('The QR Code contains: ' + contents)
-                            QRScanner.destroy(function (status) {
-                                console.log(' QRScanner.destroy')
-                                $('#app').show()
-                                read(contents)
-                            })
-                        })
-                    } else if (status.denied) {
-                        console.log('denied')
                     }
                 })
 
-                function read(text) {
-                    api.getUser(text, (data) => {
-                        if (!data.type) {
-                            console.log(data.type)
-                            app.dialog.alert(data.inf)
-                        }
-                        else {
-                            console.log(data.type)
-                            putFriend(data.inf.ID, data.inf.name, data.inf.address)
-                        }
-                    })
-                }
+                QRScanner.show((status) => {
+                    console.log(status)
+                    $('#app').hide()
+                })
             },
             transfer: () => {
 
@@ -178,7 +202,7 @@
                         api.getNonce((nonce) => {
                             let tx = {
                                 nonce: parseInt(nonce),
-                                chainId: '0x11',
+                                chainId: '0x7b',
                                 to: point,
                                 data: data,
                                 gasPrice: '0x0',
@@ -186,8 +210,9 @@
                             }
                             let signTx = decAccount.signTransaction(tx)
 
-                            api.postTransaction(signTx._rejectionHandler0.rawTransaction, targetID, number, point, (data) => {
-                                console.log(data)
+                            app.dialog.preloader('交易進行中')
+                            api.postTransaction(signTx._rejectionHandler0.rawTransaction, targetID, number, point, (res) => {
+                                app.dialog.close()
                                 load()
                                 app.dialog.alert('交易成功', '政大錢包')
                             })
@@ -201,15 +226,17 @@
             }
         },
         on: {
-            pageMounted: () => {
+            pageMounted: function () {
                 console.group('payment')
+                console.log(456)
             },
-            pageInit: () => { },
-            pageBeforein: () => {
+            pageInit: function () {
+            },
+            pageBeforein: function () {
                 load()
             },
-            pageBeforeOut: () => { },
-            pageBeforeRemove: () => {
+            pageBeforeOut: function () { },
+            pageBeforeRemove: function () {
                 console.groupEnd()
             },
         },

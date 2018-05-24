@@ -13,6 +13,7 @@ let app = new Framework7({
 		return {
 			server: {
 				protocol: 'http',
+				//ip: '140.119.163.46',
 				ip: '150.116.233.133',
 				port: '50000',
 			}
@@ -32,5 +33,9 @@ let app = new Framework7({
 	},
 	panel: {
 		swipe: 'left',
+	},
+	dialog: {
+		buttonOk: '確定',
+		buttonCancel: '取消'
 	},
 })

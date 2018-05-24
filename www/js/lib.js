@@ -39,3 +39,15 @@ function myReadFile(fileName, callback) {
         })
     }
 }
+
+function mySetItem(key, value) {
+    return new Promise(function (resolve, reject) {
+        NativeStorage.setItem(key, value, resolve, reject)
+    })
+}
+
+function myGetItem(key) {
+    return new Promise(function (resolve, reject) {
+        NativeStorage.getItem(key, resolve, reject)
+    })
+}

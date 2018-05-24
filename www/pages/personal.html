@@ -25,9 +25,9 @@
 
 <script>
     function load() {
-        for (let i in points) {
-            api.getPoint(points[i].address, (balance) => {
-                $(`#${points[i].address}`).text(balance)
+        for (let point of myData.points) {
+            api.getPoint(point.address, (balance) => {
+                $(`#${point.address}`).text(balance)
             })
         }
     }
@@ -36,7 +36,7 @@
         },
         methods: {
             refresh: (e, done) => {
-                api.getPoints(load()) 
+                load()
                 done()
             },
         },
@@ -64,14 +64,9 @@
                     </ul>
                 `
                 let compiledListTemplate = Template7.compile(listTemplate)
-                $('#pointList').html(compiledListTemplate(points))
+                $('#pointList').html(compiledListTemplate(myData.points))
                 
                 load()
-
-                $('#address_SQL').text(user.address)
-                NativeStorage.getItem('encAccount', encAccount => {
-                    $('#address_NS').text(`0x${encAccount.address}`)
-                }, console.error)
             },
             pageBeforeOut: () => {
             },

@@ -6,6 +6,8 @@ let api = {
             ID,
             password,
         }, success, (xhr, status) => {
+            console.error(getUrl('signIn'))
+            console.error(JSON.stringify(xhr))
             console.error(status)
         }, 'json')
     },
@@ -21,7 +23,7 @@ let api = {
 
     //user
     getUser: (ID, callback) => {
-        app.request.get(getUrl('user', { token: user.token, ID: ID }), (data, status, xhr) => {
+        app.request.get(getUrl('user', { token: myData.user.token, ID: ID }), (data, status, xhr) => {
             console.log(status, data)
             callback(data)
         }, 'json')
@@ -29,7 +31,7 @@ let api = {
 
     updateUser: (address) => {
         app.request({
-            url: getUrl('user', { token: user.token }),
+            url: getUrl('user', { token: myData.user.token }),
             method: 'PUT',
             data: {
                 address,
@@ -45,17 +47,16 @@ let api = {
     },
 
     //Friend
-    getFriends: (callback) => {
-        app.request.get(getUrl('friends', { token: user.token }), (data, status, xhr) => {
+    getFriends: function (callback) {
+        app.request.get(getUrl('friends', { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
-            friends = data
-            callback()
+            callback(data)
         }, 'json')
     },
 
     addFriend: (friendID, callback) => {
         app.request({
-            url: getUrl('friend/' + friendID, { token: user.token }),
+            url: getUrl('friend/' + friendID, { token: myData.user.token }),
             method: 'POST',
             success: (data, status, xhr) => {
                 console.log(status, data)
@@ -70,7 +71,7 @@ let api = {
 
     deleteFriend: (friendID, callback) => {
         app.request({
-            url: getUrl('friend/' + friendID, { token: user.token }),
+            url: getUrl('friend/' + friendID, { token: myData.user.token }),
             method: 'DELETE',
             success: (data, status, xhr) => {
                 console.log(status, data)
@@ -85,15 +86,14 @@ let api = {
 
     //point
     getPoints: (callback) => {
-        app.request.get(getUrl('points', { token: user.token }), (data, status, xhr) => {
+        app.request.get(getUrl('points', { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
-            points = data
-            callback()
+            callback(data)
         }, 'json')
     },
 
     getPoint: (address, callback) => {
-        app.request.get(getUrl('point/' + address, { token: user.token }), (data, status, xhr) => {
+        app.request.get(getUrl('point/' + address, { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
             callback(data)
         }, 'json')
@@ -101,21 +101,21 @@ let api = {
 
     //transaction
     getTransactionsTo: (callback) => {
-        app.request.get(getUrl('query/transactionsTo', { token: user.token }), (data, status, xhr) => {
+        app.request.get(getUrl('query/transactionsTo', { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
             callback(data)
         }, 'json')
     },
 
     getTransactionsFrom: (callback) => {
-        app.request.get(getUrl('query/transactionsFrom', { token: user.token }), (data, status, xhr) => {
+        app.request.get(getUrl('query/transactionsFrom', { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
             callback(data)
         }, 'json')
     },
 
     postTransaction: (signTx, targetID, number, point, callback) => {
-        app.request.post(getUrl('transaction', { token: user.token }), {
+        app.request.post(getUrl('transaction', { token: myData.user.token }), {
             signTx,
             targetID,
             number,
@@ -130,35 +130,35 @@ let api = {
 
     //order
     getOrders: (callback) => {
-        app.request.get(getUrl('orders', { token: user.token }), (data, status, xhr) => {
+        app.request.get(getUrl('orders', { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
             callback(data)
         }, 'json')
     },
 
     getOrder: () => {
-        app.request.get(getUrl('order', { token: user.token }), (data, status, xhr) => {
+        app.request.get(getUrl('order', { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
             callback(data)
         }, 'json')
     },
 
     getOrderTo: (callback) => {
-        app.request.get(getUrl('query/orderTo', { token: user.token }), (data, status, xhr) => {
+        app.request.get(getUrl('query/orderTo', { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
             callback(data)
         }, 'json')
     },
 
     getOrderFrom: (callback) => {
-        app.request.get(getUrl('query/orderFrom', { token: user.token }), (data, status, xhr) => {
+        app.request.get(getUrl('query/orderFrom', { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
             callback(data)
         }, 'json')
     },
 
     addOrder: (signTx, point1, value1, point2, value2, callback) => {
-        app.request.post(getUrl('order', { token: user.token }), {
+        app.request.post(getUrl('order', { token: myData.user.token }), {
             signTx,
             point1,
             value1,
@@ -174,7 +174,7 @@ let api = {
 
     updateOrder: (signTx, autoID, callback) => {
         app.request({
-            url: getUrl('order', { token: user.token }),
+            url: getUrl('order', { token: myData.user.token }),
             method: 'PUT',
             data: {
                 signTx,
@@ -193,12 +193,9 @@ let api = {
 
     //nonce
     getNonce: (callback) => {
-        app.request.get(getUrl('nonce', { token: user.token }), (data, status, xhr) => {
+        app.request.get(getUrl('nonce', { token: myData.user.token }), (data, status, xhr) => {
             console.log(status, data)
             callback(data)
         }, 'json')
     }
 }
-
-
-

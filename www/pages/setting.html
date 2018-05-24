@@ -73,8 +73,8 @@
             sign_out: () => {
                 console.log('sign_out')
                 NativeStorage.remove('user', () => {
+                    myData = {}
                     app.dialog.alert('登出成功', '溫馨提醒', () => {
-                        user = null
                         app.router.navigate('/signIn/')
                     })
                 }, err => {
@@ -85,13 +85,12 @@
         },
         on: {
             pageMounted: () => {
-                console.log('pageMounted')
+                console.group('setting')
             },
             pageInit: () => {
-                console.log('pageInit')
+                
             },
             pageBeforein: () => {
-                console.log('pageBeforein')
                 let fingerprint_checkbox = app.toggle.get('#fingerprint_checkbox')
                 if (storage.getItem('fingerprint_token')) {
                     fingerprint_checkbox.toggle()
@@ -147,10 +146,10 @@
                 })
             },
             pageBeforeOut: () => {
-                console.log('pageBeforeOut')
+                
             },
             pageBeforeRemove: () => {
-                console.log('pageBeforeRemove')
+                console.groupEnd()
             },
         },
     }

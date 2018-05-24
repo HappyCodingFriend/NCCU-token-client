@@ -65,8 +65,8 @@
                 return item.buyer == null
             })
             for (let i in exchanges) {
-                exchanges[i].name1 = pointMap.get(exchanges[i].point1)
-                exchanges[i].name2 = pointMap.get(exchanges[i].point2)
+                exchanges[i].name1 = myData.pointMap.get(exchanges[i].point1)
+                exchanges[i].name2 = myData.pointMap.get(exchanges[i].point2)
             }
             $('#orderList').html(compiledListTemplate(exchanges))
         })

@@ -9,81 +9,16 @@
                     </a>
                 </div>
                 <div class="title">交換</div>
+                <div class="right">
+                    <a @click="add_button" class="link">
+                        <i class="icon f7-icons ios-only">add</i>
+                        <i class="icon material-icons md-only">add</i>
+                    </a>
+                </div>
             </div>
         </nav>
         <div class="page-content">
-
-            <div class="card">
-                <div class="card-header">換出</div>
-                <div class="card-content card-content-padding">
-                    <form class="list inline-labels no-hairlines-md">
-                        <ul>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">換出點數</div>
-                                    <div class="item-input-wrap">
-                                        <select id="point_out" placeholder="Please choose...">
-                                        </select>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">換出數量</div>
-                                    <div class="item-input-wrap">
-                                        <input id="number_out" type="number" placeholder="換出數量">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">換入</div>
-                <div class="card-content card-content-padding">
-                    <form class="list inline-labels no-hairlines-md">
-                        <ul>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">換入點數</div>
-                                    <div class="item-input-wrap">
-                                        <select id="point_in" placeholder="Please choose...">
-                                        </select>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">換入數量</div>
-                                    <div class="item-input-wrap">
-                                        <input id="number_in" type="number" placeholder="換入數量">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                            <!--
-                            <li class="item-content item-input">
-                                <div class="item-inner">
-                                    <div class="item-title item-label">到期日</div>
-                                    <div class="item-input-wrap">
-                                        <input id="date" type="date">
-                                        <span class="input-clear-button"></span>
-                                    </div>
-                                </div>
-                            </li>
-                            -->
-                        </ul>
-                    </form>
-                </div>
-            </div>
-
-            <div class="block">
-                <div class="row">
-                    <button class="col button button-fill" @click="order_button">賣單</button>
-                </div>
+            <div id="exchangeList" class="list margin-top">
             </div>
         </div>
     </section>
@@ -91,86 +26,103 @@
 
 <script>
     function load() {
-        let selectTemplate = `
-            <ul>
-                {{#each this}}
-                <option value={{this.address}}>{{this.name}}</option>
-                {{/each}}
-            </ul>
-        `
-        let compiledSelectTemplate = Template7.compile(selectTemplate)
-        $('select#point_out').html(compiledSelectTemplate(points))
-        $('select#point_in').html(compiledSelectTemplate(points))
+        api.getOrders((exchanges) => {
 
-        $('select#point_out').change(() => {
-            api.getPoint($('select#point_out').val(), (balance) => {
-                $('#balance_out').val(balance)
-            })
-        })
-        $('select#point_in').change(() => {
-            api.getPoint($('select#point_in').val(), (balance) => {
-                $('#balance_in').val(balance)
-            })
-        })
+            for (let i in exchanges) {
+                exchanges[i].name1 = myData.pointMap.get(exchanges[i].point1)
+                exchanges[i].name2 = myData.pointMap.get(exchanges[i].point2)
+            }
 
-        loadPoint()
-    }
-    function loadPoint() {
-        $('select#point_in option').each((i, item) => {
-            api.getPoint(item.value, (balance) => {
-                item.text += `(${balance})`
-            })
-        })
-        $('select#point_out option').each((i, item) => {
-            api.getPoint(item.value, (balance) => {
-                item.text += `(${balance})`
-            })
-        })
-    }
-    return {
-        data: function () {
-        },
-        methods: {
-            order_button: () => {
-                //轉出點數ERC address
-                let point1 = $('select#point_out').val()
-                let value1 = $('#number_out').val()
+            let listTemplate = `
+                <ul>
+                    <li>
+                        <div class="item-inner item-cell text-align-center">
+                            <div class="item-row">
+                                <div class="item-cell">賣家</div>
+                                <div class="item-cell">換入</div>
+                                <div class="item-cell">換出</div>
+                            </div>
+                        </div>
+                    </li>
+                    {{#each this}}
+                    <li autoID={{autoID}}>
+                        <a href="#" class="item-link item-content">
+                            <div class="item-inner item-cell text-align-center">
+                                <div class="item-row">
+                                    <div class="item-cell">{{ownerName}}</div>
+                                    <div class="item-cell">
+                                        <div class="item-row">
+                                            <span class="badge color-green">+{{value1}}</span>
+                                        </div>
+                                        <div class="item-row">
+                                            {{name1}}
+                                        </div>
+                                    </div>
+                                    <div class="item-cell">
+                                        <div class="item-row">
+                                            <span class="badge color-red">-{{value2}}</span>
+                                        </div>
+                                        <div class="item-row">
+                                            {{name2}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    {{/each}}
+                </ul>
+            `
+            let compiledListTemplate = Template7.compile(listTemplate)
+            $('#exchangeList').html(compiledListTemplate(exchanges))
 
-                //轉入點數ERC address
-                let point2 = $('select#point_in').val()
-                let value2 = $('#number_in').val()
+            $('#exchangeList li').on('click', function (e) {
 
-                //取得到期日
-                let deadline = 0//(new Date(new Date($('#date').val()) - 8 * 60 * 60 * 1000)).valueOf()
+                let autoID = $(this).attr('autoID')
+                let exchange = exchanges.find((element) => {
+                    return element.autoID == autoID
+                })
 
                 //取得Account
                 NativeStorage.getItem('encAccount', encAccount => {
-                    app.dialog.password('請輸入您的交易密碼', '掛單', password => {
+                    app.dialog.password('請輸入您的交易密碼', '買單', password => {
                         let decAccount = web3.eth.accounts.decrypt(encAccount, password)
 
                         //取得nonce
                         api.getNonce((nonce) => {
-                            //sign tx
                             let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
-                            let data = ERC223TokenContract.methods.addExchange(point2, value1, value2, deadline).encodeABI()
+                            let data = ERC223TokenContract.methods.transfer(exchange.address, parseInt(exchange.value2)).encodeABI()
                             let tx = {
                                 nonce: parseInt(nonce),
-                                to: point1,
+                                to: exchange.point2,
                                 data: data,
                                 gas: 4000000,
                                 gasPrice: '0x0',
-                                chainId: '0x11',
+                                chainId: '0x7b',
                             }
-                            let signTx = decAccount.signTransaction(tx)
+                            let signTx = decAccount.signTransaction(tx)._rejectionHandler0.rawTransaction
 
-                            api.addOrder(signTx._rejectionHandler0.rawTransaction, point1, value1, point2, value2, (data) => {
-                                app.dialog.alert('掛單成功', '政大錢包', () => {
-                                    app.router.back()
-                                })
+                            app.dialog.preloader('交易進行中')
+                            api.updateOrder(signTx, autoID, (data) => {
+                                app.dialog.close()
+                                if (data.type) {
+                                    load()
+                                    app.dialog.alert('買單成功')
+                                }
+                                else {
+                                    app.dialog.alert('買單失敗')
+                                }
                             })
                         })
                     })
                 })
+            })
+        })
+    }
+    return {
+        methods: {
+            add_button: () => {
+                app.router.navigate('/putOrder/')
             },
         },
         on: {
@@ -178,6 +130,7 @@
                 console.group('order')
             },
             pageInit: () => {
+
             },
             pageBeforeIn: () => {
                 load()

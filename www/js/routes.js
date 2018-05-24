@@ -35,12 +35,12 @@ let routes = [{
 	componentUrl: './pages/friend.html',
 },
 {
-	path: '/exchange/',
-	componentUrl: './pages/exchange.html',
-},
-{
 	path: '/order/',
 	componentUrl: './pages/order.html',
+},
+{
+	path: '/putOrder/',
+	componentUrl: './pages/putOrder.html',
 },
 {
 	path: '/myOrder/',
