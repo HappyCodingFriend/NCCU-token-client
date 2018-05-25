@@ -28,7 +28,9 @@ function onDeviceReady() {
 			console.log(status, data)
 
 			init(user)
-			QRScanner.prepare(onDone)
+			if(device.platform == 'android' || device.platform == 'ios'){
+				QRScanner.prepare(onDone)
+			}
 
 		}, (xhr, status) => {
 			console.log('登入失敗')

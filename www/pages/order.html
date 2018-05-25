@@ -33,7 +33,8 @@
                 exchanges[i].name2 = myData.pointMap.get(exchanges[i].point2)
             }
 
-            let listTemplate = `
+            let listTemplate =
+                `
                 <ul>
                     <li>
                         <div class="item-inner item-cell text-align-center">
@@ -83,39 +84,59 @@
                     return element.autoID == autoID
                 })
 
-                //取得Account
-                NativeStorage.getItem('encAccount', encAccount => {
-                    app.dialog.password('請輸入您的交易密碼', '買單', password => {
-                        let decAccount = web3.eth.accounts.decrypt(encAccount, password)
 
-                        //取得nonce
-                        api.getNonce((nonce) => {
-                            let ERC223TokenContract = new web3.eth.Contract(ERC223Token.abi)
-                            let data = ERC223TokenContract.methods.transfer(exchange.address, parseInt(exchange.value2)).encodeABI()
-                            let tx = {
-                                nonce: parseInt(nonce),
-                                to: exchange.point2,
-                                data: data,
-                                gas: 4000000,
-                                gasPrice: '0x0',
-                                chainId: '0x7b',
-                            }
-                            let signTx = decAccount.signTransaction(tx)._rejectionHandler0.rawTransaction
+                api.getPoint(exchange.point2, (balance) => {
+                    if (balance < parseInt(exchange.value2)) {
+                        app.dialog.alert('餘額不足')
+                    } else {
+                        //取得Account
+                        NativeStorage.getItem('encAccount', encAccount => {
+                            app.dialog.password('請輸入您的交易密碼', '買單', password => {
+                                let decAccount = web3.eth.accounts.decrypt(
+                                    encAccount,
+                                    password)
 
-                            app.dialog.preloader('交易進行中')
-                            api.updateOrder(signTx, autoID, (data) => {
-                                app.dialog.close()
-                                if (data.type) {
-                                    load()
-                                    app.dialog.alert('買單成功')
-                                }
-                                else {
-                                    app.dialog.alert('買單失敗')
-                                }
+                                //取得nonce
+                                api.getNonce((nonce) => {
+                                    let ERC223TokenContract = new web3.eth
+                                        .Contract(
+                                            ERC223Token.abi)
+                                    let data = ERC223TokenContract.methods
+                                        .transfer(
+                                            exchange.address, parseInt(
+                                                exchange.value2)
+                                        ).encodeABI()
+                                    let tx = {
+                                        nonce: parseInt(nonce),
+                                        to: exchange.point2,
+                                        data: data,
+                                        gas: 4000000,
+                                        gasPrice: '0x0',
+                                        chainId: '0x7b',
+                                    }
+                                    let signTx = decAccount.signTransaction(
+                                            tx)._rejectionHandler0
+                                        .rawTransaction
+
+                                    app.dialog.preloader('交易進行中')
+                                    api.updateOrder(signTx, autoID, (
+                                        data) => {
+                                        app.dialog.close()
+                                        if (data.type) {
+                                            load()
+                                            app.dialog.alert(
+                                                '買單成功')
+                                        } else {
+                                            app.dialog.alert(
+                                                '買單失敗')
+                                        }
+                                    })
+                                })
                             })
                         })
-                    })
+                    }
                 })
+
             })
         })
     }
@@ -135,8 +156,7 @@
             pageBeforeIn: () => {
                 load()
             },
-            pageBeforeOut: () => {
-            },
+            pageBeforeOut: () => {},
             pageBeforeRemove: () => {
                 console.groupEnd()
             },
