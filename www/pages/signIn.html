@@ -63,21 +63,23 @@
 
                             NativeStorage.setItem('user', data, console.log, console.error)
                             init(data)
-                            
+
                             if ($('#remember').is(":checked")) {
                                 storage.setItem('rememberID', ID)
-                            }
-                            else {
+                            } else {
                                 storage.removeItem('rememberID', ID)
                             }
 
-                            app.router.navigate('/')
+                            app.router.navigate('/', {
+                                clearPreviousHistory: true
+                            })
                         }
                     })
                 })
             },
             fingerprint_decrypt: () => {
                 FingerprintAuth.isAvailable(isAvailableSuccess, isAvailableError)
+
                 function isAvailableSuccess(result) {
                     if (!storage.getItem('fingerprint_token')) {
                         alert('未設定指紋登入')
@@ -113,6 +115,7 @@
                         }
                     }
                 }
+
                 function isAvailableError(message) {
                     console.log("isAvailableError(): " + message)
                     alert(message)
@@ -123,8 +126,7 @@
             pageMounted: () => {
                 console.group('signIn')
             },
-            pageInit: () => {
-            },
+            pageInit: () => {},
             pageBeforein: () => {
                 rememberID = storage.getItem('rememberID')
                 if (rememberID) {
@@ -132,8 +134,7 @@
                     $('#remember').prop("checked", true)
                 }
             },
-            pageBeforeOut: () => {
-            },
+            pageBeforeOut: () => {},
             pageBeforeRemove: () => {
                 console.groupEnd()
             },

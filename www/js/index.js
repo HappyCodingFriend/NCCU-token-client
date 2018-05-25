@@ -33,11 +33,15 @@ function onDeviceReady() {
 		}, (xhr, status) => {
 			console.log('登入失敗')
 			console.log(status)
-			app.router.navigate('/signIn/')
+			app.router.navigate('/signIn/', {
+				clearPreviousHistory: true
+			})
 		}, 'json')
 	}, (err) => {
 		console.log('無使用者紀錄')
-		app.router.navigate('/signIn/')
+		app.router.navigate('/signIn/', {
+			clearPreviousHistory: true
+		})
 	})
 }
 

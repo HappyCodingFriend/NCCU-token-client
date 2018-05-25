@@ -75,11 +75,13 @@
                 NativeStorage.remove('user', () => {
                     myData = {}
                     app.dialog.alert('登出成功', '溫馨提醒', () => {
-                        app.router.navigate('/signIn/')
+                        app.router.navigate('/signIn/', {
+                            clearPreviousHistory: true
+                        })
                     })
                 }, err => {
                     console.error(err)
-                    app.dialog.alert('登出失敗', '警告', () => { })
+                    app.dialog.alert('登出失敗', '警告', () => {})
                 })
             },
         },
@@ -88,7 +90,7 @@
                 console.group('setting')
             },
             pageInit: () => {
-                
+
             },
             pageBeforein: () => {
                 let fingerprint_checkbox = app.toggle.get('#fingerprint_checkbox')
@@ -146,7 +148,7 @@
                 })
             },
             pageBeforeOut: () => {
-                
+
             },
             pageBeforeRemove: () => {
                 console.groupEnd()
